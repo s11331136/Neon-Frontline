@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>科技塔防 - 核心戰鬥</title>
+    <style>
+        /* 基礎重置與科技感配色 (沿用第一階段) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            -webkit-touch-callout: none; /* 防止 iOS 長按選單 */
+        }
+        body {
+            background-color: #050505;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            overflow: hidden; /* 防止身體捲動 */
+        }
+
+        /* 模擬手機直立螢幕的容器 */
+        #game-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            max-height: 800px;
+            background-color: #0d111a;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #00f3ff;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 畫面顯示區 (關卡/升級/商店沿用) */
+        .screen {
+            flex: 1;
+            display: none;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 科技感標題 */
+        h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin-bottom: 20px; font-size: 24px; letter-spacing: 2px; }
+
+        /* 關卡選單樣式 (沿用) */
+        .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .level-btn { background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #fff; padding: 20px 0; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .level-btn:active { background: rgba(0, 243, 255, 0.3); }
+        .level-btn.locked { background: rgba(255, 255, 255, 0.05); border: 1px solid #555; color: #555; cursor: not-allowed; }
+
+        /* 底部導航欄 (沿用) */
+        #bottom-nav { height: 70px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
+        .nav-btn { background: none; border: none; color: #777; font-size: 16px; cursor: pointer; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .nav-btn.active { color: #00f3ff; text-shadow: 0 0 8px #00f3ff; border-bottom: 3px solid #00f3ff; }
+
+        /* ========================================= */
+        /* 核心戰鬥畫面 (重點更新)           */
+        /* ========================================= */
+        
+        #screen-battle {
+            padding: 0; /* 戰鬥畫面不留邊距 */
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 頂部戰鬥資訊欄 */
+        #battle-header {
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid #00f3ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 5;
+        }
+        .back-btn { background: none; border: 1px solid #ff003c; color: #ff003c; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        #money-display { color: #ffd700; font-weight: bold; }
+
+        /* 遊戲主要繪圖區 (Canvas) */
+        #game-canvas {
+            width: 100%;
+            height: 100%; /* 填滿螢幕，JS會處理比例 */
+            display: block;
+        }
+
+        /* 拖曳時的臨時圖示 */
+        #drag-icon {
+            width: 40px;
+            height: 40px;
+            position: fixed;
+            pointer-events: none; /* 讓滑鼠事件穿透 */
+            display: none;
+            z-index: 100;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    
+    <div id="screen-levels" class="screen active">
+        <h1>作戰任務</h1>
+        <div class="level-grid" id="level-list"></div>
+    </div>
+
+    <div id="screen-upgrades" class="screen"><h1>科技大樓</h1></div>
+
+    <div id="screen-shop" class="screen"><h1>傳送補給</h1></div>
+
+    <div id="screen-battle" class="screen">
+        <div id="battle-header">
+            <button class="back-btn" onclick="exitBattle()">◄</button>
+            <div id="battle-title">SECTOR 1</div>
+            <div id="money-display">$ <span id="current-money">100</span></div>
+        </div>
+        
+        <canvas id="game-canvas"></canvas>
+        
+        <div id="drag-icon"></div>
+    </div>
+
+    <div id="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('levels', this)"><span>⎈</span><span>關卡</span></button>
+        <button class="nav-btn" onclick="switchTab('upgrades', this)"><span>⇪</span><span>升級</span></button>
+        <button class="nav-btn" onclick="switchTab('shop', this)"><span>◈</span><span>商店</span></button>
+    </div>
+
+</div>
+
+<script>
+    // =========================================
+    //             UI 與 基礎邏輯
+    // =========================================
+    
+    function switchTab(tabName, btnElement) {
+        document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+        document.getElementById('screen-' + tabName).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+    }
+
+    const totalLevels = 6;
+    const unlockedLevel = 3; 
+
+    function renderLevels() {
+        const levelList = document.getElementById('level-list');
+        levelList.innerHTML = ''; 
+        for (let i = 1; i <= totalLevels; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'level-btn';
+            if (i <= unlockedLevel) {
+                btn.innerText = `SECTOR ${i}`;
+                btn.onclick = () => enterBattle(i);
+            } else {
+                btn.innerText = `LOCKED`;
+                btn.classList.add('locked');
+            }
+            levelList.appendChild(btn);
+        }
+    }
+
+    function enterBattle(levelNum) {
+        document.getElementById('bottom-nav').style.display = 'none';
+        document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+        const battleScreen = document.getElementById('screen-battle');
+        battleScreen.classList.add('active');
+        document.getElementById('battle-title').innerText = `SECTOR ${levelNum}`;
+        
+        startGameState(levelNum);
+    }
+
+    function exitBattle() {
+        stopGameState();
+        document.getElementById('bottom-nav').style.display = 'flex';
+        document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+        document.getElementById('screen-levels').classList.add('active');
+    }
+
+    // 初始化選單
+    renderLevels();
+
+
+    // =========================================
+    //             核心遊戲引擎 (Canvas)
+    // =========================================
+    
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    const dragIcon = document.getElementById('drag-icon');
+    const moneyDisplay = document.getElementById('current-money');
+
+    // 遊戲狀態與數據
+    let gameState = {
+        running: false,
+        money: 0,
+        level: 0,
+        gridSize: 0, // 動態計算
+        mapTopOffset: 40, // 頂部資訊欄高度
+        spawnLineY: 0,   // 白線位置
+        buyAreaHeight: 0, // 下方購買區高度
+        characters: [],  // 場上的角色 (攻防用)
+        enemies: [],     // 敵人
+        bench: Array(4).fill(null), // 下方準備區 (按鈕兩邊的空位，假設左2右2)
+        path: [],        // 敵人路徑路點
+        gameLoopId: null,
+        spawnTimer: 0,
+        currentWave: 0
+    };
+
+    // 角色設定 (示例)
+    const charTypes = {
+        'A': { color: '#33ff33', name: '守衛', cost: 10, speed: 2 }, // 綠色
+        'B': { color: '#ff3333', name: '射手', cost: 15, speed: 1 }, // 紅色
+    };
+
+    const BUY_COST = 10; // 初始購買價格
+
+    // 設置 Canvas 大小與網格系統
+    function resizeCanvas() {
+        // 獲取容器的實際寬度（最大400px）
+        const container = document.getElementById('game-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        // 設置 Canvas 畫布解析度（考慮 Retina 高解析度）
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr); // 縮放繪圖上下文
+
+        // 將 CSS 的 canvas 大小設置為與容器一致
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+
+        // --- 計算網格與區域 ---
+        // 戰鬥區域高度 = 總高度 - 頂部欄 - 下方購買區(約佔25%)
+        gameState.buyAreaHeight = height * 0.25;
+        const battleAreaHeight = height - gameState.mapTopOffset - gameState.buyAreaHeight;
+        
+        // 分割網格 (例如 寬度 6 格, 高度根據比例計算)
+        const cols = 6;
+        gameState.gridSize = width / cols;
+        
+        // 白線位置 (放置場景與購買區的分界)
+        gameState.spawnLineY = gameState.mapTopOffset + battleAreaHeight;
+    }
+
+    // --- 敵人路徑生成 ---
+    function createPath() {
+        const gs = gameState.gridSize;
+        const top = gameState.mapTopOffset;
+        const startX = 0; // 左側起點
+        const startY = top + gs * 2; // 第三格
+        
+        gameState.path = [
+            {x: startX - gs, y: startY}, // 起點 (螢幕外)
+            {x: gs * 4, y: startY},      // 右走
+            {x: gs * 4, y: startY + gs * 3}, // 下走
+            {x: gs * 6 + gs, y: startY + gs * 3}, // 右走 (出口)
+        ];
+    }
+
+
+    // =========================================
+    //             遊戲迴圈 (繪製與更新)
+    // =========================================
+    
+    function gameStateLoop(timestamp) {
+        if (!gameState.running) return;
+
+        update(timestamp);
+        draw();
+
+        gameState.gameLoopId = requestAnimationFrame(gameStateLoop);
+    }
+
+    function update(dt) {
+        // 1. 敵人生成邏輯
+        gameState.spawnTimer += 1;
+        if (gameState.spawnTimer > 120) { // 每兩秒一隻
+            spawnEnemy();
+            gameState.spawnTimer = 0;
+        }
+
+        // 2. 敵人移動與血量檢查
+        for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+            const enemy = gameState.enemies[i];
+            
+            // 沿著路徑點移動
+            const target = gameState.path[enemy.pathIndex];
+            if (target) {
+                const dx = target.x - enemy.x;
+                const dy = target.y - enemy.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                if (dist < 2) {
+                    enemy.pathIndex++; // 到達節點，下一個
+                } else {
+                    enemy.x += (dx/dist) * 1; // 移動速度
+                    enemy.y += (dy/dist) * 1;
+                }
+            } else {
+                // 到達終點
+                gameState.enemies.splice(i, 1);
+                // 這裡可以扣玩家血量
+            }
+        }
+    }
+
+    function draw() {
+        // 清空畫面
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // --- 繪製路徑 (背景) ---
+        drawPath();
+
+        // --- 繪製隱形格線 (除錯用，可關閉) ---
+        // drawGrid(); // 註解這行就不會顯示格線
+
+        // --- 繪製白線 (分界線) ---
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, gameState.spawnLineY);
+        ctx.lineTo(canvas.width, gameState.spawnLineY);
+        ctx.stroke();
+
+        // --- 繪製敵人 ---
+        gameState.enemies.forEach(enemy => {
+            ctx.fillStyle = '#ff00cc'; // 敵人顏色
+            ctx.beginPath();
+            ctx.arc(enemy.x, enemy.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // --- 繪製場上角色 ---
+        gameState.characters.forEach(char => {
+            const centerX = char.gridX * gameState.gridSize + gameState.gridSize/2;
+            const centerY = char.gridY * gameState.gridSize + gameState.gridSize/2 + gameState.mapTopOffset;
+            
+            drawUnit(centerX, centerY, char.type, char.level);
+        });
+
+        // --- 繪製下方購買區 UI ---
+        drawBuyArea();
+    }
+
+    // 輔助繪製：單位
+    function drawUnit(x, y, type, level) {
+        const info = charTypes[type];
+        const gs = gameState.gridSize;
+
+        // 圓形角色
+        ctx.fillStyle = info.color;
+        ctx.beginPath();
+        ctx.arc(x, y, gs/2 - 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // 顯示等級 (幾點) - 同盟塔防戰特色
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        let levelStr = "";
+        if(level === 1) levelStr = "●";
+        if(level === 2) levelStr = "●●";
+        if(level === 3) levelStr = "◆"; // 更高等級用不同符號
+        ctx.fillText(levelStr, x, y);
+    }
+
+    // 下方購買區 UI 詳細繪製
+    function drawBuyArea() {
+        const gs = gameState.gridSize;
+        const width = canvas.width / (window.devicePixelRatio || 1); // 修正 DPR 寬度
+        const bottomY = gameState.spawnLineY;
+        const buyAreaHeight = gameState.buyAreaHeight;
+
+        // 1. 背景
+        ctx.fillStyle = '#0a0d14';
+        ctx.fillRect(0, bottomY, width, buyAreaHeight);
+
+        // 2. 正中間購買按鈕
+        const btnW = gs * 2;
+        const btnH = buyAreaHeight * 0.6;
+        const btnX = width/2 - btnW/2;
+        const btnY = bottomY + buyAreaHeight/2 - btnH/2;
+        gameState.buyBtnRect = {x: btnX, y: btnY, w: btnW, h: btnH}; // 保存位置供點擊
+
+        ctx.fillStyle = (gameState.money >= BUY_COST) ? '#00f3ff' : '#555';
+        ctx.beginPath();
+        this.roundRect(ctx, btnX, btnY, btnW, btnH, 10, true, true);
+        
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText('購買', width/2, btnY + btnH/2 - 5);
+        ctx.font = '12px Arial';
+        ctx.fillText(`$ ${BUY_COST}`, width/2, btnY + btnH/2 + 12);
+
+        // 3. 繪製兩邊的準備區格位 (左2右2)
+        gameState.benchRects = []; // 保存位置供拖曳
+        for(let i = 0; i < 4; i++) {
+            let posX;
+            if(i < 2) { // 左邊兩格
+                posX = gs * 0.5 + i * (gs + 5);
+            } else { // 右邊兩格
+                posX = width - gs * 2.5 + (i-2) * (gs + 5);
+            }
+            const posY = bottomY + buyAreaHeight/2 - gs/2;
+            const rect = {x: posX, y: posY, w: gs, h: gs};
+            gameState.benchRects.push(rect);
+
+            // 繪製格子邊框 (虛線科技感)
+            ctx.strokeStyle = 'rgba(0, 243, 255, 0.3)';
+            ctx.setLineDash([5, 3]);
+            ctx.strokeRect(posX, posY, gs, gs);
+            ctx.setLineDash([]);
+
+            // 繪製格子內的角色
+            if(gameState.bench[i]) {
+                const char = gameState.bench[i];
+                drawUnit(posX + gs/2, posY + gs/2, char.type, char.level);
+            }
+        }
+    }
+
+    // (輔助) 繪製路徑
+    function drawPath() {
+        if(gameState.path.length < 2) return;
+        ctx.strokeStyle = 'rgba(255, 0, 204, 0.15)'; // 深粉色路徑
+        ctx.lineWidth = gameState.gridSize * 0.8;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(gameState.path[1].x, gameState.path[1].y); // 從第一個實際路點開始
+        for(let i=2; i<gameState.path.length; i++) {
+            ctx.lineTo(gameState.path[i].x, gameState.path[i].y);
+        }
+        ctx.stroke();
+    }
+
+    // (輔助) 繪製格線 (除錯用)
+    function drawGrid() {
+        const gs = gameState.gridSize;
+        const width = canvas.width;
+        const height = gameState.spawnLineY; // 只畫到白線
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+        // 縱線
+        for (let x = 0; x <= width; x += gs) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+        }
+        // 橫線
+        for (let y = gameState.mapTopOffset; y <= height; y += gs) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+        }
+    }
+
+    // (輔助) 敵人生成
+    function spawnEnemy() {
+        if(gameState.path.length === 0) return;
+        gameState.enemies.push({
+            x: gameState.path[0].x,
+            y: gameState.path[0].y,
+            pathIndex: 1,
+            hp: 10
+        });
+    }
+
+
+    // =========================================
+    //             開始與停止遊戲
+    // =========================================
+    
+    function gameStateInit() {
+        resizeCanvas();
+        createPath();
+        gameState.money = 50; // 初始金錢
+        moneyDisplay.innerText = gameState.money;
+        gameState.characters = [];
+        gameState.enemies = [];
+        gameState.bench = Array(4).fill(null);
+        gameState.spawnTimer = 0;
+    }
+
+    function startGameState(level) {
+        gameState.running = true;
+        gameState.level = level;
+        gameStateInit();
+        gameState.gameLoopId = requestAnimationFrame(gameStateLoop);
+    }
+
+    function stopGameState() {
+        gameState.running = false;
+        cancelAnimationFrame(gameStateLoopId);
+    }
+
+    window.addEventListener('resize', () => { if(gameState.running) resizeCanvas(); });
+
+
+    // =========================================
+    //           觸控/滑鼠 互動邏輯 (合成核心)
+    // =========================================
+    
+    let dragData = {
+        isDragging: false,
+        benchIndex: -1,
+        startX: 0,
+        startY: 0
+    };
+
+    // 獲取相對 Canvas 的座標
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top,
+            rawX: clientX, // 螢幕絕對座標，供 DragIcon 用
+            rawY: clientY
+        };
+    }
+
+    // --- 點擊/觸摸開始 ---
+    function handlePointerDown(e) {
+        if (!gameState.running) return;
+        const pos = getMousePos(e);
+        
+        // 1. 檢查是否點擊 "購買按鈕"
+        const r = gameState.buyBtnRect;
+        if (pos.x >= r.x && pos.x <= r.x + r.w && pos.y >= r.y && pos.y <= r.y + r.h) {
+            buyCharacter();
+            return;
+        }
+
+        // 2. 檢查是否點擊 "準備區格子" (準備拖曳)
+        for(let i=0; i<gameState.benchRects.length; i++) {
+            const br = gameState.benchRects[i];
+            if(gameState.bench[i] && pos.x >= br.x && pos.x <= br.x + br.w && pos.y >= br.y && pos.y <= br.y + br.h) {
+                // 開始拖曳
+                dragData.isDragging = true;
+                dragData.benchIndex = i;
+                
+                // 顯示拖曳圖示
+                const char = gameState.bench[i];
+                dragIcon.style.display = 'block';
+                dragIcon.style.background = charTypes[char.type].color;
+                dragIcon.style.left = pos.rawX - 20 + 'px'; // 居中
+                dragIcon.style.top = pos.rawY - 20 + 'px';
+                break;
+            }
+        }
+    }
+
+    // --- 拖曳中 ---
+    function handlePointerMove(e) {
+        if (!gameState.running || !dragData.isDragging) return;
+        e.preventDefault(); // 防止手機頁面捲動
+        const pos = getMousePos(e);
+
+        // 更新拖曳圖示位置
+        dragIcon.style.left = pos.rawX - 20 + 'px';
+        dragIcon.style.top = pos.rawY - 20 + 'px';
+    }
+
+    // --- 點擊/觸摸結束 (放開) ---
+    function handlePointerUp(e) {
+        if (!gameState.running || !dragData.isDragging) return;
+        const pos = getMousePos(e);
+        
+        dragIcon.style.display = 'none'; // 隱藏圖示
+        const sourceIndex = dragData.benchIndex;
+        const movingChar = gameState.bench[sourceIndex];
+
+        // --- 邏輯：判斷放下位置 ---
+
+        // A. 放回購買區 (可能是合成)
+        if (pos.y > gameState.spawnLineY) {
+            let targetBenchIndex = -1;
+            // 檢查放到了哪個準備格
+            for(let i=0; i<gameState.benchRects.length; i++) {
+                const br = gameState.benchRects[i];
+                if(pos.x >= br.x && pos.x <= br.x + br.w && pos.y >= br.y && pos.y <= br.y + br.h) {
+                    targetBenchIndex = i;
+                    break;
+                }
+            }
+
+            if (targetBenchIndex !== -1 && targetBenchIndex !== sourceIndex) {
+                const targetChar = gameState.bench[targetBenchIndex];
+                
+                // 【核心合成邏輯】
+                if (targetChar && targetChar.type === movingChar.type && targetChar.level === movingChar.level) {
+                    // 同類型且同等級 -> 合成升級
+                    gameState.bench[targetBenchIndex].level += 1; // 目標等級+1
+                    gameState.bench[sourceIndex] = null; // 移除來源
+                    console.log("合成成功！LV: " + gameState.bench[targetBenchIndex].level);
+                } else {
+                    // 交換位置 (可選實作，這裡先不處理)
+                }
+            }
+        } 
+        // B. 放到戰鬥場地 (放置塔)
+        else if (pos.y > gameState.mapTopOffset) {
+            // 計算對應的網格座標
+            const gs = gameState.gridSize;
+            const gridX = Math.floor(pos.x / gs);
+            const gridY = Math.floor((pos.y - gameState.mapTopOffset) / gs);
+
+            // 檢查該位置是否已經有角色 (這裡簡化為只能放格子中心)
+            const isOccupied = gameState.characters.some(c => c.gridX === gridX && c.gridY === gridY);
+
+            if (!isOccupied) {
+                // 將角色從準備區移到場上
+                gameState.characters.push({
+                    ...movingChar, // 複製數據 (type, level)
+                    gridX: gridX,
+                    gridY: gridY
+                });
+                gameState.bench[sourceIndex] = null; // 移除準備區角色
+                console.log(`放置角色 at [${gridX}, ${gridY}]`);
+            }
+        }
+
+        // 重置拖曳狀態
+        dragData.isDragging = false;
+        dragData.benchIndex = -1;
+    }
+
+    // 監聽滑鼠與觸控事件
+    canvas.addEventListener('mousedown', handlePointerDown);
+    canvas.addEventListener('mousemove', handlePointerMove);
+    window.addEventListener('mouseup', handlePointerUp); // 在視窗放開，防止在 Canvas 外放開導致狀態錯誤
+
+    canvas.addEventListener('touchstart', handlePointerDown);
+    canvas.addEventListener('touchmove', handlePointerMove);
+    canvas.addEventListener('touchend', handlePointerUp);
+
+
+    // --- 購買邏輯 ---
+    function buyCharacter() {
+        if (gameState.money < BUY_COST) {
+            console.log("金幣不足");
+            return;
+        }
+
+        // 尋找準備區空位
+        let emptyIndex = gameState.bench.findIndex(slot => slot === null);
+        
+        if (emptyIndex === -1) {
+            console.log("準備區已滿");
+            return;
+        }
+
+        // 扣錢並隨機生成角色 (同盟塔防戰特色)
+        gameState.money -= BUY_COST;
+        moneyDisplay.innerText = gameState.money;
+
+        const types = Object.keys(charTypes);
+        const randomType = types[Math.floor(Math.random() * types.length)];
+
+        gameState.bench[emptyIndex] = {
+            type: randomType,
+            level: 1 // 初始等級1 (一點)
+        };
+
+        console.log(`購買了 ${charTypes[randomType].name}，放在位置 ${emptyIndex}`);
+    }
+
+
+    // (輔助) 繪製圓角矩形
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r, fill, stroke) {
+        if (typeof r === 'undefined') r = 5;
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.lineTo(x + w - r, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + r);
+        this.lineTo(x + w, y + h - r);
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        this.lineTo(x + r, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - r);
+        this.lineTo(x, y + r);
+        this.quadraticCurveTo(x, y, x + r, y);
+        this.closePath();
+        if (fill) this.fill();
+        if (stroke) this.stroke();
+    }
+
+</script>
+
+</body>
+</html>
