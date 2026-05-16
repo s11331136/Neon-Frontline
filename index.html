@@ -3,117 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>科技塔防 - 核心戰鬥</title>
+    <title>防禦陣線：無盡星海</title>
     <style>
-        /* 基礎重置與科技感配色 (沿用第一階段) */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            user-select: none;
-            -webkit-touch-callout: none; /* 防止 iOS 長按選單 */
-        }
-        body {
-            background-color: #050505;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #fff;
-            overflow: hidden; /* 防止身體捲動 */
-        }
-
-        /* 模擬手機直立螢幕的容器 */
+        /* ================= 基礎與排版 ================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, sans-serif; user-select: none; -webkit-touch-callout: none; }
+        body { background-color: #050505; display: flex; justify-content: center; align-items: center; height: 100vh; color: #fff; overflow: hidden; }
+        
         #game-container {
-            width: 100%;
-            max-width: 400px;
-            height: 100%;
-            max-height: 800px;
-            background-color: #0d111a;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid #00f3ff;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-            display: flex;
-            flex-direction: column;
+            width: 100%; max-width: 420px; height: 100%; max-height: 850px;
+            background-color: #0a0d14; position: relative; overflow: hidden;
+            border: 2px solid #00f3ff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            display: flex; flex-direction: column;
         }
 
-        /* 畫面顯示區 (關卡/升級/商店沿用) */
-        .screen {
-            flex: 1;
-            display: none;
-            padding: 20px;
-            overflow-y: auto;
+        .screen { flex: 1; display: none; padding: 20px; overflow-y: auto; }
+        .screen.active { display: flex; flex-direction: column; }
+        
+        /* 首頁無盡模式樣式 */
+        h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin-top: 40px; margin-bottom: 40px; font-size: 26px; letter-spacing: 2px; }
+        .home-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .start-btn {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1));
+            border: 2px solid #00f3ff; color: #00f3ff; padding: 25px 50px; font-size: 22px;
+            font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            letter-spacing: 4px; transition: all 0.2s; text-shadow: 0 0 5px #00f3ff;
         }
-        .screen.active {
-            display: flex;
-            flex-direction: column;
+        .start-btn:active { transform: scale(0.95); box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
+
+        /* ================= 戰鬥畫面 UI ================= */
+        #screen-battle { padding: 0; background-color: #000; position: relative; overflow: hidden; }
+
+        #battle-header {
+            height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #00f3ff;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10;
+        }
+        .header-btn { background: transparent; border: 1px solid #00f3ff; color: #00f3ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        .header-btn.danger { border-color: #ff003c; color: #ff003c; }
+
+        /* 頂部長條血量 */
+        #base-health-container {
+            flex: 1; margin: 0 15px; height: 16px; background: #222; border: 1px solid #ff003c;
+            border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5);
+        }
+        #base-health-fill {
+            height: 100%; width: 100%; background: linear-gradient(90deg, #ff003c, #00ff00);
+            transition: width 0.2s ease;
+        }
+        #base-health-text {
+            position: absolute; width: 100%; text-align: center; top: 0; left: 0;
+            font-size: 11px; font-weight: bold; line-height: 16px; color: #fff; text-shadow: 1px 1px 2px #000;
         }
 
-        /* 科技感標題 */
-        h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin-bottom: 20px; font-size: 24px; letter-spacing: 2px; }
+        /* 無盡模式資訊列 */
+        #battle-title-bar {
+            text-align: center; color: #ff00cc; text-shadow: 0 0 5px rgba(255, 0, 204, 0.5);
+            font-weight: bold; padding: 6px 0; background: #0d111a; font-size: 15px;
+            border-bottom: 1px solid rgba(255, 0, 204, 0.2); z-index: 10; position: relative;
+        }
 
-        /* 關卡選單樣式 (沿用) */
-        .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .level-btn { background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #fff; padding: 20px 0; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
-        .level-btn:active { background: rgba(0, 243, 255, 0.3); }
-        .level-btn.locked { background: rgba(255, 255, 255, 0.05); border: 1px solid #555; color: #555; cursor: not-allowed; }
+        #game-canvas { width: 100%; flex: 1; display: block; }
 
-        /* 底部導航欄 (沿用) */
-        #bottom-nav { height: 70px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
-        .nav-btn { background: none; border: none; color: #777; font-size: 16px; cursor: pointer; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        /* ================= 能量條區 (移至卡牌上方) ================= */
+        #energy-bar-container {
+            height: 25px; background: #050505; border-top: 2px solid #00f3ff; border-bottom: 1px solid #00f3ff;
+            display: flex; align-items: center; padding: 0 10px; position: relative; z-index: 10;
+        }
+        #energy-bar-bg {
+            flex: 1; height: 12px; background: #111; border: 1px solid #00a8ff; border-radius: 6px; overflow: hidden; position: relative;
+            box-shadow: inset 0 0 5px #000;
+        }
+        #energy-bar-fill {
+            height: 100%; width: 50%; background: #00d2ff; box-shadow: 0 0 10px #00d2ff; transition: width 0.2s linear;
+        }
+        #energy-bar-text {
+            position: absolute; width: 100%; text-align: center; font-size: 10px; font-weight: bold;
+            color: #fff; text-shadow: 1px 1px 2px #000; line-height: 12px;
+        }
+        
+        /* 能量圖示 Canvas 樣式調整 */
+        .energy-icon { display: flex; align-items: center; margin-right: 8px; }
+        .energy-icon-canvas { display: block; filter: drop-shadow(0 0 3px #00d2ff); }
+
+        /* ================= 卡牌區域 ================= */
+        #card-deck-container {
+            height: 95px; background: linear-gradient(to top, #050505, #0d111a);
+            display: flex; align-items: center; padding: 0 10px; gap: 10px; z-index: 10;
+        }
+        .card {
+            flex: 1; height: 80px; background: rgba(0, 243, 255, 0.05); border: 1px solid #00f3ff;
+            border-radius: 6px; position: relative; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; transition: transform 0.1s;
+        }
+        .card.disabled { opacity: 0.4; filter: grayscale(100%); }
+        .card:active:not(.disabled) { transform: scale(0.95); background: rgba(0, 243, 255, 0.2); }
+        
+        /* 卡牌能量圖示 */
+        .card-cost { 
+            position: absolute; top: -6px; left: -6px; background: #050505; color: #00d2ff; 
+            width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; 
+            font-size: 11px; font-weight: bold; border: 1px solid #00d2ff; box-shadow: 0 0 5px rgba(0, 210, 255, 0.5);
+        }
+        .card-name { font-size: 11px; color: #00f3ff; font-weight: bold; margin-top: 4px; }
+        
+        #drag-icon { position: fixed; pointer-events: none; display: none; z-index: 100; opacity: 0.9; }
+
+        /* 底部導航欄 */
+        #bottom-nav { height: 60px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; }
+        .nav-btn { background: none; border: none; color: #777; font-size: 14px; cursor: pointer; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .nav-btn.active { color: #00f3ff; text-shadow: 0 0 8px #00f3ff; border-bottom: 3px solid #00f3ff; }
 
-        /* ========================================= */
-        /* 核心戰鬥畫面 (重點更新)           */
-        /* ========================================= */
+        /* ================= 彈出視窗系統 (Modal) ================= */
+        #modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 1000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .modal-container {
+            background-color: #0d111a; border: 2px solid #00f3ff; border-radius: 12px;
+            width: 80%; max-width: 320px; padding: 25px 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            transform: scale(0.9); opacity: 0;
+        }
+        #modal-overlay.show .modal-container { transform: scale(1); opacity: 1; }
         
-        #screen-battle {
-            padding: 0; /* 戰鬥畫面不留邊距 */
-            background-color: #000;
-            position: relative;
-            overflow: hidden;
+        .modal-header { display: flex; justify-content: space-between; width: 100%; color: #00f3ff; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px;}
+        .close-btn { color: #ff003c; cursor: pointer; font-size: 20px; padding: 0 5px;}
+        .modal-body { color: #ccc; font-size: 15px; text-align: center; margin: 10px 0; min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.5;}
+        .modal-footer { display: flex; gap: 10px; width: 100%;}
+        
+        .modal-confirm-btn, .modal-cancel-btn {
+            flex: 1; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer;
+            border: 1px solid transparent; transition: background 0.1s; text-align: center;
         }
-
-        /* 頂部戰鬥資訊欄 */
-        #battle-header {
-            height: 40px;
-            background: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid #00f3ff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 10px;
-            z-index: 5;
-        }
-        .back-btn { background: none; border: 1px solid #ff003c; color: #ff003c; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
-        #money-display { color: #ffd700; font-weight: bold; }
-
-        /* 遊戲主要繪圖區 (Canvas) */
-        /* 遊戲主要繪圖區 (Canvas) */
-        #game-canvas {
-            width: 100%;
-            /* 扣除上方 40px 的資訊欄，讓畫布完美填滿剩餘空間 */
-            height: calc(100% - 40px); 
-            display: block;
-            border: 2px solid #ff003c; /* 恢復紅色邊框 */
-            border-radius: 8px; /* 加上一點圓角 */
-            box-shadow: inset 0 0 20px rgba(255, 0, 60, 0.3); /* 增加紅色內發光特效 */
-            box-sizing: border-box; /* 確保邊框不會讓畫布變形 */
-        }
-
-        /* 拖曳時的臨時圖示 */
-        #drag-icon {
-            width: 40px;
-            height: 40px;
-            position: fixed;
-            pointer-events: none; /* 讓滑鼠事件穿透 */
-            display: none;
-            z-index: 100;
-            border-radius: 50%;
-            opacity: 0.8;
-        }
+        
+        .modal-cancel-btn { background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
+        .modal-cancel-btn:active { background: rgba(0, 243, 255, 0.2); }
+        .modal-confirm-btn { background: rgba(255, 0, 204, 0.1); border-color: #ff00cc; color: #ff00cc; box-shadow: 0 0 10px rgba(255, 0, 204, 0.2); }
+        .modal-confirm-btn:active { background: rgba(255, 0, 204, 0.2); }
 
     </style>
 </head>
@@ -122,39 +150,92 @@
 <div id="game-container">
     
     <div id="screen-levels" class="screen active">
-        <h1>作戰任務</h1>
-        <div class="level-grid" id="level-list"></div>
+        <h1>防禦陣線：無盡星海</h1>
+        <div class="home-content">
+            <button class="start-btn" onclick="enterBattle()">開始遊戲</button>
+        </div>
     </div>
 
     <div id="screen-upgrades" class="screen"><h1>科技大樓</h1></div>
 
-    <div id="screen-shop" class="screen"><h1>傳送補給</h1></div>
-
     <div id="screen-battle" class="screen">
         <div id="battle-header">
-            <button class="back-btn" onclick="exitBattle()">◄</button>
-            <div id="battle-title">SECTOR 1</div>
-            <div id="money-display">$ <span id="current-money">100</span></div>
+            <button class="header-btn danger" onclick="requestExit()">◄ 離開</button>
+            
+            <div id="base-health-container">
+                <div id="base-health-fill"></div>
+                <div id="base-health-text">10 / 10</div>
+            </div>
+
+            <button class="header-btn" onclick="requestPause()">⏸ 暫停</button>
         </div>
+        <div id="battle-title-bar">無盡模式 - 波次 <span id="current-wave">1</span></div>
         
         <canvas id="game-canvas"></canvas>
         
-        <div id="drag-icon"></div>
+        <div id="energy-bar-container">
+            <div class="energy-icon">
+                <canvas class="energy-icon-canvas" id="energy-bar-icon-canvas" width="20" height="20"></canvas>
+            </div>
+            <div id="energy-bar-bg">
+                <div id="energy-bar-fill"></div>
+                <div id="energy-bar-text">5 / 10</div>
+            </div>
+        </div>
+
+        <div id="card-deck-container">
+            <div class="card" id="card-machineGun" data-type="machineGun">
+                <div class="card-cost">3</div>
+                <canvas class="card-icon-canvas" width="40" height="40"></canvas>
+                <div class="card-name">機槍塔</div>
+            </div>
+            <div class="card" id="card-laser" data-type="laser">
+                <div class="card-cost">5</div>
+                <canvas class="card-icon-canvas" width="40" height="40"></canvas>
+                <div class="card-name">雷射塔</div>
+            </div>
+            <div class="card" id="card-ice" data-type="ice">
+                <div class="card-cost">4</div>
+                <canvas class="card-icon-canvas" width="40" height="40"></canvas>
+                <div class="card-name">冰凍塔</div>
+            </div>
+            <div class="card" id="card-sniper" data-type="sniper">
+                <div class="card-cost">6</div>
+                <canvas class="card-icon-canvas" width="40" height="40"></canvas>
+                <div class="card-name">狙擊塔</div>
+            </div>
+        </div>
+        
+        <div id="drag-icon">
+            <canvas id="drag-canvas" width="50" height="50"></canvas>
+        </div>
     </div>
 
     <div id="bottom-nav">
-        <button class="nav-btn active" onclick="switchTab('levels', this)"><span>⎈</span><span>關卡</span></button>
+        <button class="nav-btn active" onclick="switchTab('levels', this)"><span>⎈</span><span>作戰</span></button>
         <button class="nav-btn" onclick="switchTab('upgrades', this)"><span>⇪</span><span>升級</span></button>
-        <button class="nav-btn" onclick="switchTab('shop', this)"><span>◈</span><span>商店</span></button>
+    </div>
+
+    <div id="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span id="modal-title">標題</span>
+                <span class="close-btn" onclick="closeModal()">✖</span>
+            </div>
+            <div class="modal-body" id="modal-body">內容區域</div>
+            <div class="modal-footer" id="modal-footer">
+                <div class="modal-cancel-btn" id="modal-cancel-action" onclick="closeModal()">取消</div>
+                <div class="modal-confirm-btn" id="modal-confirm-action" onclick="closeModal()">確認</div>
+            </div>
+        </div>
     </div>
 
 </div>
 
 <script>
     // =========================================
-    //             UI 與 基礎邏輯
+    //             UI 與 導航邏輯
     // =========================================
-    
     function switchTab(tabName, btnElement) {
         document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
         document.getElementById('screen-' + tabName).classList.add('active');
@@ -162,570 +243,462 @@
         btnElement.classList.add('active');
     }
 
-    const totalLevels = 6;
-    const unlockedLevel = 3; 
-
-    function renderLevels() {
-        const levelList = document.getElementById('level-list');
-        levelList.innerHTML = ''; 
-        for (let i = 1; i <= totalLevels; i++) {
-            const btn = document.createElement('div');
-            btn.className = 'level-btn';
-            if (i <= unlockedLevel) {
-                btn.innerText = `SECTOR ${i}`;
-                btn.onclick = () => enterBattle(i);
-            } else {
-                btn.innerText = `LOCKED`;
-                btn.classList.add('locked');
-            }
-            levelList.appendChild(btn);
-        }
-    }
-
-    function enterBattle(levelNum) {
+    function enterBattle() {
         document.getElementById('bottom-nav').style.display = 'none';
         document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-        const battleScreen = document.getElementById('screen-battle');
-        battleScreen.classList.add('active');
-        document.getElementById('battle-title').innerText = `SECTOR ${levelNum}`;
-        
-        startGameState(levelNum);
+        document.getElementById('screen-battle').classList.add('active');
+        startGameState();
     }
 
     function exitBattle() {
         stopGameState();
+        closeModal(); 
         document.getElementById('bottom-nav').style.display = 'flex';
         document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
         document.getElementById('screen-levels').classList.add('active');
     }
 
-    // 初始化選單
-    renderLevels();
+    // =========================================
+    //             彈出視窗對話框系統
+    // =========================================
+    const modalOverlay = document.getElementById('modal-overlay');
+    const mTitle = document.getElementById('modal-title');
+    const mBody = document.getElementById('modal-body');
+    const mCancelBtn = document.getElementById('modal-cancel-action');
+    const mConfirmBtn = document.getElementById('modal-confirm-action');
 
+    function showModal(title, textHTML, confirmAction, cancelAction = null) {
+        gameState.paused = true; 
+        mTitle.innerText = title;
+        mBody.innerHTML = textHTML;
+        
+        mCancelBtn.style.display = cancelAction ? 'block' : 'none';
+        
+        if (confirmAction) {
+            mConfirmBtn.style.display = 'block';
+            mConfirmBtn.innerText = confirmAction.text;
+            mConfirmBtn.onclick = () => { closeModal(); confirmAction.action(); };
+        } else {
+            mConfirmBtn.style.display = 'none';
+        }
+        
+        if (cancelAction) {
+            mCancelBtn.innerText = cancelAction.text;
+            mCancelBtn.onclick = () => { closeModal(); cancelAction.action(); };
+        }
+        
+        modalOverlay.style.display = 'flex';
+        setTimeout(() => modalOverlay.classList.add('show'), 10);
+    }
+
+    function closeModal() {
+        modalOverlay.classList.remove('show');
+        setTimeout(() => {
+            modalOverlay.style.display = 'none';
+            if (gameState.running && gameState.hp > 0) gameState.paused = false; 
+        }, 200);
+    }
+
+    // 更新：離開視窗
+    function requestExit() {
+        showModal("離開遊戲", "指揮官，確定要撤退嗎？<br>進度將不會被保存。", 
+            { text: "是", action: exitBattle }, 
+            { text: "取消", action: closeModal }
+        );
+    }
+
+    // 更新：暫停視窗
+    function requestPause() {
+        showModal("遊戲暫停", "<span style='color:#00f3ff; font-size:18px;'>遊戲暫停中</span><br><br>指揮官，部隊待命中。", 
+            { text: "繼續", action: closeModal }, 
+            { text: "離開", action: exitBattle }
+        );
+    }
+
+    // 更新：遊戲結束視窗
+    function checkGameOver() {
+        if (gameState.hp <= 0) {
+            showModal("遊戲結束", `<span style='color:#ff003c; font-size:20px; font-weight:bold;'>防線已全面崩潰！</span><br><br>你成功防守了 <span style='color:#ffd700; font-size:18px;'>${gameState.wave}</span> 個波次。`, 
+                { text: "重新開始", action: startGameState }, 
+                { text: "退出主畫面", action: exitBattle }
+            );
+        }
+    }
 
     // =========================================
-    //             核心遊戲引擎 (Canvas)
+    //             科技感向量圖案繪製
     // =========================================
+    function drawMachineGunIcon(ctx, x, y, size) {
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x - size*0.4, y - size*0.3); ctx.lineTo(x + size*0.4, y - size*0.3); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - size*0.4, y + size*0.3); ctx.lineTo(x + size*0.4, y + size*0.3); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, y - size*0.5); ctx.lineTo(x, y + size*0.5); ctx.stroke();
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.15, 0, Math.PI*2); ctx.fill();
+    }
     
+    function drawLaserIcon(ctx, x, y, size) {
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y - size*0.5); ctx.lineTo(x, y + size*0.5); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - size*0.5, y); ctx.lineTo(x + size*0.5, y); ctx.stroke();
+        ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.stroke();
+    }
+    
+    function drawIceIcon(ctx, x, y, size) {
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+        for(let i=0; i<6; i++) {
+            ctx.beginPath(); ctx.moveTo(x, y); 
+            ctx.lineTo(x + size*0.5 * Math.cos(i*Math.PI/3), y + size*0.5 * Math.sin(i*Math.PI/3)); 
+            ctx.stroke();
+        }
+        ctx.beginPath(); ctx.rect(x - size*0.3, y - size*0.3, size*0.6, size*0.6); ctx.stroke();
+    }
+    
+    function drawSniperIcon(ctx, x, y, size) {
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, y, size*0.45, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, y - size*0.5); ctx.lineTo(x, y - size*0.1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, y + size*0.5); ctx.lineTo(x, y + size*0.1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - size*0.5, y); ctx.lineTo(x - size*0.1, y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x + size*0.5, y); ctx.lineTo(x + size*0.1, y); ctx.stroke();
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.1, 0, Math.PI*2); ctx.fill();
+    }
+
+    // 【新增】：設計獨特的能量圖示 (六角穩定核心)
+    function drawEnergyIcon(ctx, x, y, size) {
+        ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        
+        // 繪製六角形外框
+        ctx.beginPath();
+        for(let i=0; i<6; i++) {
+            const px = x + size*0.5 * Math.cos(i * Math.PI / 3 - Math.PI/2);
+            const py = y + size*0.5 * Math.sin(i * Math.PI / 3 - Math.PI/2);
+            if(i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        
+        // 繪製中心能量球 (填充)
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(x, y, size*0.2, 0, Math.PI*2);
+        ctx.fill();
+        
+        // 繪製放射線
+        ctx.lineWidth = 1;
+        for(let i=0; i<3; i++) {
+            ctx.beginPath();
+            ctx.moveTo(x - size*0.3 * Math.cos(i * Math.PI / 1.5), y - size*0.3 * Math.sin(i * Math.PI / 1.5));
+            ctx.lineTo(x + size*0.3 * Math.cos(i * Math.PI / 1.5), y + size*0.3 * Math.sin(i * Math.PI / 1.5));
+            ctx.stroke();
+        }
+    }
+
+    // =========================================
+    //             遊戲核心資料設定
+    // =========================================
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     const dragIcon = document.getElementById('drag-icon');
-    const moneyDisplay = document.getElementById('current-money');
+    const dragCanvas = document.getElementById('drag-canvas');
+    const dragCtx = dragCanvas.getContext('2d');
+    
+    const TOWER_DATA = {
+        'machineGun': { cost: 3, color: '#00f3ff', range: 100, damage: 10, fireRate: 30, type: 'projectile', bulletSpeed: 5, drawIcon: drawMachineGunIcon },
+        'laser':      { cost: 5, color: '#ff00cc', range: 120, damage: 0.5, fireRate: 1, type: 'laser', drawIcon: drawLaserIcon },
+        'ice':        { cost: 4, color: '#0066ff', range: 90, damage: 5, fireRate: 60, type: 'aoe', slowEffect: 0.5, drawIcon: drawIceIcon },
+        'sniper':     { cost: 6, color: '#ffaa00', range: 250, damage: 50, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
+    };
 
-    // 遊戲狀態與數據
     let gameState = {
-        running: false,
-        money: 0,
-        level: 0,
-        gridSize: 0, // 動態計算
-        mapTopOffset: 40, // 頂部資訊欄高度
-        spawnLineY: 0,   // 白線位置
-        buyAreaHeight: 0, // 下方購買區高度
-        characters: [],  // 場上的角色 (攻防用)
-        enemies: [],     // 敵人
-        bench: Array(4).fill(null), // 下方準備區 (按鈕兩邊的空位，假設左2右2)
-        path: [],        // 敵人路徑路點
-        gameLoopId: null,
-        spawnTimer: 0,
-        currentWave: 0
+        running: false, paused: false, 
+        hp: 10, maxHp: 10,  
+        energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0,
+        gridSize: 0, cols: 8, path: [], towers: [], enemies: [], bullets: [], lasers: [],
+        spawnTimer: 0, waveTimer: 0, spawnInterval: 120, energyTimer: 0,
+        dragState: { isDragging: false, cardType: null, startX: 0, startY: 0 }
     };
 
-    // 角色設定 (示例)
-    const charTypes = {
-        'A': { color: '#33ff33', name: '守衛', cost: 10, speed: 2 }, // 綠色
-        'B': { color: '#ff3333', name: '射手', cost: 15, speed: 1 }, // 紅色
-    };
-
-    const BUY_COST = 10; // 初始購買價格
-
-    // 設置 Canvas 大小與網格系統
     function resizeCanvas() {
-        // 獲取容器的實際寬度（最大400px）
-        const container = document.getElementById('game-container');
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-
-        // 設置 Canvas 畫布解析度（考慮 Retina 高解析度）
+        const rect = canvas.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        ctx.scale(dpr, dpr); // 縮放繪圖上下文
-
-        // 將 CSS 的 canvas 大小設置為與容器一致
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-
-        // --- 計算網格與區域 ---
-        // 戰鬥區域高度 = 總高度 - 頂部欄 - 下方購買區(約佔25%)
-        gameState.buyAreaHeight = height * 0.25;
-        const battleAreaHeight = height - gameState.mapTopOffset - gameState.buyAreaHeight;
-        
-        // 分割網格 (例如 寬度 6 格, 高度根據比例計算)
-        const cols = 6;
-        gameState.gridSize = width / cols;
-        
-        // 白線位置 (放置場景與購買區的分界)
-        gameState.spawnLineY = gameState.mapTopOffset + battleAreaHeight;
+        canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        gameState.gridSize = rect.width / gameState.cols;
+        createPath(rect.height);
     }
 
-    // --- 敵人路徑生成 ---
-    function createPath() {
+    function createPath(mapHeight) {
         const gs = gameState.gridSize;
-        const top = gameState.mapTopOffset;
-        const startX = 0; // 左側起點
-        const startY = top + gs * 2; // 第三格
-        
         gameState.path = [
-            {x: startX - gs, y: startY}, // 起點 (螢幕外)
-            {x: gs * 4, y: startY},      // 右走
-            {x: gs * 4, y: startY + gs * 3}, // 下走
-            {x: gs * 6 + gs, y: startY + gs * 3}, // 右走 (出口)
+            { x: gs * 1.5, y: -gs }, { x: gs * 1.5, y: gs * 2.5 },
+            { x: gs * 6.5, y: gs * 2.5 }, { x: gs * 6.5, y: gs * 6.5 },
+            { x: gs * 1.5, y: gs * 6.5 }, { x: gs * 1.5, y: gs * 10.5 },
+            { x: gs * 5.5, y: gs * 10.5 }, { x: gs * 5.5, y: mapHeight + gs }
         ];
     }
 
+    let lastEvent = null;
+    let reqId;
 
-    // =========================================
-    //             遊戲迴圈 (繪製與更新)
-    // =========================================
-    
     function gameStateLoop(timestamp) {
         if (!gameState.running) return;
-
-        update(timestamp);
+        if (!gameState.paused) update();
         draw();
-
-        gameState.gameLoopId = requestAnimationFrame(gameStateLoop);
+        reqId = requestAnimationFrame(gameStateLoop);
     }
 
-    function update(dt) {
-        // 1. 敵人生成邏輯
-        gameState.spawnTimer += 1;
-        if (gameState.spawnTimer > 120) { // 每兩秒一隻
-            spawnEnemy();
-            gameState.spawnTimer = 0;
+    function update() {
+        gameState.energyTimer++;
+        if(gameState.energyTimer >= 60) { 
+            if(gameState.energy < gameState.maxEnergy) { 
+                gameState.energy++; 
+                updateUIBars(); 
+            }
+            gameState.energyTimer = 0;
         }
 
-        // 2. 敵人移動與血量檢查
+        gameState.spawnTimer++;
+        if (gameState.spawnTimer > gameState.spawnInterval) { spawnEnemy(); gameState.spawnTimer = 0; }
+
+        gameState.lasers = []; 
+        gameState.towers.forEach(tower => {
+            tower.cooldown--;
+            if (tower.cooldown <= 0) {
+                const target = findTarget(tower);
+                if (target) { fireWeapon(tower, target); tower.cooldown = tower.card.fireRate; }
+            }
+        });
+
+        updateBullets();
+        updateEnemies();
+    }
+
+    function updateBullets() {
+        for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+            let b = gameState.bullets[i];
+            const dx = b.target.x - b.x; const dy = b.target.y - b.y; const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < b.speed) {
+                b.target.hp -= b.damage; if(b.isIce) b.target.speedMod = 0.5;
+                gameState.bullets.splice(i, 1);
+            } else { b.x += (dx/dist) * b.speed; b.y += (dy/dist) * b.speed; }
+        }
+    }
+
+    function updateEnemies() {
         for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-            const enemy = gameState.enemies[i];
-            
-            // 沿著路徑點移動
-            const target = gameState.path[enemy.pathIndex];
-            if (target) {
-                const dx = target.x - enemy.x;
-                const dy = target.y - enemy.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                
-                if (dist < 2) {
-                    enemy.pathIndex++; // 到達節點，下一個
-                } else {
-                    enemy.x += (dx/dist) * 1; // 移動速度
-                    enemy.y += (dy/dist) * 1;
-                }
-            } else {
-                // 到達終點
-                gameState.enemies.splice(i, 1);
-                // 這裡可以扣玩家血量
+            let enemy = gameState.enemies[i];
+            if (enemy.hp <= 0) { gameState.enemies.splice(i, 1); continue; }
+            if(enemy.speedMod < 1.0) enemy.speedMod += 0.005; if(enemy.speedMod > 1.0) enemy.speedMod = 1.0;
+            const targetPos = gameState.path[enemy.pathIndex];
+            if (targetPos) {
+                const dx = targetPos.x - enemy.x; const dy = targetPos.y - enemy.y; const dist = Math.sqrt(dx*dx + dy*dy);
+                const actualSpeed = enemy.baseSpeed * enemy.speedMod;
+                if (dist < actualSpeed * 1.5) enemy.pathIndex++; else { enemy.x += (dx/dist) * actualSpeed; enemy.y += (dy/dist) * actualSpeed; }
+            } else { 
+                gameState.enemies.splice(i, 1); 
+                takeDamage(); 
             }
         }
     }
 
     function draw() {
-        // 清空畫面
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // --- 繪製路徑 (背景) ---
-        drawPath();
-
-        // --- 繪製隱形格線 (除錯用，可關閉) ---
-        // drawGrid(); // 註解這行就不會顯示格線
-
-        // --- 繪製白線 (分界線) ---
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(0, gameState.spawnLineY);
-        ctx.lineTo(canvas.width, gameState.spawnLineY);
-        ctx.stroke();
-
-        // --- 繪製敵人 ---
-        gameState.enemies.forEach(enemy => {
-            ctx.fillStyle = '#ff00cc'; // 敵人顏色
-            ctx.beginPath();
-            ctx.arc(enemy.x, enemy.y, 8, 0, Math.PI * 2);
-            ctx.fill();
-        });
-
-        // --- 繪製場上角色 ---
-        gameState.characters.forEach(char => {
-            const centerX = char.gridX * gameState.gridSize + gameState.gridSize/2;
-            const centerY = char.gridY * gameState.gridSize + gameState.gridSize/2 + gameState.mapTopOffset;
-            
-            drawUnit(centerX, centerY, char.type, char.level);
-        });
-
-        // --- 繪製下方購買區 UI ---
-        drawBuyArea();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawGrid(); drawPath(); drawDragRange();
+        gameState.towers.forEach(tower => drawTowerObj(tower));
+        gameState.enemies.forEach(enemy => drawEnemyObj(enemy));
+        drawLasersAndBullets();
     }
 
-    // 輔助繪製：單位
-    function drawUnit(x, y, type, level) {
-        const info = charTypes[type];
-        const gs = gameState.gridSize;
-
-        // 圓形角色
-        ctx.fillStyle = info.color;
-        ctx.beginPath();
-        ctx.arc(x, y, gs/2 - 5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // 顯示等級 (幾點) - 同盟塔防戰特色
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 12px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        let levelStr = "";
-        if(level === 1) levelStr = "●";
-        if(level === 2) levelStr = "●●";
-        if(level === 3) levelStr = "◆"; // 更高等級用不同符號
-        ctx.fillText(levelStr, x, y);
+    function drawTowerObj(tower) {
+        const gs = gameState.gridSize; const cx = tower.x; const cy = tower.y;
+        ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(cx, cy, gs * 0.45, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = tower.card.color; ctx.lineWidth = 2; ctx.stroke();
+        tower.card.drawIcon(ctx, cx, cy, gs * 0.5); 
     }
 
-    // 下方購買區 UI 詳細繪製
-    // 下方購買區 UI 詳細繪製
-    function drawBuyArea() {
-        const gs = gameState.gridSize;
-        const width = canvas.width / (window.devicePixelRatio || 1); 
-        const bottomY = gameState.spawnLineY;
-        const buyAreaHeight = gameState.buyAreaHeight;
+    function drawEnemyObj(enemy) {
+        ctx.fillStyle = enemy.speedMod < 1.0 ? '#0066ff' : '#ff00cc'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ff0000'; ctx.fillRect(enemy.x - 10, enemy.y - 15, 20, 3);
+        ctx.fillStyle = '#00ff00'; ctx.fillRect(enemy.x - 10, enemy.y - 15, 20 * (enemy.hp / enemy.maxHp), 3);
+    }
 
-        // 1. 背景
-        ctx.fillStyle = '#0a0d14';
-        ctx.fillRect(0, bottomY, width, buyAreaHeight);
-
-        // 2. 正中間購買按鈕
-        const btnW = gs * 2;
-        const btnH = buyAreaHeight * 0.6;
-        const btnX = width/2 - btnW/2;
-        const btnY = bottomY + buyAreaHeight/2 - btnH/2;
-        gameState.buyBtnRect = {x: btnX, y: btnY, w: btnW, h: btnH}; 
-
-        ctx.fillStyle = (gameState.money >= BUY_COST) ? '#00f3ff' : '#555';
-        ctx.beginPath();
-        // 【修正這裡】：改用原生的 ctx.roundRect 語法，防止畫布當機
-        if (ctx.roundRect) {
-            ctx.roundRect(btnX, btnY, btnW, btnH, 10);
-        } else {
-            ctx.rect(btnX, btnY, btnW, btnH); // 舊版瀏覽器相容寫法
-        }
-        ctx.fill();
-        
-        // 繪製按鈕文字
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 16px Arial';
-        ctx.textAlign = 'center'; // 確保文字對齊置中
-        ctx.textBaseline = 'middle';
-        ctx.fillText('購買', width/2, btnY + btnH/2 - 8);
-        ctx.font = '12px Arial';
-        ctx.fillText(`$ ${BUY_COST}`, width/2, btnY + btnH/2 + 8);
-
-        // 3. 繪製兩邊的準備區格位 (左2右2)
-        gameState.benchRects = []; 
-        for(let i = 0; i < 4; i++) {
-            let posX;
-            if(i < 2) { // 左邊兩格
-                posX = gs * 0.5 + i * (gs + 5);
-            } else { // 右邊兩格
-                posX = width - gs * 2.5 + (i-2) * (gs + 5);
-            }
-            const posY = bottomY + buyAreaHeight/2 - gs/2;
-            const rect = {x: posX, y: posY, w: gs, h: gs};
-            gameState.benchRects.push(rect);
-
-            // 繪製格子邊框 (虛線科技感)
-            ctx.strokeStyle = 'rgba(0, 243, 255, 0.3)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([5, 3]);
-            ctx.strokeRect(posX, posY, gs, gs);
-            ctx.setLineDash([]);
-
-            // 繪製格子內的角色
-            if(gameState.bench[i]) {
-                const char = gameState.bench[i];
-                drawUnit(posX + gs/2, posY + gs/2, char.type, char.level);
+    function drawDragRange() {
+        if (gameState.dragState.isDragging && gameState.dragState.cardType) {
+            const pos = getMousePos(lastEvent);
+            if(pos) {
+                const cardInfo = TOWER_DATA[gameState.dragState.cardType];
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'; ctx.beginPath(); ctx.arc(pos.x, pos.y, cardInfo.range, 0, Math.PI * 2); ctx.fill();
             }
         }
     }
 
-    // (輔助) 繪製路徑
-    function drawPath() {
-        if(gameState.path.length < 2) return;
-        ctx.strokeStyle = 'rgba(255, 0, 204, 0.15)'; // 深粉色路徑
-        ctx.lineWidth = gameState.gridSize * 0.8;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.beginPath();
-        ctx.moveTo(gameState.path[1].x, gameState.path[1].y); // 從第一個實際路點開始
-        for(let i=2; i<gameState.path.length; i++) {
-            ctx.lineTo(gameState.path[i].x, gameState.path[i].y);
-        }
-        ctx.stroke();
+    function drawLasersAndBullets() {
+        ctx.lineWidth = 3;
+        gameState.lasers.forEach(l => { ctx.strokeStyle = l.color; ctx.beginPath(); ctx.moveTo(l.startX, l.startY); ctx.lineTo(l.endX, l.endY); ctx.stroke(); });
+        gameState.bullets.forEach(b => { ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(b.x, b.y, b.isIce ? 4 : 3, 0, Math.PI * 2); ctx.fill(); });
     }
 
-    // (輔助) 繪製格線 (除錯用)
-    function drawGrid() {
-        const gs = gameState.gridSize;
-        const width = canvas.width;
-        const height = gameState.spawnLineY; // 只畫到白線
-
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 1;
-        // 縱線
-        for (let x = 0; x <= width; x += gs) {
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
-        }
-        // 橫線
-        for (let y = gameState.mapTopOffset; y <= height; y += gs) {
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
-        }
-    }
-
-    // (輔助) 敵人生成
+    // =========================================
+    //             系統與畫布計算功能
+    // =========================================
     function spawnEnemy() {
-        if(gameState.path.length === 0) return;
-        gameState.enemies.push({
-            x: gameState.path[0].x,
-            y: gameState.path[0].y,
-            pathIndex: 1,
-            hp: 10
+        gameState.enemiesSpawned++;
+        if (gameState.enemiesSpawned % 10 === 0) { gameState.wave++; document.getElementById('current-wave').innerText = gameState.wave; gameState.spawnInterval = Math.max(30, gameState.spawnInterval - 10); }
+        const hp = 20 + (gameState.wave - 1) * 15; const speed = 1.0 + (gameState.wave - 1) * 0.1;
+        gameState.enemies.push({ x: gameState.path[0].x, y: gameState.path[0].y, pathIndex: 1, hp: hp, maxHp: hp, baseSpeed: speed, speedMod: 1.0 });
+    }
+
+    function fireWeapon(tower, target) {
+        if (tower.card.type === 'projectile' || tower.card.type === 'aoe') { gameState.bullets.push({ x: tower.x, y: tower.y, target: target, speed: tower.card.bulletSpeed || 5, damage: tower.card.damage, color: tower.card.color, isIce: tower.card.type === 'aoe' }); } 
+        else if (tower.card.type === 'laser') { target.hp -= tower.card.damage; gameState.lasers.push({ startX: tower.x, startY: tower.y, endX: target.x, endY: target.y, color: tower.card.color }); }
+    }
+
+    function getMousePos(e) { if(!e) return null; const rect = canvas.getBoundingClientRect(); const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; return { x: cx - rect.left, y: cy - rect.top, rawX: cx, rawY: cy }; }
+    function findTarget(t) { for (let e of gameState.enemies) { const d = Math.hypot(e.x - t.x, e.y - t.y); if (d <= t.card.range) return e; } return null; }
+    
+    function takeDamage() { 
+        gameState.hp -= 1; 
+        updateUIBars(); 
+        if(gameState.hp <= 0) checkGameOver(); 
+    }
+    
+    // 更新血條與能量條 UI
+    function updateUIBars() { 
+        // 血條更新
+        const hpPercent = Math.max(0, (gameState.hp / gameState.maxHp) * 100);
+        document.getElementById('base-health-fill').style.width = hpPercent + '%';
+        document.getElementById('base-health-text').innerText = `${Math.max(0, gameState.hp)} / ${gameState.maxHp}`;
+        
+        // 能量條更新
+        const enPercent = (gameState.energy / gameState.maxEnergy) * 100;
+        document.getElementById('energy-bar-fill').style.width = enPercent + '%';
+        document.getElementById('energy-bar-text').innerText = `${Math.floor(gameState.energy)} / ${gameState.maxEnergy}`;
+
+        // 卡牌可用性更新
+        document.querySelectorAll('.card').forEach(cardEl => { 
+            const type = cardEl.getAttribute('data-type'); 
+            if (gameState.energy >= TOWER_DATA[type].cost) cardEl.classList.remove('disabled'); 
+            else cardEl.classList.add('disabled'); 
+        });
+    }
+    
+    function drawGrid() { 
+        const gs = gameState.gridSize;
+        if (gs <= 0) return;
+        ctx.strokeStyle = 'rgba(0, 243, 255, 0.08)'; ctx.lineWidth = 1; 
+        const width = canvas.width / (window.devicePixelRatio || 1); 
+        const height = canvas.height / (window.devicePixelRatio || 1); 
+        ctx.beginPath(); 
+        for (let x = 0; x <= width; x += gs) { ctx.moveTo(x, 0); ctx.lineTo(x, height); } 
+        for (let y = 0; y <= height; y += gs) { ctx.moveTo(0, y); ctx.lineTo(width, y); } 
+        ctx.stroke(); 
+    }
+    
+    function drawPath() { if(gameState.path.length < 2) return; ctx.strokeStyle = 'rgba(255, 0, 204, 0.15)'; ctx.lineWidth = gameState.gridSize * 0.8; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(gameState.path[0].x, gameState.path[0].y); for(let i=1; i<gameState.path.length; i++) ctx.lineTo(gameState.path[i].x, gameState.path[i].y); ctx.stroke(); }
+
+    function updateCardsUI() {
+        document.getElementById('current-energy').innerText = gameState.energy;
+        document.querySelectorAll('.card').forEach(cardEl => { const type = cardEl.getAttribute('data-type'); if (gameState.energy >= TOWER_DATA[type].cost) cardEl.classList.remove('disabled'); else cardEl.classList.add('disabled'); });
+    }
+
+    function initCardIcons() {
+        document.querySelectorAll('.card').forEach(cardEl => {
+            const type = cardEl.getAttribute('data-type'); const tower = TOWER_DATA[type];
+            const cardCanvas = cardEl.querySelector('.card-icon-canvas'); const cardCtx = cardCanvas.getContext('2d');
+            cardCtx.clearRect(0, 0, 40, 40); cardCtx.fillStyle = '#1a1d2e'; cardCtx.beginPath(); cardCtx.arc(20, 20, 18, 0, Math.PI*2); cardCtx.fill();
+            cardCtx.strokeStyle = tower.color; cardCtx.lineWidth = 1.5; cardCtx.stroke();
+            cardCtx.strokeStyle = '#fff'; cardCtx.fillStyle = '#fff'; tower.drawIcon(cardCtx, 20, 20, 20); 
         });
     }
 
+    // 【新增】：初始化時繪製能量條上的圖示
+    function initEnergyIcon() {
+        const energyCanvas = document.getElementById('energy-bar-icon-canvas');
+        const energyCtx = energyCanvas.getContext('2d');
+        energyCtx.clearRect(0, 0, 20, 20);
+        drawEnergyIcon(energyCtx, 10, 10, 18);
+    }
 
     // =========================================
-    //             開始與停止遊戲
+    //             拖曳互動系統
     // =========================================
+    document.querySelectorAll('.card').forEach(cardEl => { cardEl.addEventListener('mousedown', (e) => startDrag(e, cardEl)); cardEl.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(e, cardEl); }, {passive: false}); });
     
-    function gameStateInit() {
-        resizeCanvas();
-        createPath();
-        gameState.money = 50; // 初始金錢
-        moneyDisplay.innerText = gameState.money;
-        gameState.characters = [];
-        gameState.enemies = [];
-        gameState.bench = Array(4).fill(null);
-        gameState.spawnTimer = 0;
+    function startDrag(e, cardEl) { 
+        if(cardEl.classList.contains('disabled') || !gameState.running || gameState.paused) return; 
+        gameState.dragState.isDragging = true; 
+        gameState.dragState.cardType = cardEl.getAttribute('data-type'); 
+        
+        // 準備拖曳畫布 (畫出防禦塔圖案)
+        dragIcon.style.display = 'block'; 
+        dragCtx.clearRect(0, 0, 50, 50);
+        const tower = TOWER_DATA[gameState.dragState.cardType];
+        dragCtx.fillStyle = '#222'; dragCtx.beginPath(); dragCtx.arc(25, 25, 20, 0, Math.PI * 2); dragCtx.fill();
+        dragCtx.strokeStyle = tower.color; dragCtx.lineWidth = 2; dragCtx.stroke();
+        tower.drawIcon(dragCtx, 25, 25, 22);
+
+        let startX = e.touches ? e.touches[0].clientX : e.clientX; 
+        let startY = e.touches ? e.touches[0].clientY : e.clientY; 
+        updateDragIconPos(startX, startY); 
+        lastEvent = e; 
     }
-
-    function startGameState(level) {
-        gameState.running = true;
-        gameState.level = level;
-        gameStateInit();
-        gameState.gameLoopId = requestAnimationFrame(gameStateLoop);
-    }
-
-    function stopGameState() {
-        gameState.running = false;
-        cancelAnimationFrame(gameStateLoopId);
-    }
-
-    window.addEventListener('resize', () => { if(gameState.running) resizeCanvas(); });
-
-
-    // =========================================
-    //           觸控/滑鼠 互動邏輯 (合成核心)
-    // =========================================
     
-    let dragData = {
-        isDragging: false,
-        benchIndex: -1,
-        startX: 0,
-        startY: 0
-    };
-
-    // 獲取相對 Canvas 的座標
-    function getMousePos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-            x: clientX - rect.left,
-            y: clientY - rect.top,
-            rawX: clientX, // 螢幕絕對座標，供 DragIcon 用
-            rawY: clientY
-        };
-    }
-
-    // --- 點擊/觸摸開始 ---
-    function handlePointerDown(e) {
-        if (!gameState.running) return;
-        const pos = getMousePos(e);
-        
-        // 1. 檢查是否點擊 "購買按鈕"
-        const r = gameState.buyBtnRect;
-        if (pos.x >= r.x && pos.x <= r.x + r.w && pos.y >= r.y && pos.y <= r.y + r.h) {
-            buyCharacter();
-            return;
-        }
-
-        // 2. 檢查是否點擊 "準備區格子" (準備拖曳)
-        for(let i=0; i<gameState.benchRects.length; i++) {
-            const br = gameState.benchRects[i];
-            if(gameState.bench[i] && pos.x >= br.x && pos.x <= br.x + br.w && pos.y >= br.y && pos.y <= br.y + br.h) {
-                // 開始拖曳
-                dragData.isDragging = true;
-                dragData.benchIndex = i;
-                
-                // 顯示拖曳圖示
-                const char = gameState.bench[i];
-                dragIcon.style.display = 'block';
-                dragIcon.style.background = charTypes[char.type].color;
-                dragIcon.style.left = pos.rawX - 20 + 'px'; // 居中
-                dragIcon.style.top = pos.rawY - 20 + 'px';
-                break;
-            }
-        }
-    }
-
-    // --- 拖曳中 ---
-    function handlePointerMove(e) {
-        if (!gameState.running || !dragData.isDragging) return;
-        e.preventDefault(); // 防止手機頁面捲動
-        const pos = getMousePos(e);
-
-        // 更新拖曳圖示位置
-        dragIcon.style.left = pos.rawX - 20 + 'px';
-        dragIcon.style.top = pos.rawY - 20 + 'px';
-    }
-
-    // --- 點擊/觸摸結束 (放開) ---
-    function handlePointerUp(e) {
-        if (!gameState.running || !dragData.isDragging) return;
-        const pos = getMousePos(e);
-        
-        dragIcon.style.display = 'none'; // 隱藏圖示
-        const sourceIndex = dragData.benchIndex;
-        const movingChar = gameState.bench[sourceIndex];
-
-        // --- 邏輯：判斷放下位置 ---
-
-        // A. 放回購買區 (可能是合成)
-        if (pos.y > gameState.spawnLineY) {
-            let targetBenchIndex = -1;
-            // 檢查放到了哪個準備格
-            for(let i=0; i<gameState.benchRects.length; i++) {
-                const br = gameState.benchRects[i];
-                if(pos.x >= br.x && pos.x <= br.x + br.w && pos.y >= br.y && pos.y <= br.y + br.h) {
-                    targetBenchIndex = i;
-                    break;
-                }
-            }
-
-            if (targetBenchIndex !== -1 && targetBenchIndex !== sourceIndex) {
-                const targetChar = gameState.bench[targetBenchIndex];
-                
-                // 【核心合成邏輯】
-                if (targetChar && targetChar.type === movingChar.type && targetChar.level === movingChar.level) {
-                    // 同類型且同等級 -> 合成升級
-                    gameState.bench[targetBenchIndex].level += 1; // 目標等級+1
-                    gameState.bench[sourceIndex] = null; // 移除來源
-                    console.log("合成成功！LV: " + gameState.bench[targetBenchIndex].level);
-                } else {
-                    // 交換位置 (可選實作，這裡先不處理)
-                }
-            }
+    function handleMove(e) { if (!gameState.dragState.isDragging) return; lastEvent = e; const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; updateDragIconPos(cx, cy); }
+    function updateDragIconPos(x, y) { dragIcon.style.left = (x - 25) + 'px'; dragIcon.style.top = (y - 25) + 'px'; }
+    function handleUp(e) { 
+        if (!gameState.dragState.isDragging) return; 
+        dragIcon.style.display = 'none'; 
+        const pos = getMousePos(lastEvent); 
+        const type = gameState.dragState.cardType; 
+        const cardData = TOWER_DATA[type]; 
+        if (pos && pos.y < canvas.getBoundingClientRect().height && pos.y > 0) { 
+            const gs = gameState.gridSize; const gx = Math.floor(pos.x / gs); const gy = Math.floor(pos.y / gs); 
+            const isOccupied = gameState.towers.some(t => Math.floor(t.x/gs) === gx && Math.floor(t.y/gs) === gy); 
+            if (!isOccupied && gameState.energy >= cardData.cost) { 
+                gameState.energy -= cardData.cost; updateUIBars(); 
+                gameState.towers.push({ x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0 }); 
+            } 
         } 
-        // B. 放到戰鬥場地 (放置塔)
-        else if (pos.y > gameState.mapTopOffset) {
-            // 計算對應的網格座標
-            const gs = gameState.gridSize;
-            const gridX = Math.floor(pos.x / gs);
-            const gridY = Math.floor((pos.y - gameState.mapTopOffset) / gs);
-
-            // 檢查該位置是否已經有角色 (這裡簡化為只能放格子中心)
-            const isOccupied = gameState.characters.some(c => c.gridX === gridX && c.gridY === gridY);
-
-            if (!isOccupied) {
-                // 將角色從準備區移到場上
-                gameState.characters.push({
-                    ...movingChar, // 複製數據 (type, level)
-                    gridX: gridX,
-                    gridY: gridY
-                });
-                gameState.bench[sourceIndex] = null; // 移除準備區角色
-                console.log(`放置角色 at [${gridX}, ${gridY}]`);
-            }
-        }
-
-        // 重置拖曳狀態
-        dragData.isDragging = false;
-        dragData.benchIndex = -1;
+        gameState.dragState.isDragging = false; 
+        gameState.dragState.cardType = null; 
     }
+    
+    window.addEventListener('mousemove', handleMove); 
+    window.addEventListener('mouseup', handleUp); 
+    window.addEventListener('touchmove', handleMove, {passive: false}); 
+    window.addEventListener('touchend', handleUp);
 
-    // 監聽滑鼠與觸控事件
-    canvas.addEventListener('mousedown', handlePointerDown);
-    canvas.addEventListener('mousemove', handlePointerMove);
-    window.addEventListener('mouseup', handlePointerUp); // 在視窗放開，防止在 Canvas 外放開導致狀態錯誤
-
-    canvas.addEventListener('touchstart', handlePointerDown);
-    canvas.addEventListener('touchmove', handlePointerMove);
-    canvas.addEventListener('touchend', handlePointerUp);
-
-
-    // --- 購買邏輯 ---
-    function buyCharacter() {
-        if (gameState.money < BUY_COST) {
-            console.log("金幣不足");
-            return;
-        }
-
-        // 尋找準備區空位
-        let emptyIndex = gameState.bench.findIndex(slot => slot === null);
-        
-        if (emptyIndex === -1) {
-            console.log("準備區已滿");
-            return;
-        }
-
-        // 扣錢並隨機生成角色 (同盟塔防戰特色)
-        gameState.money -= BUY_COST;
-        moneyDisplay.innerText = gameState.money;
-
-        const types = Object.keys(charTypes);
-        const randomType = types[Math.floor(Math.random() * types.length)];
-
-        gameState.bench[emptyIndex] = {
-            type: randomType,
-            level: 1 // 初始等級1 (一點)
-        };
-
-        console.log(`購買了 ${charTypes[randomType].name}，放在位置 ${emptyIndex}`);
+    function startGameState() { 
+        setTimeout(() => {
+            resizeCanvas(); 
+            initCardIcons(); 
+            initEnergyIcon(); // 【新增】初始化時繪製能量圖示
+            gameState.running = true; 
+            gameState.paused = false; 
+            gameState.hp = gameState.maxHp; 
+            gameState.energy = 5; 
+            gameState.wave = 1; 
+            gameState.towers = []; 
+            gameState.enemies = []; 
+            gameState.bullets = []; 
+            gameState.lasers = []; 
+            gameState.spawnTimer = 0; 
+            gameState.waveTimer = 0; 
+            gameState.enemiesSpawned = 0; 
+            
+            updateUIBars(); 
+            document.getElementById('current-wave').innerText = gameState.wave; 
+            
+            cancelAnimationFrame(reqId); 
+            reqId = requestAnimationFrame(gameStateLoop); 
+        }, 50);
     }
-
-
-    // (輔助) 繪製圓角矩形
-    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r, fill, stroke) {
-        if (typeof r === 'undefined') r = 5;
-        this.beginPath();
-        this.moveTo(x + r, y);
-        this.lineTo(x + w - r, y);
-        this.quadraticCurveTo(x + w, y, x + w, y + r);
-        this.lineTo(x + w, y + h - r);
-        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        this.lineTo(x + r, y + h);
-        this.quadraticCurveTo(x, y + h, x, y + h - r);
-        this.lineTo(x, y + r);
-        this.quadraticCurveTo(x, y, x + r, y);
-        this.closePath();
-        if (fill) this.fill();
-        if (stroke) this.stroke();
-    }
+    
+    function stopGameState() { gameState.running = false; cancelAnimationFrame(reqId); }
+    window.addEventListener('resize', () => { if(gameState.running) resizeCanvas(); });
+    // 【新增】：畫面載入時繪製所有圖示
+    window.addEventListener('load', () => { initCardIcons(); initEnergyIcon(); }); 
 
 </script>
-
 </body>
 </html>
