@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>防禦陣線：無盡星海</title>
+    <title>防禦陣線：無盡星海 - 帳號系統版</title>
     <style>
         /* 基礎與排版 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, sans-serif; user-select: none; -webkit-touch-callout: none; }
@@ -12,11 +12,47 @@
         .screen { flex: 1; display: none; padding: 20px; overflow-y: auto; }
         .screen.active { display: flex; flex-direction: column; }
         
-        /* 首頁樣式 */
-        h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin: 40px 0; font-size: 26px; letter-spacing: 2px; }
+        /* 標題樣式 */
+        h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin: 30px 0; font-size: 26px; letter-spacing: 2px; }
+        
+        /* ================= 登入系統 UI ================= */
+        .login-box { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px; }
+        .login-title { color: #ff00cc; font-size: 20px; font-weight: bold; text-shadow: 0 0 8px #ff00cc; }
+        .login-input { width: 100%; max-width: 250px; padding: 12px 15px; border-radius: 8px; border: 2px solid #00f3ff; background: rgba(0, 243, 255, 0.05); color: #fff; font-size: 16px; text-align: center; outline: none; transition: 0.2s; }
+        .login-input:focus { background: rgba(0, 243, 255, 0.15); box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
+        .login-input::placeholder { color: #555; }
+        .login-hint { font-size: 12px; color: #777; text-align: center; line-height: 1.5; }
+        
+        .user-info-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0, 243, 255, 0.1); padding: 10px 15px; border-radius: 8px; border: 1px solid #00f3ff; margin-bottom: 20px; }
+        .commander-name { color: #00f3ff; font-weight: bold; font-size: 14px; }
+        .logout-btn { background: rgba(ff, 0, 60, 0.2); border: 1px solid #ff003c; color: #ff003c; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.1s; }
+        .logout-btn:active { background: rgba(ff, 0, 60, 0.4); }
+
+        /* 首頁與按鈕 */
         .home-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .start-btn { background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1)); border: 2px solid #00f3ff; color: #00f3ff; padding: 25px 50px; font-size: 22px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); letter-spacing: 4px; transition: 0.2s; text-shadow: 0 0 5px #00f3ff; }
         .start-btn:active { transform: scale(0.95); box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
+
+        /* ================= 升級畫面 UI (科技研究所) ================= */
+        .upgrade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(0,243,255,0.4); padding-bottom: 15px; }
+        .tech-points { color: #ffd700; font-size: 16px; font-weight: bold; text-shadow: 0 0 8px rgba(255,215,0,0.6); background: rgba(255,215,0,0.1); padding: 6px 12px; border-radius: 20px; border: 1px solid #ffd700; }
+        .upgrade-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; padding-right: 5px; }
+        .upgrade-card { background: linear-gradient(90deg, rgba(0, 243, 255, 0.05), rgba(0,0,0,0)); border: 1px solid #00f3ff; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; }
+        
+        .upgrade-icon-wrapper { width: 55px; height: 55px; background: #0a0d14; border-radius: 8px; border: 1px solid rgba(0,243,255,0.5); display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: inset 0 0 8px rgba(0,243,255,0.2); }
+        .upgrade-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        .upgrade-name { color: #00f3ff; font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+        .upgrade-lvl { font-size: 12px; color: #fff; background: #ff00cc; padding: 2px 6px; border-radius: 4px; box-shadow: 0 0 5px #ff00cc; }
+        .upgrade-stats { color: #aaa; font-size: 12px; line-height: 1.5; }
+        .upgrade-stats .highlight { color: #ffd700; font-weight: bold; letter-spacing: 2px;}
+        .upgrade-stats .val { color: #fff; font-weight: bold;}
+        
+        .upgrade-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; width: 90px; }
+        .btn-upg { background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff; border-radius: 4px; padding: 7px 0; font-size: 13px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.1s; }
+        .btn-upg:active { transform: scale(0.95); background: rgba(0, 243, 255, 0.3); }
+        .btn-break { background: rgba(255, 0, 204, 0.1); border: 1px solid #ff00cc; color: #ff00cc; border-radius: 4px; padding: 7px 0; font-size: 13px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.1s; }
+        .btn-break:active { transform: scale(0.95); background: rgba(255, 0, 204, 0.3); }
+        .btn-disabled { opacity: 0.3; pointer-events: none; filter: grayscale(100%); }
 
         /* 戰鬥畫面 UI */
         #screen-battle { padding: 0; background-color: #000; position: relative; overflow: hidden; }
@@ -24,7 +60,6 @@
         .header-btn { background: transparent; border: 1px solid #00f3ff; color: #00f3ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
         .header-btn.danger { border-color: #ff003c; color: #ff003c; }
 
-        /* 頂部長條血量 */
         #base-health-container { flex: 1; margin: 0 15px; height: 16px; background: #222; border: 1px solid #ff003c; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5); }
         #base-health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #ff003c, #00ff00); transition: width 0.2s ease; }
         #base-health-text { position: absolute; width: 100%; text-align: center; top: 0; left: 0; font-size: 11px; font-weight: bold; line-height: 16px; color: #fff; text-shadow: 1px 1px 2px #000; }
@@ -49,7 +84,7 @@
         #drag-icon { position: fixed; pointer-events: none; display: none; z-index: 100; opacity: 0.9; }
 
         /* 底部導航 */
-        #bottom-nav { height: 60px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; }
+        #bottom-nav { height: 60px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; display: none; }
         .nav-btn { background: none; border: none; color: #777; font-size: 14px; cursor: pointer; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .nav-btn.active { color: #00f3ff; text-shadow: 0 0 8px #00f3ff; border-bottom: 3px solid #00f3ff; }
 
@@ -59,13 +94,12 @@
         #modal-overlay.show .modal-container { transform: scale(1); opacity: 1; }
         .modal-header { display: flex; justify-content: space-between; width: 100%; color: #00f3ff; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px;}
         .close-btn { color: #ff003c; cursor: pointer; font-size: 20px; padding: 0 5px;}
-        .modal-body { color: #ccc; font-size: 15px; text-align: center; margin: 5px 0; min-height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        .modal-body { color: #ccc; font-size: 15px; text-align: center; margin: 5px 0; min-height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; line-height: 1.5; }
         .modal-footer { display: flex; gap: 10px; width: 100%;}
         .modal-confirm-btn, .modal-cancel-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.1s; }
         .modal-cancel-btn { background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
         .modal-confirm-btn { background: rgba(255, 0, 204, 0.1); border-color: #ff00cc; color: #ff00cc; box-shadow: 0 0 10px rgba(255, 0, 204, 0.2); }
 
-        /* Buff 卡片 */
         .buff-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .buff-card { background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(0, 243, 255, 0.02)); border: 1px solid #00a8ff; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .buff-card:hover, .buff-card:active { background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); transform: translateY(-2px); }
@@ -77,11 +111,34 @@
 <body>
 
 <div id="game-container">
-    <div id="screen-levels" class="screen active">
+    
+    <div id="screen-login" class="screen active">
         <h1>防禦陣線：無盡星海</h1>
+        <div class="login-box">
+            <div class="login-title">指揮官識別系統</div>
+            <input type="text" id="username-input" class="login-input" placeholder="請輸入指揮官代號..." maxlength="12">
+            <button class="start-btn" style="padding: 15px 30px; font-size: 18px;" onclick="systemLogin()">登入 / 註冊</button>
+            <div class="login-hint">系統會將您的科技點數與升級進度<br>自動保存於您的裝置中。</div>
+        </div>
+    </div>
+
+    <div id="screen-levels" class="screen">
+        <h1>防禦陣線：無盡星海</h1>
+        <div class="user-info-bar">
+            <div class="commander-name">👤 指揮官：<span id="display-username">---</span></div>
+            <button class="logout-btn" onclick="systemLogout()">登出切換</button>
+        </div>
         <div class="home-content"><button class="start-btn" onclick="enterBattle()">開始遊戲</button></div>
     </div>
-    <div id="screen-upgrades" class="screen"><h1>科技大樓</h1></div>
+    
+    <div id="screen-upgrades" class="screen">
+        <div class="upgrade-header">
+            <h1 style="margin:0; font-size:22px;">科技研究所</h1>
+            <div class="tech-points">科技點: <span id="tech-points-display">0</span></div>
+        </div>
+        <div class="upgrade-list" id="upgrades-list">
+            </div>
+    </div>
 
     <div id="screen-battle" class="screen">
         <div id="battle-header">
@@ -105,7 +162,7 @@
     </div>
 
     <div id="bottom-nav">
-        <button class="nav-btn active" onclick="switchTab('levels', this)"><span>⎈</span><span>作戰</span></button>
+        <button class="nav-btn active" id="nav-btn-levels" onclick="switchTab('levels', this)"><span>⎈</span><span>作戰</span></button>
         <button class="nav-btn" onclick="switchTab('upgrades', this)"><span>⇪</span><span>升級</span></button>
     </div>
 
@@ -123,6 +180,143 @@
 
 <script>
     // =========================================
+    // 帳號與存檔系統 (Local Storage)
+    // =========================================
+    let currentUser = "";
+    let metaData = {};
+
+    function getDefaultMetaData() {
+        return {
+            techPoints: 100, // 初始科技點 100 點
+            towers: {
+                'machineGun': { id: 'machineGun', title: '機槍塔', level: 1, maxStar: 1, baseDmg: 10, dmgGrowth: 2.0 },
+                'laser':      { id: 'laser', title: '雷射塔', level: 1, maxStar: 1, baseDmg: 0.8, dmgGrowth: 0.2 },
+                'ice':        { id: 'ice', title: '冰凍塔', level: 1, maxStar: 1, baseDmg: 6, dmgGrowth: 1.5 },
+                'sniper':     { id: 'sniper', title: '狙擊塔', level: 1, maxStar: 1, baseDmg: 60, dmgGrowth: 10.0 }
+            }
+        };
+    }
+
+    function systemLogin() {
+        const input = document.getElementById('username-input').value.trim();
+        if (!input) { alert("請輸入指揮官代號！"); return; }
+        
+        currentUser = input;
+        
+        // 嘗試讀取存檔
+        const savedData = localStorage.getItem('defense_save_' + currentUser);
+        if (savedData) {
+            metaData = JSON.parse(savedData);
+        } else {
+            // 新創帳號
+            metaData = getDefaultMetaData();
+            saveProgress();
+        }
+        
+        document.getElementById('display-username').innerText = currentUser;
+        
+        // 切換至首頁
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-levels').classList.add('active');
+        document.getElementById('bottom-nav').style.display = 'flex';
+        switchTab('levels', document.getElementById('nav-btn-levels'));
+    }
+
+    function systemLogout() {
+        saveProgress();
+        currentUser = "";
+        document.getElementById('username-input').value = "";
+        
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-login').classList.add('active');
+        document.getElementById('bottom-nav').style.display = 'none';
+    }
+
+    function saveProgress() {
+        if (!currentUser) return;
+        localStorage.setItem('defense_save_' + currentUser, JSON.stringify(metaData));
+    }
+
+    // =========================================
+    // 局外成長資料系統 (Meta Progression)
+    // =========================================
+    function getTowerBaseDamage(type) {
+        let t = metaData.towers[type];
+        return t.baseDmg + (t.level - 1) * t.dmgGrowth;
+    }
+
+    function getUpgradeCost(level) { return 10 + Math.floor((level - 1) / 5) * 5; }
+    function getBreakCost(maxStar) { return 100 + (maxStar - 1) * 50; }
+
+    function renderUpgrades() {
+        document.getElementById('tech-points-display').innerText = metaData.techPoints;
+        const container = document.getElementById('upgrades-list');
+        container.innerHTML = '';
+        
+        Object.keys(metaData.towers).forEach(type => {
+            let data = metaData.towers[type];
+            let currentDmg = getTowerBaseDamage(type);
+            let nextDmg = currentDmg + data.dmgGrowth;
+            
+            let upgCost = getUpgradeCost(data.level);
+            let breakCost = getBreakCost(data.maxStar);
+
+            let canUpg = metaData.techPoints >= upgCost;
+            let canBreak = metaData.techPoints >= breakCost && data.maxStar < 3;
+            let breakText = data.maxStar >= 3 ? '已滿階' : `突破 $${breakCost}`;
+
+            let html = `
+            <div class="upgrade-card">
+                <div class="upgrade-icon-wrapper">
+                    <canvas id="upg-icon-${type}" width="40" height="40"></canvas>
+                </div>
+                <div class="upgrade-info">
+                    <div class="upgrade-name">${data.title} <span class="upgrade-lvl">Lv.${data.level}</span></div>
+                    <div class="upgrade-stats">
+                        傷害: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>
+                        星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span>
+                    </div>
+                </div>
+                <div class="upgrade-actions">
+                    <div class="btn-upg ${canUpg ? '' : 'btn-disabled'}" onclick="buyUpgrade('${type}')">升級 $${upgCost}</div>
+                    <div class="btn-break ${canBreak ? '' : 'btn-disabled'}" onclick="buyBreakthrough('${type}')">${breakText}</div>
+                </div>
+            </div>
+            `;
+            container.innerHTML += html;
+        });
+        
+        setTimeout(() => {
+            Object.keys(metaData.towers).forEach(type => {
+                const ctx = document.getElementById(`upg-icon-${type}`).getContext('2d');
+                ctx.fillStyle = '#1a1d2e'; ctx.beginPath(); ctx.arc(20, 20, 18, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = TOWER_DATA[type].color; ctx.lineWidth = 1.5; ctx.stroke();
+                ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; 
+                TOWER_DATA[type].drawIcon(ctx, 20, 20, 20);
+            });
+        }, 0);
+    }
+
+    window.buyUpgrade = function(type) {
+        let cost = getUpgradeCost(metaData.towers[type].level);
+        if (metaData.techPoints >= cost) {
+            metaData.techPoints -= cost;
+            metaData.towers[type].level++;
+            saveProgress(); // 自動存檔
+            renderUpgrades();
+        }
+    }
+    window.buyBreakthrough = function(type) {
+        let cost = getBreakCost(metaData.towers[type].maxStar);
+        if (metaData.techPoints >= cost && metaData.towers[type].maxStar < 3) {
+            metaData.techPoints -= cost;
+            metaData.towers[type].maxStar++;
+            saveProgress(); // 自動存檔
+            renderUpgrades();
+        }
+    }
+
+    // =========================================
     // UI 與導航邏輯
     // =========================================
     function switchTab(tabName, btnElement) {
@@ -130,6 +324,8 @@
         document.getElementById('screen-' + tabName).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btnElement.classList.add('active');
+        
+        if (tabName === 'upgrades') renderUpgrades();
     }
     function enterBattle() {
         document.getElementById('bottom-nav').style.display = 'none';
@@ -168,9 +364,14 @@
         modalOverlay.classList.remove('show');
         setTimeout(() => { modalOverlay.style.display = 'none'; if (gameState.running && gameState.hp > 0 && !gameState.isSelectingBuff) gameState.paused = false; }, 200);
     }
-    function requestExit() { showModal("離開遊戲", "指揮官，確定要撤退嗎？<br>進度將不會被保存。", {text:"是",action:exitBattle}, {text:"取消",action:closeModal}); }
+    function requestExit() { showModal("離開遊戲", "指揮官，確定要撤退嗎？<br>（已獲得的科技點數會保留）", {text:"是",action:exitBattle}, {text:"取消",action:closeModal}); }
     function requestPause() { showModal("遊戲暫停", "<span style='color:#00f3ff;'>遊戲暫停中</span><br>指揮官，部隊待命中。", {text:"繼續",action:closeModal}, {text:"離開",action:exitBattle}); }
-    function checkGameOver() { if (gameState.hp <= 0) showModal("遊戲結束", `<span style='color:#ff003c;font-weight:bold;'>防線已全面崩潰！</span><br>你成功防守了 <span style='color:#ffd700;'>${gameState.wave}</span> 波次。`, {text:"重新開始",action:startGameState}, {text:"退出主畫面",action:exitBattle}, false); }
+    function checkGameOver() { 
+        if (gameState.hp <= 0) {
+            saveProgress(); // 遊戲結束自動存檔
+            showModal("遊戲結束", `<span style='color:#ff003c;font-weight:bold;font-size:18px;'>防線已全面崩潰！</span><br><br>你成功防守了 <span style='color:#ffd700;font-size:18px;'>${gameState.wave}</span> 波次。<br><br>本次獲得科技點數: <span style='color:#00f3ff;font-size:18px;'>+${gameState.earnedPoints}</span>`, {text:"重新開始",action:startGameState}, {text:"退出主畫面",action:exitBattle}, false); 
+        }
+    }
 
     // =========================================
     // Roguelike 三選一效果機制與專屬圖示
@@ -231,14 +432,12 @@
     // =========================================
     // 各類向量圖案繪製
     // =========================================
-    // 1. 防禦塔與能量圖示
     function drawMachineGunIcon(ctx, x, y, size) { ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x-size*0.4, y-size*0.3); ctx.lineTo(x+size*0.4, y-size*0.3); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.4, y+size*0.3); ctx.lineTo(x+size*0.4, y+size*0.3); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.15, 0, Math.PI*2); ctx.fill(); }
     function drawLaserIcon(ctx, x, y, size) { ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x+size*0.5, y); ctx.stroke(); ctx.lineWidth=1; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.stroke(); }
     function drawIceIcon(ctx, x, y, size) { ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.lineCap='round'; for(let i=0;i<6;i++){ ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x+size*0.5*Math.cos(i*Math.PI/3), y+size*0.5*Math.sin(i*Math.PI/3)); ctx.stroke(); } ctx.beginPath(); ctx.rect(x-size*0.3, y-size*0.3, size*0.6, size*0.6); ctx.stroke(); }
     function drawSniperIcon(ctx, x, y, size) { ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x, y, size*0.45, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y-size*0.1); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y+size*0.5); ctx.lineTo(x, y+size*0.1); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x-size*0.1, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x+size*0.5, y); ctx.lineTo(x+size*0.1, y); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.1, 0, Math.PI*2); ctx.fill(); }
     function drawEnergyIcon(ctx, x, y, size) { ctx.strokeStyle='#00d2ff'; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); for(let i=0;i<6;i++){ const px=x+size*0.5*Math.cos(i*Math.PI/3-Math.PI/2); const py=y+size*0.5*Math.sin(i*Math.PI/3-Math.PI/2); if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py); } ctx.closePath(); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.fill(); ctx.lineWidth=1; for(let i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(x-size*0.3*Math.cos(i*Math.PI/1.5), y-size*0.3*Math.sin(i*Math.PI/1.5)); ctx.lineTo(x+size*0.3*Math.cos(i*Math.PI/1.5), y+size*0.3*Math.sin(i*Math.PI/1.5)); ctx.stroke(); } }
 
-    // 2. Buff 圖示
     function drawBuffIconDispatcher(ctx, x, y, size, buffId) {
         switch(buffId) {
             case 'cdr': drawBuff_Cdr(ctx, x, y, size); break;
@@ -256,7 +455,6 @@
     function drawBuff_Refund(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x+size*0.2, y+size*0.2, size*0.3, 0, Math.PI*2); ctx.stroke(); ctx.fillStyle='#fff'; ctx.font='bold '+Math.floor(size*0.35)+'px Arial'; ctx.fillText('$', x+size*0.2, y+size*0.32); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.lineCap='butt'; ctx.beginPath(); ctx.moveTo(x-size*0.15, y-size*0.1); ctx.lineTo(x-size*0.15, y+size*0.2); ctx.arc(x, y+size*0.2, size*0.15, Math.PI, 0, true); ctx.lineTo(x+size*0.15, y-size*0.1); ctx.stroke(); ctx.fillStyle='#00d2ff'; ctx.fillRect(x-size*0.2, y-size*0.15, size*0.1, size*0.1); ctx.fillStyle='#ff003c'; ctx.fillRect(x+size*0.1, y-size*0.15, size*0.1, size*0.1); }
     function drawBuff_Dmg(ctx, x, y, size) { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.25, y-size*0.1); ctx.lineTo(x+size*0.1, y-size*0.1); ctx.lineTo(x+size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y-size*0.1); ctx.lineTo(x-size*0.25, y-size*0.1); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; for(let i=0; i<3; i++){ ctx.beginPath(); ctx.arc(x, y+size*0.25, size*(0.1+i*0.12), Math.PI, 0); ctx.stroke(); } }
 
-
     // =========================================
     // 遊戲核心邏輯
     // =========================================
@@ -264,13 +462,13 @@
     const dragIcon = document.getElementById('drag-icon'); const dragCtx = document.getElementById('drag-canvas').getContext('2d');
     
     const TOWER_DATA = {
-        'machineGun': { cost: 3, color: '#00f3ff', range: 100, damage: 10, fireRate: 30, type: 'projectile', bulletSpeed: 5, drawIcon: drawMachineGunIcon },
-        'laser':      { cost: 5, color: '#ff00cc', range: 120, damage: 0.8, fireRate: 1, type: 'laser', drawIcon: drawLaserIcon },
-        'ice':        { cost: 4, color: '#0066ff', range: 90, damage: 6, fireRate: 60, type: 'aoe', slowEffect: 0.5, drawIcon: drawIceIcon },
-        'sniper':     { cost: 6, color: '#ffaa00', range: 250, damage: 60, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
+        'machineGun': { cost: 3, color: '#00f3ff', range: 100, fireRate: 30, type: 'projectile', bulletSpeed: 5, drawIcon: drawMachineGunIcon },
+        'laser':      { cost: 5, color: '#ff00cc', range: 120, fireRate: 1, type: 'laser', drawIcon: drawLaserIcon },
+        'ice':        { cost: 4, color: '#0066ff', range: 90, fireRate: 60, type: 'aoe', slowEffect: 0.5, drawIcon: drawIceIcon },
+        'sniper':     { cost: 6, color: '#ffaa00', range: 250, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
     };
 
-    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], towers: [], enemies: [], bullets: [], lasers: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null }, buffs: {} };
+    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], towers: [], enemies: [], bullets: [], lasers: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null }, buffs: {}, earnedPoints: 0 };
 
     function resizeCanvas() { const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = rect.width*dpr; canvas.height = rect.height*dpr; ctx.scale(dpr, dpr); gameState.gridSize = rect.width/gameState.cols; createPath(rect.height); }
     function createPath(h) { const gs = gameState.gridSize; gameState.path = [ {x:gs*1.5, y:-gs}, {x:gs*1.5, y:gs*2.5}, {x:gs*6.5, y:gs*2.5}, {x:gs*6.5, y:gs*6.5}, {x:gs*1.5, y:gs*6.5}, {x:gs*1.5, y:gs*10.5}, {x:gs*5.5, y:gs*10.5}, {x:gs*5.5, y:h+gs} ]; }
@@ -312,12 +510,22 @@
 
     function endWave() {
         let finWave = gameState.wave;
+        
+        let reward = (finWave % 10 === 0) ? 50 : 10;
+        metaData.techPoints += reward;
+        gameState.earnedPoints += reward;
+
         gameState.wave++; gameState.enemiesSpawned = 0; gameState.spawnTimer = 0;
         document.getElementById('current-wave').innerText = gameState.wave;
         document.getElementById('wave-type-label').innerText = (gameState.wave % 10 === 0) ? "[🔥 BOSS]" : "";
         
         if (gameState.wave % 10 !== 0) gameState.spawnInterval = Math.max(25, 120 - Math.floor(gameState.wave * 3));
-        if (finWave % 5 === 0) triggerBuffSelection(); 
+        
+        if (finWave % 5 === 0) {
+            triggerBuffSelection(); 
+        } else {
+            saveProgress(); // 過關時自動存檔
+        }
     }
 
     function updateBullets() {
@@ -408,14 +616,14 @@
     }
 
     function fireWeapon(tower, target) {
+        let baseDmg = getTowerBaseDamage(tower.id);
         let mul = tower.level === 1 ? 1 : (tower.level === 2 ? 2.2 : 4.5);
-        let baseDmg = tower.card.damage * mul;
+        let finalDmg = baseDmg * mul;
 
-        if (tower.card.type === 'projectile' || tower.card.type === 'aoe') { gameState.bullets.push({ x: tower.x, y: tower.y, target: target, speed: tower.card.bulletSpeed || 5, damage: baseDmg, color: tower.card.color, isIce: tower.card.type === 'aoe' }); } 
+        if (tower.card.type === 'projectile' || tower.card.type === 'aoe') { gameState.bullets.push({ x: tower.x, y: tower.y, target: target, speed: tower.card.bulletSpeed || 5, damage: finalDmg, color: tower.card.color, isIce: tower.card.type === 'aoe' }); } 
         else if (tower.card.type === 'laser') { 
-            let finalLaserDmg = baseDmg;
-            if (gameState.buffs['dmg']) finalLaserDmg *= (1 + gameState.buffs['dmg'] * 0.25);
-            target.hp -= finalLaserDmg; 
+            if (gameState.buffs['dmg']) finalDmg *= (1 + gameState.buffs['dmg'] * 0.25);
+            target.hp -= finalDmg; 
             gameState.lasers.push({ startX: tower.x, startY: tower.y, endX: target.x, endY: target.y, color: tower.card.color }); 
         }
     }
@@ -466,9 +674,10 @@
             const gs = gameState.gridSize; const gx = Math.floor(pos.x / gs); const gy = Math.floor(pos.y / gs); 
             
             let existingTower = gameState.towers.find(t => Math.floor(t.x/gs) === gx && Math.floor(t.y/gs) === gy);
+            let metaTower = metaData.towers[type];
             
             if (existingTower) {
-                if (existingTower.card === cardData && existingTower.level < 3 && gameState.energy >= cardData.cost) {
+                if (existingTower.id === type && existingTower.level < metaTower.maxStar && gameState.energy >= cardData.cost) {
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
                     existingTower.level++; 
@@ -478,7 +687,7 @@
                 if (gameState.energy >= cardData.cost) {
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
-                    gameState.towers.push({ x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0, level: 1 });
+                    gameState.towers.push({ id: type, x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0, level: 1 });
                     updateUIBars();
                 }
             }
@@ -494,6 +703,7 @@
             gameState.running = true; gameState.paused = false; gameState.hp = gameState.maxHp; gameState.energy = 5; gameState.wave = 1; 
             gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.buffs = {};
             gameState.spawnTimer = 0; gameState.spawnInterval = 120; gameState.enemiesSpawned = 0; 
+            gameState.earnedPoints = 0;
             updateUIBars(); document.getElementById('current-wave').innerText = gameState.wave; document.getElementById('wave-type-label').innerText = "";
             cancelAnimationFrame(reqId); reqId = requestAnimationFrame(gameStateLoop); 
         }, 50);
