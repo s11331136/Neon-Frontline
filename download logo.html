@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>下載遊戲 LOGO</title>
+    <style>
+        body { 
+            background: #050505; 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            font-family: "Segoe UI", sans-serif; 
+            margin: 0;
+        }
+        h2 { color: #00f3ff; text-shadow: 0 0 10px #00f3ff; letter-spacing: 2px;}
+        #logoImage {
+            width: 300px; 
+            height: 300px; 
+            margin: 20px 0;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            border-radius: 65px; /* 模擬手機 APP Icon 的圓角 */
+        }
+        button { 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1)); 
+            color: #00f3ff;
+            border: 2px solid #00f3ff; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            transition: 0.2s;
+        }
+        button:active { transform: scale(0.95); box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
+        .hint { color: #888; font-size: 14px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <h2>防禦陣線：無盡星海</h2>
+    
+    <img id="logoImage" src="" alt="Game Logo">
+    
+    <button onclick="downloadPNG()">💾 點擊下載高畫質 PNG 圖片</button>
+    <p class="hint">下載後，這張圖就是完美的去背/圓角正方形 Icon！</p>
+
+    <script>
+        // 將你專屬的 SVG LOGO 打包進來
+        const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+          <defs>
+            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="coreGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#111522" /><stop offset="100%" stop-color="#050505" />
+            </linearGradient>
+          </defs>
+
+          <rect width="512" height="512" rx="115" fill="url(#bgGrad)" stroke="#00f3ff" stroke-width="6" stroke-opacity="0.3"/>
+          <path d="M 128 0 L 128 512 M 256 0 L 256 512 M 384 0 L 384 512 M 0 128 L 512 128 M 0 256 L 512 256 M 0 384 L 512 384" stroke="#00f3ff" stroke-width="2" opacity="0.05"/>
+
+          <g filter="url(#neonGlow)">
+            <path d="M 170 170 L 80 240 L 110 380 L 180 310" fill="none" stroke="#00f3ff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+            <path d="M 342 170 L 432 240 L 402 380 L 332 310" fill="none" stroke="#00f3ff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+
+            <circle cx="256" cy="180" r="55" fill="none" stroke="#00f3ff" stroke-width="18"/>
+            <circle cx="256" cy="180" r="15" fill="#fff" filter="url(#coreGlow)"/>
+            <line x1="256" y1="80" x2="256" y2="145" stroke="#00f3ff" stroke-width="18" stroke-linecap="round"/>
+            <line x1="256" y1="215" x2="256" y2="260" stroke="#00f3ff" stroke-width="18" stroke-linecap="round"/>
+            <line x1="156" y1="180" x2="221" y2="180" stroke="#00f3ff" stroke-width="18" stroke-linecap="round"/>
+            <line x1="291" y1="180" x2="356" y2="180" stroke="#00f3ff" stroke-width="18" stroke-linecap="round"/>
+
+            <polygon points="256,390 320,353 320,279 256,242 192,279 192,353" fill="none" stroke="#00d2ff" stroke-width="16" stroke-linejoin="round"/>
+            <line x1="256" y1="262" x2="256" y2="370" stroke="#00d2ff" stroke-width="6" opacity="0.5"/>
+            <line x1="205" y1="291" x2="307" y2="341" stroke="#00d2ff" stroke-width="6" opacity="0.5"/>
+            <line x1="205" y1="341" x2="307" y2="291" stroke="#00d2ff" stroke-width="6" opacity="0.5"/>
+            <circle cx="256" cy="316" r="28" fill="#fff" filter="url(#coreGlow)"/>
+          </g>
+        </svg>`;
+
+        // 將 SVG 轉換為可以顯示的網址
+        const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        document.getElementById('logoImage').src = url;
+
+        // 一鍵下載成 PNG 的函數
+        function downloadPNG() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                const pngUrl = canvas.toDataURL("image/png");
+                
+                // 建立隱藏的下載連結並觸發點擊
+                const downloadLink = document.createElement('a');
+                downloadLink.href = pngUrl;
+                downloadLink.download = 'Sentinel_Core_Logo.png';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            };
+            img.src = url;
+        }
+    </script>
+</body>
+</html>
