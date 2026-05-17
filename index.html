@@ -69,7 +69,6 @@
         .buff-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .buff-card { background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(0, 243, 255, 0.02)); border: 1px solid #00a8ff; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .buff-card:hover, .buff-card:active { background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); transform: translateY(-2px); }
-        /* 修改：讓 Buff 標題垂直居中，並為圖示畫布保留空間 */
         .buff-title { color: #00f3ff; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
         .buff-icon-canvas { display: block; filter: drop-shadow(0 0 5px #00f3ff); flex-shrink: 0; }
         .buff-desc { color: #aaa; font-size: 12px; line-height: 1.4; }
@@ -146,7 +145,7 @@
     }
 
     // =========================================
-    // 對話框 Modal 與 Roguelike Buff 系統
+    // 對話框 Modal 系統
     // =========================================
     const modalOverlay = document.getElementById('modal-overlay');
     function showModal(title, textHTML, confirmAction, cancelAction, showX = true) {
@@ -173,18 +172,8 @@
     function requestPause() { showModal("遊戲暫停", "<span style='color:#00f3ff;'>遊戲暫停中</span><br>指揮官，部隊待命中。", {text:"繼續",action:closeModal}, {text:"離開",action:exitBattle}); }
     function checkGameOver() { if (gameState.hp <= 0) showModal("遊戲結束", `<span style='color:#ff003c;font-weight:bold;'>防線已全面崩潰！</span><br>你成功防守了 <span style='color:#ffd700;'>${gameState.wave}</span> 波次。`, {text:"重新開始",action:startGameState}, {text:"退出主畫面",action:exitBattle}, false); }
 
-    // 【新增】三選一 Buff 系統
-    const BUFF_POOL = [
-        { id: 'cdr', title: '⚡ 核心超頻', desc: '全體防禦塔射速提升 20%' },
-        { id: 'energy', title: '💠 能量泵浦', desc: '戰鬥能量(聖水)回復速度加快' },
-        { id: 'heal', title: '🔧 奈米修復', desc: '立刻修復基地，恢復 3 點生命值' },
-        { id: 'crit', title: '🎯 精準爆擊', desc: '所有防禦塔獲得 15% 暴擊機率 (2.5倍)' },
-        { id: 'refund', title: '🪙 能量回收', desc: '每次部署或升級防禦塔時返還 1 點能量' },
-        { id: 'dmg', title: '🔥 火力增壓', desc: '全體防禦塔基礎傷害提升 25%' }
-    ];
-
     // =========================================
-    // 【修改】Roguelike 三選一效果機制 (支援畫布圖示)
+    // Roguelike 三選一效果機制與專屬圖示
     // =========================================
     const BUFF_POOL = [
         { id: 'cdr', title: '核心超頻', desc: '全體防禦塔射速與充能提升 20%' },
@@ -199,14 +188,12 @@
         gameState.isSelectingBuff = true;
         gameState.paused = true;
         
-        // 隨機洗牌洗出3個不重複的
         let shuffled = [...BUFF_POOL].sort(() => 0.5 - Math.random());
         let choices = shuffled.slice(0, 3);
 
         let html = `<p style="font-size:12px; color:#aaa; margin-bottom:12px;">請點擊選擇一個戰術晶片強化防線：</p>`;
         html += `<div class="buff-container">`;
         choices.forEach((buff, idx) => {
-            // 注意：我們在這裡為每一個 Buff ID 產生一個專屬的 Canvas 標籤
             html += `
                 <div class="buff-card" onclick="selectBuff('${buff.id}')">
                     <div class="buff-title">
@@ -219,11 +206,8 @@
         });
         html += `</div>`;
 
-        // 顯示視窗 (不允許 X 關閉，強制選擇)
         showModal("🛰️ 晶片空投已抵達", html, null, null, false);
         
-        // 【核心修改】：在 Modal 顯示出 DOM 元素後，我們才能獲取 Canvas 並在上面繪圖。
-        // 我們使用 requestAnimationFrame 等待 DOM 渲染完畢。
         requestAnimationFrame(() => {
             choices.forEach((buff, idx) => {
                 const canvasId = `buff-icon-${buff.id}-${idx}`;
@@ -231,25 +215,30 @@
                 if (buffCanvas) {
                     const buffCtx = buffCanvas.getContext('2d');
                     buffCtx.clearRect(0, 0, 30, 30);
-                    // 呼叫 Dispatcher 在 Modal 的卡片上繪製對應的發光圖示
-                    drawBuffIconDispatcher(buffCtx, 15, 15, 28, buffId);
+                    drawBuffIconDispatcher(buffCtx, 15, 15, 28, buff.id);
                 }
             });
         });
     }
+
+    window.selectBuff = function(buffId) {
+        if (!gameState.buffs[buffId]) gameState.buffs[buffId] = 0;
+        gameState.buffs[buffId]++;
+        if (buffId === 'heal') { gameState.hp = Math.min(gameState.maxHp, gameState.hp + 3); updateUIBars(); }
+        gameState.isSelectingBuff = false; closeModal();
+    }
+
     // =========================================
-    // 向量圖案繪製
+    // 各類向量圖案繪製
     // =========================================
+    // 1. 防禦塔與能量圖示
     function drawMachineGunIcon(ctx, x, y, size) { ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x-size*0.4, y-size*0.3); ctx.lineTo(x+size*0.4, y-size*0.3); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.4, y+size*0.3); ctx.lineTo(x+size*0.4, y+size*0.3); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.15, 0, Math.PI*2); ctx.fill(); }
     function drawLaserIcon(ctx, x, y, size) { ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x+size*0.5, y); ctx.stroke(); ctx.lineWidth=1; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.stroke(); }
     function drawIceIcon(ctx, x, y, size) { ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.lineCap='round'; for(let i=0;i<6;i++){ ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x+size*0.5*Math.cos(i*Math.PI/3), y+size*0.5*Math.sin(i*Math.PI/3)); ctx.stroke(); } ctx.beginPath(); ctx.rect(x-size*0.3, y-size*0.3, size*0.6, size*0.6); ctx.stroke(); }
     function drawSniperIcon(ctx, x, y, size) { ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x, y, size*0.45, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y-size*0.1); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y+size*0.5); ctx.lineTo(x, y+size*0.1); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x-size*0.1, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x+size*0.5, y); ctx.lineTo(x+size*0.1, y); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.1, 0, Math.PI*2); ctx.fill(); }
     function drawEnergyIcon(ctx, x, y, size) { ctx.strokeStyle='#00d2ff'; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); for(let i=0;i<6;i++){ const px=x+size*0.5*Math.cos(i*Math.PI/3-Math.PI/2); const py=y+size*0.5*Math.sin(i*Math.PI/3-Math.PI/2); if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py); } ctx.closePath(); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.fill(); ctx.lineWidth=1; for(let i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(x-size*0.3*Math.cos(i*Math.PI/1.5), y-size*0.3*Math.sin(i*Math.PI/1.5)); ctx.lineTo(x+size*0.3*Math.cos(i*Math.PI/1.5), y+size*0.3*Math.sin(i*Math.PI/1.5)); ctx.stroke(); } }
-    // =========================================
-    // 【新增】Roguelike Buff 專屬科技圖示繪製
-    // =========================================
 
-    // 公用 dispatcher：根據 Buff ID 選擇繪製函數
+    // 2. Buff 圖示
     function drawBuffIconDispatcher(ctx, x, y, size, buffId) {
         switch(buffId) {
             case 'cdr': drawBuff_Cdr(ctx, x, y, size); break;
@@ -260,64 +249,14 @@
             case 'dmg': drawBuff_Dmg(ctx, x, y, size); break;
         }
     }
+    function drawBuff_Cdr(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, size*0.4, 0, Math.PI*2); ctx.stroke(); for(let i=0; i<8; i++) { ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/4); ctx.strokeRect(-size*0.05, -size*0.5, size*0.1, size*0.2); ctx.restore(); } ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x-size*0.1, y-size*0.25); ctx.lineTo(x-size*0.15, y); ctx.lineTo(x, y); ctx.lineTo(x-size*0.05, y+size*0.25); ctx.lineTo(x+size*0.15, y+size*0.05); ctx.lineTo(x, y+size*0.05); ctx.lineTo(x+size*0.1, y-size*0.25); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+    function drawBuff_Energy(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(x-size*0.3, y-size*0.4, size*0.6, size*0.8); ctx.fillStyle = '#fff'; ctx.fillRect(x-size*0.15, y-size*0.45, size*0.3, size*0.1); ctx.fillStyle = '#00d2ff'; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.stroke(); }
+    function drawBuff_Heal(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.4, y-size*0.25); ctx.lineTo(x+size*0.4, y+size*0.1); ctx.lineTo(x, y+size*0.5); ctx.lineTo(x-size*0.4, y+size*0.1); ctx.lineTo(x-size*0.4, y-size*0.25); ctx.closePath(); ctx.stroke(); ctx.fillStyle = '#ff003c'; ctx.fillRect(x-size*0.06, y-size*0.25, size*0.12, size*0.5); ctx.fillRect(x-size*0.25, y-size*0.06, size*0.5, size*0.12); }
+    function drawBuff_Crit(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x, y, size*0.35, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x+size*0.5, y); ctx.stroke(); ctx.fillStyle = '#ff003c'; ctx.beginPath(); ctx.arc(x, y, size*0.1, 0, Math.PI*2); ctx.fill(); for(let i=0; i<4; i++){ ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/2 + Math.PI/4); ctx.fillRect(size*0.2, -1, size*0.2, 2); ctx.restore(); } }
+    function drawBuff_Refund(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x+size*0.2, y+size*0.2, size*0.3, 0, Math.PI*2); ctx.stroke(); ctx.fillStyle='#fff'; ctx.font='bold '+Math.floor(size*0.35)+'px Arial'; ctx.fillText('$', x+size*0.2, y+size*0.32); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.lineCap='butt'; ctx.beginPath(); ctx.moveTo(x-size*0.15, y-size*0.1); ctx.lineTo(x-size*0.15, y+size*0.2); ctx.arc(x, y+size*0.2, size*0.15, Math.PI, 0, true); ctx.lineTo(x+size*0.15, y-size*0.1); ctx.stroke(); ctx.fillStyle='#00d2ff'; ctx.fillRect(x-size*0.2, y-size*0.15, size*0.1, size*0.1); ctx.fillStyle='#ff003c'; ctx.fillRect(x+size*0.1, y-size*0.15, size*0.1, size*0.1); }
+    function drawBuff_Dmg(ctx, x, y, size) { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.25, y-size*0.1); ctx.lineTo(x+size*0.1, y-size*0.1); ctx.lineTo(x+size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y-size*0.1); ctx.lineTo(x-size*0.25, y-size*0.1); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; for(let i=0; i<3; i++){ ctx.beginPath(); ctx.arc(x, y+size*0.25, size*(0.1+i*0.12), Math.PI, 0); ctx.stroke(); } }
 
-    // 1. CDR: 核心超頻 (齒輪 + 閃電)
-    function drawBuff_Cdr(ctx, x, y, size) {
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, size*0.4, 0, Math.PI*2); ctx.stroke();
-        // 齒輪齒
-        for(let i=0; i<8; i++) {
-            ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/4);
-            ctx.strokeRect(-size*0.05, -size*0.5, size*0.1, size*0.2); ctx.restore();
-        }
-        // 閃電
-        ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x-size*0.1, y-size*0.25); ctx.lineTo(x-size*0.15, y); ctx.lineTo(x, y); ctx.lineTo(x-size*0.05, y+size*0.25); ctx.lineTo(x+size*0.15, y+size*0.05); ctx.lineTo(x, y+size*0.05); ctx.lineTo(x+size*0.1, y-size*0.25); ctx.closePath(); ctx.fill(); ctx.stroke();
-    }
 
-    // 2. Energy: 能量泵浦 (電容 + 聖水球)
-    function drawBuff_Energy(ctx, x, y, size) {
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(x-size*0.3, y-size*0.4, size*0.6, size*0.8);
-        ctx.fillStyle = '#fff'; ctx.fillRect(x-size*0.15, y-size*0.45, size*0.3, size*0.1); // 上接頭
-        // 內部的能量核心
-        ctx.fillStyle = '#00d2ff'; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.stroke(); // 充能環
-    }
-
-    // 3. Heal: 奈米修復 (科技盾牌 + 醫療十字)
-    function drawBuff_Heal(ctx, x, y, size) {
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.4, y-size*0.25); ctx.lineTo(x+size*0.4, y+size*0.1); ctx.lineTo(x, y+size*0.5); ctx.lineTo(x-size*0.4, y+size*0.1); ctx.lineTo(x-size*0.4, y-size*0.25); ctx.closePath(); ctx.stroke();
-        // 醫療十字
-        ctx.fillStyle = '#ff003c'; ctx.fillRect(x-size*0.06, y-size*0.25, size*0.12, size*0.5); // 垂直
-        ctx.fillRect(x-size*0.25, y-size*0.06, size*0.5, size*0.12); // 水平
-    }
-
-    // 4. Crit: 精準爆擊 (狙擊準心 + 爆炸核心)
-    function drawBuff_Crit(ctx, x, y, size) {
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x, y, size*0.35, 0, Math.PI*2); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); // 十字
-        ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x+size*0.5, y); ctx.stroke();
-        // 爆擊火花
-        ctx.fillStyle = '#ff003c'; ctx.beginPath(); ctx.arc(x, y, size*0.1, 0, Math.PI*2); ctx.fill();
-        for(let i=0; i<4; i++){
-            ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/2 + Math.PI/4); ctx.fillRect(size*0.2, -1, size*0.2, 2); ctx.restore();
-        }
-    }
-
-    // 5. Refund: 能量回收 (金幣 + 磁鐵)
-    function drawBuff_Refund(ctx, x, y, size) {
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x+size*0.2, y+size*0.2, size*0.3, 0, Math.PI*2); ctx.stroke(); // 金幣
-        ctx.fillStyle='#fff'; ctx.font='bold '+Math.floor(size*0.35)+'px Arial'; ctx.fillText('$', x+size*0.2, y+size*0.32);
-        // 磁鐵
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.lineCap='butt'; ctx.beginPath(); ctx.moveTo(x-size*0.15, y-size*0.1); ctx.lineTo(x-size*0.15, y+size*0.2); ctx.arc(x, y+size*0.2, size*0.15, Math.PI, 0, true); ctx.lineTo(x+size*0.15, y-size*0.1); ctx.stroke();
-        ctx.fillStyle='#00d2ff'; ctx.fillRect(x-size*0.2, y-size*0.15, size*0.1, size*0.1); // N極
-        ctx.fillStyle='#ff003c'; ctx.fillRect(x+size*0.1, y-size*0.15, size*0.1, size*0.1); // S極
-    }
-
-    // 6. Dmg: 火力增壓 (向上箭頭 + 脈衝爆炸底座)
-    function drawBuff_Dmg(ctx, x, y, size) {
-        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.25, y-size*0.1); ctx.lineTo(x+size*0.1, y-size*0.1); ctx.lineTo(x+size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y-size*0.1); ctx.lineTo(x-size*0.25, y-size*0.1); ctx.closePath(); ctx.fill();
-        // 脈衝爆炸底座
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; for(let i=0; i<3; i++){ ctx.beginPath(); ctx.arc(x, y+size*0.25, size*(0.1+i*0.12), Math.PI, 0); ctx.stroke(); }
-    }
     // =========================================
     // 遊戲核心邏輯
     // =========================================
@@ -340,29 +279,23 @@
     function gameStateLoop() { if (gameState.running) { if (!gameState.paused) update(); draw(); reqId = requestAnimationFrame(gameStateLoop); } }
 
     function update() {
-        // 能量增長 (考慮 Buff)
         gameState.energyTimer++;
         let energySpeed = gameState.buffs['energy'] ? 60 / (1 + gameState.buffs['energy'] * 0.3) : 60;
         if(gameState.energyTimer >= energySpeed) { if(gameState.energy < gameState.maxEnergy) { gameState.energy++; updateUIBars(); } gameState.energyTimer = 0; }
 
-        // 刷怪與 BOSS 波次控制
         let isBossWave = (gameState.wave % 10 === 0);
         gameState.spawnTimer++;
         
         if (isBossWave) {
-            // 只生 1 隻 BOSS
             if (gameState.enemiesSpawned < 1 && gameState.spawnTimer > 60) { spawnBoss(); gameState.spawnTimer = 0; }
         } else {
-            // 生 10 隻怪
             if (gameState.enemiesSpawned < 10 && gameState.spawnTimer > gameState.spawnInterval) { spawnEnemy(); gameState.spawnTimer = 0; }
         }
 
-        // 判斷波次結束
         if (((isBossWave && gameState.enemiesSpawned >= 1) || (!isBossWave && gameState.enemiesSpawned >= 10)) && gameState.enemies.length === 0) {
             endWave();
         }
 
-        // 塔攻擊
         gameState.lasers = []; 
         gameState.towers.forEach(tower => {
             if (tower.cooldown > 0) {
@@ -384,7 +317,7 @@
         document.getElementById('wave-type-label').innerText = (gameState.wave % 10 === 0) ? "[🔥 BOSS]" : "";
         
         if (gameState.wave % 10 !== 0) gameState.spawnInterval = Math.max(25, 120 - Math.floor(gameState.wave * 3));
-        if (finWave % 5 === 0) triggerBuffSelection(); // 觸發三選一
+        if (finWave % 5 === 0) triggerBuffSelection(); 
     }
 
     function updateBullets() {
@@ -395,7 +328,7 @@
             if (dist < b.speed) {
                 let finalDmg = b.damage;
                 if (gameState.buffs['dmg']) finalDmg *= (1 + gameState.buffs['dmg'] * 0.25);
-                if (gameState.buffs['crit'] && Math.random() < (gameState.buffs['crit'] * 0.15)) finalDmg *= 2.5; // 暴擊
+                if (gameState.buffs['crit'] && Math.random() < (gameState.buffs['crit'] * 0.15)) finalDmg *= 2.5; 
 
                 b.target.hp -= finalDmg; if(b.isIce) b.target.speedMod = 0.4;
                 gameState.bullets.splice(i, 1);
@@ -413,7 +346,7 @@
                 const dx = targetPos.x - enemy.x; const dy = targetPos.y - enemy.y; const dist = Math.sqrt(dx*dx + dy*dy);
                 const actualSpeed = enemy.baseSpeed * enemy.speedMod;
                 if (dist < actualSpeed * 1.5) enemy.pathIndex++; else { enemy.x += (dx/dist) * actualSpeed; enemy.y += (dy/dist) * actualSpeed; }
-            } else { gameState.enemies.splice(i, 1); takeDamage(enemy.isBoss ? 3 : 1); } // BOSS 扣 3 滴
+            } else { gameState.enemies.splice(i, 1); takeDamage(enemy.isBoss ? 3 : 1); } 
         }
     }
 
@@ -425,7 +358,6 @@
         drawLasersAndBullets();
     }
 
-    // 【新增】進化塔外觀 (1~3階)
     function drawTowerObj(tower) {
         const gs = gameState.gridSize; const cx = tower.x; const cy = tower.y;
         ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(cx, cy, gs * 0.43, 0, Math.PI * 2); ctx.fill();
@@ -468,7 +400,6 @@
         gameState.enemies.push({ isBoss: false, x: gameState.path[0].x, y: gameState.path[0].y, pathIndex: 1, hp: hp, maxHp: hp, baseSpeed: speed, speedMod: 1.0 });
     }
     
-    // 【新增】生成巨大 BOSS
     function spawnBoss() {
         gameState.enemiesSpawned++;
         const bossHp = (200 + gameState.wave * 100) * (1 + (gameState.wave / 10) * 0.5);
@@ -477,7 +408,6 @@
     }
 
     function fireWeapon(tower, target) {
-        // 【新增】等級倍率傷害 (二階 2.2 倍，三階 4.5 倍)
         let mul = tower.level === 1 ? 1 : (tower.level === 2 ? 2.2 : 4.5);
         let baseDmg = tower.card.damage * mul;
 
@@ -525,7 +455,6 @@
     function handleMove(e) { if (!gameState.dragState.isDragging) return; lastEvent = e; const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; updateDragIconPos(cx, cy); }
     function updateDragIconPos(x, y) { dragIcon.style.left = (x - 25) + 'px'; dragIcon.style.top = (y - 25) + 'px'; }
     
-    // 【重點修改】：放下卡牌時判斷合併或放置
     function handleUp(e) { 
         if (!gameState.dragState.isDragging) return; 
         dragIcon.style.display = 'none'; 
@@ -536,19 +465,16 @@
         if (pos && pos.y < canvas.getBoundingClientRect().height && pos.y > 0) { 
             const gs = gameState.gridSize; const gx = Math.floor(pos.x / gs); const gy = Math.floor(pos.y / gs); 
             
-            // 尋找格子上是否已經有塔
             let existingTower = gameState.towers.find(t => Math.floor(t.x/gs) === gx && Math.floor(t.y/gs) === gy);
             
             if (existingTower) {
-                // 合成進化條件：種類一樣且等級小於3
                 if (existingTower.card === cardData && existingTower.level < 3 && gameState.energy >= cardData.cost) {
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
-                    existingTower.level++; // 進化！
+                    existingTower.level++; 
                     updateUIBars();
                 }
             } else {
-                // 放下新塔 (預設 1 階)
                 if (gameState.energy >= cardData.cost) {
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
