@@ -80,12 +80,20 @@
 
         /* 卡牌區域 */
         #card-deck-container { height: 95px; background: linear-gradient(to top, #050505, #0d111a); display: flex; align-items: center; padding: 0 10px; gap: 10px; z-index: 10; }
-        .card { flex: 1; height: 80px; background: rgba(0, 243, 255, 0.05); border: 1px solid #00f3ff; border-radius: 6px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.1s; }
+        .card { flex: 1; height: 80px; background: rgba(0, 243, 255, 0.05); border: 1px solid #00f3ff; border-radius: 6px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, filter 0.1s, opacity 0.1s; }
         .card.disabled { opacity: 0.4; filter: grayscale(100%); }
         .card:active:not(.disabled) { transform: scale(0.95); background: rgba(0, 243, 255, 0.2); }
         .card-cost { position: absolute; top: -6px; left: -6px; background: #050505; color: #00d2ff; width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; border: 1px solid #00d2ff; box-shadow: 0 0 5px rgba(0, 210, 255, 0.5); }
         .card-name { font-size: 11px; color: #00f3ff; font-weight: bold; margin-top: 4px; }
         #drag-icon { position: fixed; pointer-events: none; display: none; z-index: 100; opacity: 0.9; }
+
+        /* 【新增】卡牌刷新特效 */
+        @keyframes flashRefresh {
+            0% { transform: scale(0.8); opacity: 0.5; filter: brightness(2); }
+            50% { transform: scale(1.15); opacity: 1; filter: brightness(1.5) drop-shadow(0 0 10px #00f3ff); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        .card.refreshing { animation: flashRefresh 0.35s ease-out; }
 
         /* 底部導航 */
         #bottom-nav { height: 60px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; display: none; }
@@ -216,10 +224,10 @@
         return {
             techPoints: 100, 
             towers: {
-                'machineGun': { id: 'machineGun', title: '機槍塔', level: 1, maxStar: 1, baseDmg: 10, dmgGrowth: 2.0 },
-                'laser':      { id: 'laser', title: '雷射塔', level: 1, maxStar: 1, baseDmg: 0.8, dmgGrowth: 0.2 },
-                'ice':        { id: 'ice', title: '冰凍塔', level: 1, maxStar: 1, baseDmg: 6, dmgGrowth: 1.5 },
-                'sniper':     { id: 'sniper', title: '狙擊塔', level: 1, maxStar: 1, baseDmg: 60, dmgGrowth: 10.0 }
+                'machineGun': { id: 'machineGun', title: '機槍塔', level: 1, maxStar: 1, baseDmg: 5, dmgGrowth: 2.0 },
+                'laser':      { id: 'laser', title: '雷射塔', level: 1, maxStar: 1, baseDmg: 0.2, dmgGrowth: 0.2 },
+                'ice':        { id: 'ice', title: '冰凍塔', level: 1, maxStar: 1, baseDmg: 3, dmgGrowth: 1.5 },
+                'sniper':     { id: 'sniper', title: '狙擊塔', level: 1, maxStar: 1, baseDmg: 30, dmgGrowth: 10.0 }
             }
         };
     }
@@ -296,10 +304,7 @@
     window.buyBreakthrough = function(type) { let cost = getBreakCost(metaData.towers[type].maxStar); if (metaData.techPoints >= cost && metaData.towers[type].maxStar < 3) { metaData.techPoints -= cost; metaData.towers[type].maxStar++; saveProgress(); renderUpgrades(); } }
 
     function switchTab(tabName, btnElement) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-' + tabName).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); btnElement.classList.add('active'); if (tabName === 'upgrades') renderUpgrades(); }
-    
-    // 【修改】切換到遊戲畫面
     function enterBattle() { document.getElementById('bottom-nav').style.display = 'none'; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-battle').classList.add('active'); startGameState(); }
-    
     function exitBattle() { stopGameState(); closeModal(); hideSellButton(); document.getElementById('bottom-nav').style.display = 'flex'; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-levels').classList.add('active'); }
 
     // =========================================
@@ -330,7 +335,7 @@
 
     const BUFF_POOL = [
         { id: 'cdr', title: '核心超頻', desc: '全體防禦塔射速與充能提升 20%' },
-        { id: 'energy', title: '能量泵浦', desc: '戰鬥能量(聖水)回復速度加快' },
+        { id: 'energy', title: '能量泵浦', desc: '戰鬥能量(聖水)自動回復速度加快' },
         { id: 'heal', title: '奈米修復', desc: '立刻修復基地防線，恢復 3 點生命值' },
         { id: 'crit', title: '精準爆擊', desc: '所有防禦塔獲得 15% 暴擊機率 (2.5倍)' },
         { id: 'refund', title: '能量回收', desc: '每次部署或升級防禦塔時返還 1 點能量' },
@@ -418,7 +423,7 @@
         'sniper':     { cost: 6, color: '#ffaa00', range: 250, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
     };
 
-    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null };
+    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null, cardEl: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null };
 
     function resizeCanvas() { const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = rect.width*dpr; canvas.height = rect.height*dpr; ctx.scale(dpr, dpr); gameState.gridSize = rect.width/gameState.cols; createPath(rect.height); hideSellButton(); }
     
@@ -462,15 +467,13 @@
 
     function update() {
         gameState.energyTimer++;
-        let energySpeed = gameState.buffs['energy'] ? 60 / (1 + gameState.buffs['energy'] * 0.3) : 60;
+        let energySpeed = gameState.buffs['energy'] ? 240 / (1 + gameState.buffs['energy'] * 0.3) : 240;
         if(gameState.energyTimer >= energySpeed) { if(gameState.energy < gameState.maxEnergy) { gameState.energy++; updateUIBars(); } gameState.energyTimer = 0; }
 
         let isBossWave = (gameState.wave % 10 === 0);
-        // 【修改】敵人數量：基礎 10，每 5 關多 5 隻
         let enemiesThisWave = isBossWave ? 1 : (10 + Math.floor((gameState.wave - 1) / 5) * 5);
 
         gameState.spawnTimer++;
-        
         if (gameState.enemiesSpawned < enemiesThisWave) {
             let spawnDelay = isBossWave ? 60 : gameState.spawnInterval;
             if (gameState.spawnTimer > spawnDelay) {
@@ -480,7 +483,6 @@
             }
         }
 
-        // 【修改】波次結束條件
         if (gameState.enemiesSpawned >= enemiesThisWave && gameState.enemies.length === 0) {
             endWave();
         }
@@ -515,7 +517,6 @@
         document.getElementById('wave-type-label').innerText = (gameState.wave % 10 === 0) ? "[🔥 BOSS]" : "";
         if (gameState.wave % 10 !== 0) gameState.spawnInterval = Math.max(25, 120 - Math.floor(gameState.wave * 3));
         
-        // 【修改】每 20 波給 Debuff，非 20 倍數的每 10 波給 Buff
         if (finWave % 20 === 0) {
             triggerBuffSelection('debuff'); 
         } else if (finWave % 10 === 0) {
@@ -546,6 +547,11 @@
             let enemy = gameState.enemies[i];
             if (enemy.hp <= 0) { 
                 spawnParticles(enemy.x, enemy.y, enemy.isBoss ? '#ff003c' : '#ff00cc', enemy.isBoss ? 40 : 15, 'shatter');
+                
+                let energyGained = enemy.isBoss ? 5 : 1;
+                gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + energyGained);
+                updateUIBars();
+
                 gameState.enemies.splice(i, 1); 
                 continue; 
             }
@@ -583,7 +589,6 @@
 
     function drawTowerObj(tower) {
         const gs = gameState.gridSize; const cx = tower.x; const cy = tower.y;
-        
         if (tower.upgradeEffect > 0) {
             tower.upgradeEffect -= 0.03;
             let effSize = gs * (0.5 + (1 - tower.upgradeEffect));
@@ -592,9 +597,7 @@
             ctx.beginPath(); ctx.arc(cx, cy, effSize, 0, Math.PI*2); ctx.stroke();
             ctx.globalAlpha = 1.0;
         }
-
         ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(cx, cy, gs * 0.43, 0, Math.PI * 2); ctx.fill();
-        
         if (tower.level === 1) {
             ctx.strokeStyle = tower.card.color; ctx.lineWidth = 2; ctx.stroke();
         } else if (tower.level === 2) {
@@ -605,7 +608,6 @@
             ctx.save(); ctx.translate(cx, cy); ctx.rotate(Date.now() * 0.0015);
             ctx.strokeStyle = tower.card.color; ctx.lineWidth = 1.5; ctx.strokeRect(-gs*0.48, -gs*0.48, gs*0.96, gs*0.96); ctx.restore();
         }
-        
         tower.card.drawIcon(ctx, cx, cy, gs * 0.5); 
         ctx.fillStyle = '#fff'; ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.fillText('★'.repeat(tower.level), cx, cy + gs*0.35);
     }
@@ -628,8 +630,6 @@
 
     function spawnEnemy() {
         gameState.enemiesSpawned++;
-        
-        // 【修改】隨波次增加血量 (每關 +15%)
         let waveHpMod = 1 + (gameState.wave - 1) * 0.15;
         let debuffHpMod = 1 + (gameState.debuffs['enemyHpUp'] || 0) * 0.20;
         let hpMod = waveHpMod * debuffHpMod;
@@ -638,14 +638,11 @@
         const baseHp = 20 + Math.floor(gameState.wave * 10); 
         const hp = baseHp * hpMod;
         const speed = (1.0 + Math.min(1.5, gameState.wave * 0.05)) * spdMod;
-        
         gameState.enemies.push({ isBoss: false, x: gameState.path[0].x, y: gameState.path[0].y, pathIndex: 1, hp: hp, maxHp: hp, baseSpeed: speed, speedMod: 1.0 });
     }
     
     function spawnBoss() {
         gameState.enemiesSpawned++;
-        
-        // 【修改】魔王血量成長倍率 (每關 +20%)
         let waveHpMod = 1 + (gameState.wave - 1) * 0.20;
         let debuffHpMod = 1 + (gameState.debuffs['enemyHpUp'] || 0) * 0.20;
         let hpMod = waveHpMod * debuffHpMod;
@@ -654,7 +651,6 @@
         const baseHp = 200 + gameState.wave * 80;
         const bossHp = baseHp * hpMod;
         const speed = (0.65 + (gameState.wave / 50) * 0.05) * spdMod;
-        
         gameState.enemies.push({ isBoss: true, x: gameState.path[0].x, y: gameState.path[0].y, pathIndex: 1, hp: bossHp, maxHp: bossHp, baseSpeed: speed, speedMod: 1.0 });
     }
 
@@ -712,10 +708,8 @@
         const btn = document.getElementById('sell-btn-overlay');
         const refund = Math.floor(tower.card.cost / 2); 
         btn.innerText = `賣出 $${refund}`;
-        
         const dpr = window.devicePixelRatio || 1;
         let cssX = tower.x / dpr; let cssY = tower.y / dpr;
-        
         btn.style.left = cssX + 'px';
         btn.style.top = (cssY + gameState.gridSize / dpr * 0.7) + 'px'; 
         btn.style.display = 'block';
@@ -731,13 +725,15 @@
     function hideSellButton() { document.getElementById('sell-btn-overlay').style.display = 'none'; }
 
     // =========================================
-    // 拖曳與疊加進化邏輯
+    // 拖曳與隨機刷新購買位置進化邏輯
     // =========================================
     document.querySelectorAll('.card').forEach(c => { c.addEventListener('mousedown', (e) => startDrag(e, c)); c.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(e, c); }, {passive: false}); });
     
     function startDrag(e, cardEl) { 
         if(cardEl.classList.contains('disabled') || !gameState.running || gameState.paused) return; 
-        gameState.dragState.isDragging = true; gameState.dragState.cardType = cardEl.getAttribute('data-type'); 
+        gameState.dragState.isDragging = true; 
+        gameState.dragState.cardType = cardEl.getAttribute('data-type'); 
+        gameState.dragState.cardEl = cardEl; 
         gameState.selectedTower = null; hideSellButton(); 
         
         dragIcon.style.display = 'block'; dragCtx.clearRect(0, 0, 50, 50);
@@ -773,16 +769,25 @@
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
                     existingTower.level++; 
                     
+                    // 觸發疊加進化特效
                     existingTower.upgradeEffect = 1.0;
                     spawnParticles(existingTower.x, existingTower.y, cardData.color, 20, 'upgrade');
                     
+                    refreshCardSlot(gameState.dragState.cardEl);
                     updateUIBars();
                 }
             } else {
                 if (gameState.energy >= cardData.cost) {
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
-                    gameState.towers.push({ id: type, x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0, level: 1, upgradeEffect: 0 });
+                    
+                    // 【修改】為新放置的角色增加 upgradeEffect 讓它產生落地的光環特效
+                    gameState.towers.push({ id: type, x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0, level: 1, upgradeEffect: 1.0 });
+                    
+                    // 【修改】放置時立刻噴射該塔顏色的升級粒子
+                    spawnParticles(gx * gs + gs/2, gy * gs + gs/2, cardData.color, 15, 'upgrade');
+                    
+                    refreshCardSlot(gameState.dragState.cardEl);
                     updateUIBars();
                 }
             }
@@ -790,10 +795,47 @@
         gameState.dragState.isDragging = false; gameState.dragState.cardType = null; 
     }
     
+    function refreshCardSlot(cardEl) {
+        if (!cardEl) return;
+        
+        // 【新增】觸發重新刷新的閃爍特效動畫
+        cardEl.classList.remove('refreshing');
+        void cardEl.offsetWidth; // 強制瀏覽器重繪，讓動畫可以重複觸發
+        cardEl.classList.add('refreshing');
+
+        const types = ['machineGun', 'laser', 'ice', 'sniper'];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        const tower = TOWER_DATA[randomType];
+
+        cardEl.setAttribute('data-type', randomType);
+        cardEl.querySelector('.card-cost').innerText = tower.cost;
+
+        let name = '機槍塔';
+        if (randomType === 'laser') name = '雷射塔';
+        if (randomType === 'ice') name = '冰凍塔';
+        if (randomType === 'sniper') name = '狙擊塔';
+        cardEl.querySelector('.card-name').innerText = name;
+
+        const ctx = cardEl.querySelector('.card-icon-canvas').getContext('2d');
+        ctx.clearRect(0, 0, 40, 40);
+        ctx.fillStyle = '#1a1d2e'; ctx.beginPath(); ctx.arc(20, 20, 18, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = tower.color; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; tower.drawIcon(ctx, 20, 20, 20);
+    }
+
     window.addEventListener('mousemove', handleMove); window.addEventListener('mouseup', handleUp); window.addEventListener('touchmove', handleMove, {passive: false}); window.addEventListener('touchend', handleUp);
 
     function startGameState() { 
         setTimeout(() => {
+            const defaultTypes = ['machineGun', 'laser', 'ice', 'sniper'];
+            document.querySelectorAll('.card').forEach((c, idx) => {
+                const type = defaultTypes[idx];
+                c.setAttribute('data-type', type);
+                c.querySelector('.card-cost').innerText = TOWER_DATA[type].cost;
+                c.querySelector('.card-name').innerText = type === 'machineGun' ? '機槍塔' : type === 'laser' ? '雷射塔' : type === 'ice' ? '冰凍塔' : '狙擊塔';
+                c.classList.remove('refreshing'); // 確保開始時沒有殘留特效
+            });
+
             resizeCanvas(); initCardIcons(); initEnergyIcon();
             gameState.running = true; gameState.paused = false; gameState.hp = gameState.maxHp; gameState.energy = 5; gameState.wave = 1; 
             gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.particles = []; 
