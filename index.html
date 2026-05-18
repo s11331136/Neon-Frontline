@@ -13,7 +13,7 @@
         .screen.active { display: flex; flex-direction: column; }
         
         /* 標題樣式 */
-        h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin: 30px 0; font-size: 26px; letter-spacing: 2px; }
+        h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin: 30px 0 20px 0; font-size: 26px; letter-spacing: 2px; }
         
         /* ================= 登入系統 UI ================= */
         .login-box { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px; }
@@ -30,7 +30,7 @@
 
         /* 首頁與按鈕 */
         .home-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .start-btn { background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1)); border: 2px solid #00f3ff; color: #00f3ff; padding: 25px 50px; font-size: 22px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); letter-spacing: 4px; transition: 0.2s; text-shadow: 0 0 5px #00f3ff; }
+        .start-btn { background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1)); border: 2px solid #00f3ff; color: #00f3ff; padding: 18px 40px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); letter-spacing: 4px; transition: 0.2s; text-shadow: 0 0 5px #00f3ff; }
         .start-btn:active { transform: scale(0.95); box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
 
         /* ================= 升級畫面 UI (科技研究所) ================= */
@@ -67,6 +67,10 @@
         #battle-title-bar { text-align: center; color: #ff00cc; text-shadow: 0 0 5px rgba(255, 0, 204, 0.5); font-weight: bold; padding: 6px 0; background: #0d111a; font-size: 15px; border-bottom: 1px solid rgba(255, 0, 204, 0.2); z-index: 10; position: relative; }
         #game-canvas { width: 100%; flex: 1; display: block; }
 
+        /* 賣出按鈕浮窗樣式 */
+        #sell-btn-overlay { position: absolute; background: rgba(255, 0, 60, 0.85); border: 1px solid #ff003c; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; z-index: 50; display: none; text-shadow: 0 0 5px #000; box-shadow: 0 0 10px rgba(255, 0, 60, 0.5); transform: translate(-50%, 0); transition: 0.1s; }
+        #sell-btn-overlay:active { background: rgba(255, 0, 60, 1); transform: translate(-50%, 0) scale(0.95); }
+
         /* 能量條 */
         #energy-bar-container { height: 25px; background: #050505; border-top: 2px solid #00f3ff; border-bottom: 1px solid #00f3ff; display: flex; align-items: center; padding: 0 10px; position: relative; z-index: 10; }
         #energy-bar-bg { flex: 1; height: 12px; background: #111; border: 1px solid #00a8ff; border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 0 5px #000; }
@@ -92,7 +96,12 @@
         #modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: none; justify-content: center; align-items: center; }
         .modal-container { background-color: #0d111a; border: 2px solid #00f3ff; border-radius: 12px; width: 85%; max-width: 350px; padding: 25px 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); transform: scale(0.9); opacity: 0; transition: 0.2s; }
         #modal-overlay.show .modal-container { transform: scale(1); opacity: 1; }
+        
+        .modal-container.debuff-mode { border-color: #ff003c; box-shadow: 0 0 30px rgba(255, 0, 60, 0.4); }
+
         .modal-header { display: flex; justify-content: space-between; width: 100%; color: #00f3ff; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px;}
+        .debuff-mode .modal-header { color: #ff003c; border-bottom-color: rgba(255,0,60,0.2); }
+        
         .close-btn { color: #ff003c; cursor: pointer; font-size: 20px; padding: 0 5px;}
         .modal-body { color: #ccc; font-size: 15px; text-align: center; margin: 5px 0; min-height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; line-height: 1.5; }
         .modal-footer { display: flex; gap: 10px; width: 100%;}
@@ -103,8 +112,13 @@
         .buff-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .buff-card { background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(0, 243, 255, 0.02)); border: 1px solid #00a8ff; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .buff-card:hover, .buff-card:active { background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); transform: translateY(-2px); }
+        
+        .debuff-card { background: linear-gradient(135deg, rgba(255, 0, 60, 0.1), rgba(255, 0, 60, 0.02)); border: 1px solid #ff003c; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
+        .debuff-card:hover, .debuff-card:active { background: rgba(255, 0, 60, 0.25); border-color: #ff003c; box-shadow: 0 0 15px rgba(255, 0, 60, 0.5); transform: translateY(-2px); }
+
         .buff-title { color: #00f3ff; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
-        .buff-icon-canvas { display: block; filter: drop-shadow(0 0 5px #00f3ff); flex-shrink: 0; }
+        .debuff-title { color: #ff003c; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+        .buff-icon-canvas { display: block; flex-shrink: 0; }
         .buff-desc { color: #aaa; font-size: 12px; line-height: 1.4; }
     </style>
 </head>
@@ -124,11 +138,21 @@
 
     <div id="screen-levels" class="screen">
         <h1>防禦陣線：無盡星海</h1>
-        <div class="user-info-bar">
+        <div class="user-info-bar" style="width: 100%; margin-bottom: 15px;">
             <div class="commander-name">👤 指揮官：<span id="display-username">---</span></div>
             <button class="logout-btn" onclick="systemLogout()">登出切換</button>
         </div>
-        <div class="home-content"><button class="start-btn" onclick="enterBattle()">開始遊戲</button></div>
+        
+        <div class="home-content" style="width: 100%; background: rgba(0, 243, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.2); text-align: center;">
+            <h2 style="color: #fff; margin-bottom: 15px; font-size: 20px;">任務：無盡防禦戰</h2>
+            <p style="color: #aaa; font-size: 13px; line-height: 1.6; margin-bottom: 25px;">
+                敵人將隨著波次 <span style="color:#ff003c;">逐漸增強血量與數量</span>。<br>
+                每 <span style="color:#00f3ff;">10</span> 波遭遇 BOSS 並獲得戰術晶片。<br>
+                每 <span style="color:#ff003c;">20</span> 波將承受深空負面效應！<br>
+                請善用疊加進化與科技升級。
+            </p>
+            <button class="start-btn" onclick="enterBattle()">進入戰場</button>
+        </div>
     </div>
     
     <div id="screen-upgrades" class="screen">
@@ -142,11 +166,14 @@
 
     <div id="screen-battle" class="screen">
         <div id="battle-header">
-            <button class="header-btn danger" onclick="requestExit()">◄ 離開</button>
+            <button class="header-btn danger" onclick="requestExit()">◄ 撤退</button>
             <div id="base-health-container"><div id="base-health-fill"></div><div id="base-health-text">10 / 10</div></div>
             <button class="header-btn" onclick="requestPause()">⏸ 暫停</button>
         </div>
-        <div id="battle-title-bar">無盡模式 - 波次 <span id="current-wave">1</span> <span id="wave-type-label" style="color:#ff003c; margin-left:8px;"></span></div>
+        <div id="battle-title-bar">波次 <span id="current-wave">1</span> <span id="wave-type-label" style="color:#ff003c; margin-left:8px;"></span></div>
+        
+        <div id="sell-btn-overlay">賣出 $0</div>
+        
         <canvas id="game-canvas"></canvas>
         <div id="energy-bar-container">
             <canvas class="energy-icon-canvas" id="energy-bar-icon-canvas" width="20" height="20"></canvas>
@@ -167,7 +194,7 @@
     </div>
 
     <div id="modal-overlay">
-        <div class="modal-container">
+        <div class="modal-container" id="modal-container-box">
             <div class="modal-header"><span id="modal-title">標題</span><span class="close-btn" id="modal-close-x" onclick="closeModal()">✖</span></div>
             <div class="modal-body" id="modal-body">內容區域</div>
             <div class="modal-footer" id="modal-footer">
@@ -180,14 +207,14 @@
 
 <script>
     // =========================================
-    // 帳號與存檔系統 (Local Storage)
+    // 帳號與存檔系統
     // =========================================
     let currentUser = "";
     let metaData = {};
 
     function getDefaultMetaData() {
         return {
-            techPoints: 100, // 初始科技點 100 點
+            techPoints: 100, 
             towers: {
                 'machineGun': { id: 'machineGun', title: '機槍塔', level: 1, maxStar: 1, baseDmg: 10, dmgGrowth: 2.0 },
                 'laser':      { id: 'laser', title: '雷射塔', level: 1, maxStar: 1, baseDmg: 0.8, dmgGrowth: 0.2 },
@@ -200,22 +227,12 @@
     function systemLogin() {
         const input = document.getElementById('username-input').value.trim();
         if (!input) { alert("請輸入指揮官代號！"); return; }
-        
         currentUser = input;
-        
-        // 嘗試讀取存檔
         const savedData = localStorage.getItem('defense_save_' + currentUser);
-        if (savedData) {
-            metaData = JSON.parse(savedData);
-        } else {
-            // 新創帳號
-            metaData = getDefaultMetaData();
-            saveProgress();
-        }
+        if (savedData) metaData = JSON.parse(savedData);
+        else { metaData = getDefaultMetaData(); saveProgress(); }
         
         document.getElementById('display-username').innerText = currentUser;
-        
-        // 切換至首頁
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById('screen-levels').classList.add('active');
         document.getElementById('bottom-nav').style.display = 'flex';
@@ -223,28 +240,18 @@
     }
 
     function systemLogout() {
-        saveProgress();
-        currentUser = "";
-        document.getElementById('username-input').value = "";
-        
+        saveProgress(); currentUser = ""; document.getElementById('username-input').value = "";
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById('screen-login').classList.add('active');
         document.getElementById('bottom-nav').style.display = 'none';
     }
 
-    function saveProgress() {
-        if (!currentUser) return;
-        localStorage.setItem('defense_save_' + currentUser, JSON.stringify(metaData));
-    }
+    function saveProgress() { if (currentUser) localStorage.setItem('defense_save_' + currentUser, JSON.stringify(metaData)); }
 
     // =========================================
-    // 局外成長資料系統 (Meta Progression)
+    // 局外成長資料系統
     // =========================================
-    function getTowerBaseDamage(type) {
-        let t = metaData.towers[type];
-        return t.baseDmg + (t.level - 1) * t.dmgGrowth;
-    }
-
+    function getTowerBaseDamage(type) { let t = metaData.towers[type]; return t.baseDmg + (t.level - 1) * t.dmgGrowth; }
     function getUpgradeCost(level) { return 10 + Math.floor((level - 1) / 5) * 5; }
     function getBreakCost(maxStar) { return 100 + (maxStar - 1) * 50; }
 
@@ -252,130 +259,75 @@
         document.getElementById('tech-points-display').innerText = metaData.techPoints;
         const container = document.getElementById('upgrades-list');
         container.innerHTML = '';
-        
         Object.keys(metaData.towers).forEach(type => {
             let data = metaData.towers[type];
             let currentDmg = getTowerBaseDamage(type);
             let nextDmg = currentDmg + data.dmgGrowth;
-            
             let upgCost = getUpgradeCost(data.level);
             let breakCost = getBreakCost(data.maxStar);
-
             let canUpg = metaData.techPoints >= upgCost;
             let canBreak = metaData.techPoints >= breakCost && data.maxStar < 3;
             let breakText = data.maxStar >= 3 ? '已滿階' : `突破 $${breakCost}`;
 
-            let html = `
+            container.innerHTML += `
             <div class="upgrade-card">
-                <div class="upgrade-icon-wrapper">
-                    <canvas id="upg-icon-${type}" width="40" height="40"></canvas>
-                </div>
+                <div class="upgrade-icon-wrapper"><canvas id="upg-icon-${type}" width="40" height="40"></canvas></div>
                 <div class="upgrade-info">
                     <div class="upgrade-name">${data.title} <span class="upgrade-lvl">Lv.${data.level}</span></div>
-                    <div class="upgrade-stats">
-                        傷害: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>
-                        星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span>
-                    </div>
+                    <div class="upgrade-stats">傷害: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span></div>
                 </div>
                 <div class="upgrade-actions">
                     <div class="btn-upg ${canUpg ? '' : 'btn-disabled'}" onclick="buyUpgrade('${type}')">升級 $${upgCost}</div>
                     <div class="btn-break ${canBreak ? '' : 'btn-disabled'}" onclick="buyBreakthrough('${type}')">${breakText}</div>
                 </div>
-            </div>
-            `;
-            container.innerHTML += html;
+            </div>`;
         });
-        
         setTimeout(() => {
             Object.keys(metaData.towers).forEach(type => {
                 const ctx = document.getElementById(`upg-icon-${type}`).getContext('2d');
                 ctx.fillStyle = '#1a1d2e'; ctx.beginPath(); ctx.arc(20, 20, 18, 0, Math.PI*2); ctx.fill();
                 ctx.strokeStyle = TOWER_DATA[type].color; ctx.lineWidth = 1.5; ctx.stroke();
-                ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; 
-                TOWER_DATA[type].drawIcon(ctx, 20, 20, 20);
+                ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; TOWER_DATA[type].drawIcon(ctx, 20, 20, 20);
             });
         }, 0);
     }
 
-    window.buyUpgrade = function(type) {
-        let cost = getUpgradeCost(metaData.towers[type].level);
-        if (metaData.techPoints >= cost) {
-            metaData.techPoints -= cost;
-            metaData.towers[type].level++;
-            saveProgress(); // 自動存檔
-            renderUpgrades();
-        }
-    }
-    window.buyBreakthrough = function(type) {
-        let cost = getBreakCost(metaData.towers[type].maxStar);
-        if (metaData.techPoints >= cost && metaData.towers[type].maxStar < 3) {
-            metaData.techPoints -= cost;
-            metaData.towers[type].maxStar++;
-            saveProgress(); // 自動存檔
-            renderUpgrades();
-        }
-    }
+    window.buyUpgrade = function(type) { let cost = getUpgradeCost(metaData.towers[type].level); if (metaData.techPoints >= cost) { metaData.techPoints -= cost; metaData.towers[type].level++; saveProgress(); renderUpgrades(); } }
+    window.buyBreakthrough = function(type) { let cost = getBreakCost(metaData.towers[type].maxStar); if (metaData.techPoints >= cost && metaData.towers[type].maxStar < 3) { metaData.techPoints -= cost; metaData.towers[type].maxStar++; saveProgress(); renderUpgrades(); } }
+
+    function switchTab(tabName, btnElement) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-' + tabName).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); btnElement.classList.add('active'); if (tabName === 'upgrades') renderUpgrades(); }
+    
+    // 【修改】切換到遊戲畫面
+    function enterBattle() { document.getElementById('bottom-nav').style.display = 'none'; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-battle').classList.add('active'); startGameState(); }
+    
+    function exitBattle() { stopGameState(); closeModal(); hideSellButton(); document.getElementById('bottom-nav').style.display = 'flex'; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-levels').classList.add('active'); }
 
     // =========================================
-    // UI 與導航邏輯
-    // =========================================
-    function switchTab(tabName, btnElement) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('screen-' + tabName).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btnElement.classList.add('active');
-        
-        if (tabName === 'upgrades') renderUpgrades();
-    }
-    function enterBattle() {
-        document.getElementById('bottom-nav').style.display = 'none';
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('screen-battle').classList.add('active');
-        startGameState();
-    }
-    function exitBattle() {
-        stopGameState(); closeModal(); 
-        document.getElementById('bottom-nav').style.display = 'flex';
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('screen-levels').classList.add('active');
-    }
-
-    // =========================================
-    // 對話框 Modal 系統
+    // 彈出視窗與 Buff / Debuff 系統
     // =========================================
     const modalOverlay = document.getElementById('modal-overlay');
-    function showModal(title, textHTML, confirmAction, cancelAction, showX = true) {
+    function showModal(title, textHTML, confirmAction, cancelAction, showX = true, isDebuff = false) {
         gameState.paused = true; 
         document.getElementById('modal-title').innerText = title;
         document.getElementById('modal-body').innerHTML = textHTML;
         document.getElementById('modal-close-x').style.display = showX ? 'block' : 'none';
         
+        const modalBox = document.getElementById('modal-container-box');
+        if (isDebuff) modalBox.classList.add('debuff-mode'); else modalBox.classList.remove('debuff-mode');
+
         const cBtn = document.getElementById('modal-confirm-action');
-        if (confirmAction) { cBtn.style.display = 'block'; cBtn.innerText = confirmAction.text; cBtn.onclick = () => { closeModal(); confirmAction.action(); }; } 
-        else cBtn.style.display = 'none';
+        if (confirmAction) { cBtn.style.display = 'block'; cBtn.innerText = confirmAction.text; cBtn.onclick = () => { closeModal(); confirmAction.action(); }; } else cBtn.style.display = 'none';
         
         const cancelBtn = document.getElementById('modal-cancel-action');
-        if (cancelAction) { cancelBtn.style.display = 'block'; cancelBtn.innerText = cancelAction.text; cancelBtn.onclick = () => { closeModal(); cancelAction.action(); }; } 
-        else cancelBtn.style.display = 'none';
+        if (cancelAction) { cancelBtn.style.display = 'block'; cancelBtn.innerText = cancelAction.text; cancelBtn.onclick = () => { closeModal(); cancelAction.action(); }; } else cancelBtn.style.display = 'none';
         
         modalOverlay.style.display = 'flex'; setTimeout(() => modalOverlay.classList.add('show'), 10);
     }
-    function closeModal() {
-        modalOverlay.classList.remove('show');
-        setTimeout(() => { modalOverlay.style.display = 'none'; if (gameState.running && gameState.hp > 0 && !gameState.isSelectingBuff) gameState.paused = false; }, 200);
-    }
+    function closeModal() { modalOverlay.classList.remove('show'); setTimeout(() => { modalOverlay.style.display = 'none'; if (gameState.running && gameState.hp > 0 && !gameState.isSelectingBuff) gameState.paused = false; }, 200); }
     function requestExit() { showModal("離開遊戲", "指揮官，確定要撤退嗎？<br>（已獲得的科技點數會保留）", {text:"是",action:exitBattle}, {text:"取消",action:closeModal}); }
     function requestPause() { showModal("遊戲暫停", "<span style='color:#00f3ff;'>遊戲暫停中</span><br>指揮官，部隊待命中。", {text:"繼續",action:closeModal}, {text:"離開",action:exitBattle}); }
-    function checkGameOver() { 
-        if (gameState.hp <= 0) {
-            saveProgress(); // 遊戲結束自動存檔
-            showModal("遊戲結束", `<span style='color:#ff003c;font-weight:bold;font-size:18px;'>防線已全面崩潰！</span><br><br>你成功防守了 <span style='color:#ffd700;font-size:18px;'>${gameState.wave}</span> 波次。<br><br>本次獲得科技點數: <span style='color:#00f3ff;font-size:18px;'>+${gameState.earnedPoints}</span>`, {text:"重新開始",action:startGameState}, {text:"退出主畫面",action:exitBattle}, false); 
-        }
-    }
+    function checkGameOver() { if (gameState.hp <= 0) { saveProgress(); showModal("遊戲結束", `<span style='color:#ff003c;font-weight:bold;font-size:18px;'>防線已全面崩潰！</span><br><br>你成功防守了 <span style='color:#ffd700;font-size:18px;'>${gameState.wave}</span> 波次。<br><br>本次獲得科技點數: <span style='color:#00f3ff;font-size:18px;'>+${gameState.earnedPoints}</span>`, {text:"重新開始",action:startGameState}, {text:"返回主選單",action:exitBattle}, false); } }
 
-    // =========================================
-    // Roguelike 三選一效果機制與專屬圖示
-    // =========================================
     const BUFF_POOL = [
         { id: 'cdr', title: '核心超頻', desc: '全體防禦塔射速與充能提升 20%' },
         { id: 'energy', title: '能量泵浦', desc: '戰鬥能量(聖水)回復速度加快' },
@@ -385,52 +337,59 @@
         { id: 'dmg', title: '火力增壓', desc: '全體防禦塔基礎攻擊傷害提升 25%' }
     ];
 
-    function triggerBuffSelection() {
-        gameState.isSelectingBuff = true;
-        gameState.paused = true;
+    const DEBUFF_POOL = [
+        { id: 'enemyHpUp', title: '裝甲變異', desc: '深空輻射導致所有敵人生命值永久提升 20%' },
+        { id: 'enemySpdUp', title: '敏捷突變', desc: '受未知磁場影響，所有敵人移動速度永久提升 15%' },
+        { id: 'towerDmgDown', title: '能量干擾', desc: '星際干擾導致所有防禦塔基礎傷害永久降低 15%' }
+    ];
+
+    function triggerBuffSelection(type = 'buff') {
+        gameState.isSelectingBuff = true; gameState.paused = true; hideSellButton();
         
-        let shuffled = [...BUFF_POOL].sort(() => 0.5 - Math.random());
+        let pool = (type === 'buff') ? BUFF_POOL : DEBUFF_POOL;
+        let shuffled = [...pool].sort(() => 0.5 - Math.random());
         let choices = shuffled.slice(0, 3);
 
-        let html = `<p style="font-size:12px; color:#aaa; margin-bottom:12px;">請點擊選擇一個戰術晶片強化防線：</p>`;
-        html += `<div class="buff-container">`;
-        choices.forEach((buff, idx) => {
-            html += `
-                <div class="buff-card" onclick="selectBuff('${buff.id}')">
-                    <div class="buff-title">
-                        <canvas class="buff-icon-canvas" id="buff-icon-${buff.id}-${idx}" width="30" height="30"></canvas>
-                        <span>${buff.title}</span>
-                    </div>
-                    <div class="buff-desc">${buff.desc}</div>
-                </div>
-            `;
+        let title = (type === 'buff') ? "🛰️ 晶片空投已抵達" : "⚠️ 警告：深空負面效應";
+        let subText = (type === 'buff') ? "請點擊選擇一個戰術晶片強化防線：" : "深空輻射激增，必須選擇承受一項負面干擾：";
+        let cardClass = (type === 'buff') ? "buff-card" : "debuff-card";
+        let titleClass = (type === 'buff') ? "buff-title" : "debuff-title";
+        
+        let html = `<p style="font-size:12px; color:#aaa; margin-bottom:12px;">${subText}</p><div class="buff-container">`;
+        choices.forEach((c, idx) => {
+            html += `<div class="${cardClass}" onclick="selectBuff('${c.id}', '${type}')"><div class="${titleClass}">`;
+            html += `<canvas class="buff-icon-canvas" id="modal-icon-${c.id}-${idx}" width="30" height="30" style="filter: drop-shadow(0 0 5px ${type==='buff'?'#00f3ff':'#ff003c'});"></canvas><span>${c.title}</span></div><div class="buff-desc">${c.desc}</div></div>`;
         });
         html += `</div>`;
 
-        showModal("🛰️ 晶片空投已抵達", html, null, null, false);
+        showModal(title, html, null, null, false, type === 'debuff');
         
         requestAnimationFrame(() => {
-            choices.forEach((buff, idx) => {
-                const canvasId = `buff-icon-${buff.id}-${idx}`;
-                const buffCanvas = document.getElementById(canvasId);
-                if (buffCanvas) {
-                    const buffCtx = buffCanvas.getContext('2d');
-                    buffCtx.clearRect(0, 0, 30, 30);
-                    drawBuffIconDispatcher(buffCtx, 15, 15, 28, buff.id);
+            choices.forEach((c, idx) => {
+                const cvs = document.getElementById(`modal-icon-${c.id}-${idx}`);
+                if (cvs) {
+                    const cCtx = cvs.getContext('2d'); cCtx.clearRect(0, 0, 30, 30);
+                    if(type === 'buff') drawBuffIconDispatcher(cCtx, 15, 15, 28, c.id);
+                    else drawDebuffIcon(cCtx, 15, 15, 28);
                 }
             });
         });
     }
 
-    window.selectBuff = function(buffId) {
-        if (!gameState.buffs[buffId]) gameState.buffs[buffId] = 0;
-        gameState.buffs[buffId]++;
-        if (buffId === 'heal') { gameState.hp = Math.min(gameState.maxHp, gameState.hp + 3); updateUIBars(); }
+    function drawDebuffIcon(ctx, x, y, size) { ctx.strokeStyle = '#ff003c'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x-size*0.3, y+size*0.3); ctx.lineTo(x, y-size*0.4); ctx.lineTo(x+size*0.3, y+size*0.3); ctx.closePath(); ctx.stroke(); ctx.fillStyle = '#ff003c'; ctx.beginPath(); ctx.arc(x, y+size*0.1, 2, 0, Math.PI*2); ctx.fill(); ctx.fillRect(x-1, y-size*0.2, 2, size*0.2); }
+
+    window.selectBuff = function(id, type) {
+        if (type === 'buff') {
+            if (!gameState.buffs[id]) gameState.buffs[id] = 0; gameState.buffs[id]++;
+            if (id === 'heal') { gameState.hp = Math.min(gameState.maxHp, gameState.hp + 3); updateUIBars(); }
+        } else {
+            if (!gameState.debuffs[id]) gameState.debuffs[id] = 0; gameState.debuffs[id]++;
+        }
         gameState.isSelectingBuff = false; closeModal();
     }
 
     // =========================================
-    // 各類向量圖案繪製
+    // 遊戲核心與視覺邏輯
     // =========================================
     function drawMachineGunIcon(ctx, x, y, size) { ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x-size*0.4, y-size*0.3); ctx.lineTo(x+size*0.4, y-size*0.3); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.4, y+size*0.3); ctx.lineTo(x+size*0.4, y+size*0.3); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.15, 0, Math.PI*2); ctx.fill(); }
     function drawLaserIcon(ctx, x, y, size) { ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x+size*0.5, y); ctx.stroke(); ctx.lineWidth=1; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.stroke(); }
@@ -440,24 +399,15 @@
 
     function drawBuffIconDispatcher(ctx, x, y, size, buffId) {
         switch(buffId) {
-            case 'cdr': drawBuff_Cdr(ctx, x, y, size); break;
-            case 'energy': drawBuff_Energy(ctx, x, y, size); break;
-            case 'heal': drawBuff_Heal(ctx, x, y, size); break;
-            case 'crit': drawBuff_Crit(ctx, x, y, size); break;
-            case 'refund': drawBuff_Refund(ctx, x, y, size); break;
-            case 'dmg': drawBuff_Dmg(ctx, x, y, size); break;
+            case 'cdr': ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, size*0.4, 0, Math.PI*2); ctx.stroke(); for(let i=0; i<8; i++) { ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/4); ctx.strokeRect(-size*0.05, -size*0.5, size*0.1, size*0.2); ctx.restore(); } ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x-size*0.1, y-size*0.25); ctx.lineTo(x-size*0.15, y); ctx.lineTo(x, y); ctx.lineTo(x-size*0.05, y+size*0.25); ctx.lineTo(x+size*0.15, y+size*0.05); ctx.lineTo(x, y+size*0.05); ctx.lineTo(x+size*0.1, y-size*0.25); ctx.closePath(); ctx.fill(); ctx.stroke(); break;
+            case 'energy': ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(x-size*0.3, y-size*0.4, size*0.6, size*0.8); ctx.fillStyle = '#fff'; ctx.fillRect(x-size*0.15, y-size*0.45, size*0.3, size*0.1); ctx.fillStyle = '#00d2ff'; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.stroke(); break;
+            case 'heal': ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.4, y-size*0.25); ctx.lineTo(x+size*0.4, y+size*0.1); ctx.lineTo(x, y+size*0.5); ctx.lineTo(x-size*0.4, y+size*0.1); ctx.lineTo(x-size*0.4, y-size*0.25); ctx.closePath(); ctx.stroke(); ctx.fillStyle = '#ff003c'; ctx.fillRect(x-size*0.06, y-size*0.25, size*0.12, size*0.5); ctx.fillRect(x-size*0.25, y-size*0.06, size*0.5, size*0.12); break;
+            case 'crit': ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x, y, size*0.35, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x+size*0.5, y); ctx.stroke(); ctx.fillStyle = '#ff003c'; ctx.beginPath(); ctx.arc(x, y, size*0.1, 0, Math.PI*2); ctx.fill(); for(let i=0; i<4; i++){ ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/2 + Math.PI/4); ctx.fillRect(size*0.2, -1, size*0.2, 2); ctx.restore(); } break;
+            case 'refund': ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x+size*0.2, y+size*0.2, size*0.3, 0, Math.PI*2); ctx.stroke(); ctx.fillStyle='#fff'; ctx.font='bold '+Math.floor(size*0.35)+'px Arial'; ctx.fillText('$', x+size*0.2, y+size*0.32); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.lineCap='butt'; ctx.beginPath(); ctx.moveTo(x-size*0.15, y-size*0.1); ctx.lineTo(x-size*0.15, y+size*0.2); ctx.arc(x, y+size*0.2, size*0.15, Math.PI, 0, true); ctx.lineTo(x+size*0.15, y-size*0.1); ctx.stroke(); ctx.fillStyle='#00d2ff'; ctx.fillRect(x-size*0.2, y-size*0.15, size*0.1, size*0.1); ctx.fillStyle='#ff003c'; ctx.fillRect(x+size*0.1, y-size*0.15, size*0.1, size*0.1); break;
+            case 'dmg': ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.25, y-size*0.1); ctx.lineTo(x+size*0.1, y-size*0.1); ctx.lineTo(x+size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y-size*0.1); ctx.lineTo(x-size*0.25, y-size*0.1); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; for(let i=0; i<3; i++){ ctx.beginPath(); ctx.arc(x, y+size*0.25, size*(0.1+i*0.12), Math.PI, 0); ctx.stroke(); } break;
         }
     }
-    function drawBuff_Cdr(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, size*0.4, 0, Math.PI*2); ctx.stroke(); for(let i=0; i<8; i++) { ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/4); ctx.strokeRect(-size*0.05, -size*0.5, size*0.1, size*0.2); ctx.restore(); } ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x-size*0.1, y-size*0.25); ctx.lineTo(x-size*0.15, y); ctx.lineTo(x, y); ctx.lineTo(x-size*0.05, y+size*0.25); ctx.lineTo(x+size*0.15, y+size*0.05); ctx.lineTo(x, y+size*0.05); ctx.lineTo(x+size*0.1, y-size*0.25); ctx.closePath(); ctx.fill(); ctx.stroke(); }
-    function drawBuff_Energy(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(x-size*0.3, y-size*0.4, size*0.6, size*0.8); ctx.fillStyle = '#fff'; ctx.fillRect(x-size*0.15, y-size*0.45, size*0.3, size*0.1); ctx.fillStyle = '#00d2ff'; ctx.beginPath(); ctx.arc(x, y, size*0.2, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, size*0.3, 0, Math.PI*2); ctx.stroke(); }
-    function drawBuff_Heal(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.4, y-size*0.25); ctx.lineTo(x+size*0.4, y+size*0.1); ctx.lineTo(x, y+size*0.5); ctx.lineTo(x-size*0.4, y+size*0.1); ctx.lineTo(x-size*0.4, y-size*0.25); ctx.closePath(); ctx.stroke(); ctx.fillStyle = '#ff003c'; ctx.fillRect(x-size*0.06, y-size*0.25, size*0.12, size*0.5); ctx.fillRect(x-size*0.25, y-size*0.06, size*0.5, size*0.12); }
-    function drawBuff_Crit(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x, y, size*0.35, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x, y+size*0.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-size*0.5, y); ctx.lineTo(x+size*0.5, y); ctx.stroke(); ctx.fillStyle = '#ff003c'; ctx.beginPath(); ctx.arc(x, y, size*0.1, 0, Math.PI*2); ctx.fill(); for(let i=0; i<4; i++){ ctx.save(); ctx.translate(x, y); ctx.rotate(i*Math.PI/2 + Math.PI/4); ctx.fillRect(size*0.2, -1, size*0.2, 2); ctx.restore(); } }
-    function drawBuff_Refund(ctx, x, y, size) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x+size*0.2, y+size*0.2, size*0.3, 0, Math.PI*2); ctx.stroke(); ctx.fillStyle='#fff'; ctx.font='bold '+Math.floor(size*0.35)+'px Arial'; ctx.fillText('$', x+size*0.2, y+size*0.32); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.lineCap='butt'; ctx.beginPath(); ctx.moveTo(x-size*0.15, y-size*0.1); ctx.lineTo(x-size*0.15, y+size*0.2); ctx.arc(x, y+size*0.2, size*0.15, Math.PI, 0, true); ctx.lineTo(x+size*0.15, y-size*0.1); ctx.stroke(); ctx.fillStyle='#00d2ff'; ctx.fillRect(x-size*0.2, y-size*0.15, size*0.1, size*0.1); ctx.fillStyle='#ff003c'; ctx.fillRect(x+size*0.1, y-size*0.15, size*0.1, size*0.1); }
-    function drawBuff_Dmg(ctx, x, y, size) { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x+size*0.25, y-size*0.1); ctx.lineTo(x+size*0.1, y-size*0.1); ctx.lineTo(x+size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y+size*0.2); ctx.lineTo(x-size*0.1, y-size*0.1); ctx.lineTo(x-size*0.25, y-size*0.1); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; for(let i=0; i<3; i++){ ctx.beginPath(); ctx.arc(x, y+size*0.25, size*(0.1+i*0.12), Math.PI, 0); ctx.stroke(); } }
 
-    // =========================================
-    // 遊戲核心邏輯
-    // =========================================
     const canvas = document.getElementById('game-canvas'); const ctx = canvas.getContext('2d');
     const dragIcon = document.getElementById('drag-icon'); const dragCtx = document.getElementById('drag-canvas').getContext('2d');
     
@@ -468,10 +418,44 @@
         'sniper':     { cost: 6, color: '#ffaa00', range: 250, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
     };
 
-    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], towers: [], enemies: [], bullets: [], lasers: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null }, buffs: {}, earnedPoints: 0 };
+    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null };
 
-    function resizeCanvas() { const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = rect.width*dpr; canvas.height = rect.height*dpr; ctx.scale(dpr, dpr); gameState.gridSize = rect.width/gameState.cols; createPath(rect.height); }
-    function createPath(h) { const gs = gameState.gridSize; gameState.path = [ {x:gs*1.5, y:-gs}, {x:gs*1.5, y:gs*2.5}, {x:gs*6.5, y:gs*2.5}, {x:gs*6.5, y:gs*6.5}, {x:gs*1.5, y:gs*6.5}, {x:gs*1.5, y:gs*10.5}, {x:gs*5.5, y:gs*10.5}, {x:gs*5.5, y:h+gs} ]; }
+    function resizeCanvas() { const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = rect.width*dpr; canvas.height = rect.height*dpr; ctx.scale(dpr, dpr); gameState.gridSize = rect.width/gameState.cols; createPath(rect.height); hideSellButton(); }
+    
+    function createPath(h) { 
+        const gs = gameState.gridSize; 
+        gameState.path = [ {x:gs*1.5, y:-gs}, {x:gs*1.5, y:gs*2.5}, {x:gs*6.5, y:gs*2.5}, {x:gs*6.5, y:gs*6.5}, {x:gs*1.5, y:gs*6.5}, {x:gs*1.5, y:gs*10.5}, {x:gs*5.5, y:gs*10.5}, {x:gs*5.5, y:h+gs} ]; 
+        updatePathOccupancy();
+    }
+
+    function updatePathOccupancy() {
+        gameState.pathCells = [];
+        const gs = gameState.gridSize;
+        if (gs <= 0 || gameState.path.length === 0) return;
+        for (let i = 0; i < gameState.path.length - 1; i++) {
+            let p1 = gameState.path[i]; let p2 = gameState.path[i+1];
+            let dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+            let steps = Math.ceil(dist / (gs / 4)); 
+            for (let s = 0; s <= steps; s++) {
+                let xx = p1.x + (p2.x - p1.x) * (s / steps);
+                let yy = p1.y + (p2.y - p1.y) * (s / steps);
+                let gx = Math.floor(xx / gs); let gy = Math.floor(yy / gs);
+                let key = gx + ',' + gy;
+                if (!gameState.pathCells.includes(key) && gy >= 0) gameState.pathCells.push(key);
+            }
+        }
+    }
+
+    function spawnParticles(x, y, color, count, type="shatter") {
+        for(let i=0; i<count; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            let speed = (type === 'upgrade') ? Math.random() * 1.5 + 0.5 : Math.random() * 2 + 1;
+            gameState.particles.push({
+                x: x, y: y, vx: Math.cos(angle) * speed, vy: (type === 'upgrade') ? -Math.abs(Math.sin(angle)*speed) : Math.sin(angle) * speed, 
+                life: 1.0, decay: Math.random() * 0.03 + 0.02, color: color, type: type
+            });
+        }
+    }
 
     let lastEvent = null; let reqId;
     function gameStateLoop() { if (gameState.running) { if (!gameState.paused) update(); draw(); reqId = requestAnimationFrame(gameStateLoop); } }
@@ -482,15 +466,22 @@
         if(gameState.energyTimer >= energySpeed) { if(gameState.energy < gameState.maxEnergy) { gameState.energy++; updateUIBars(); } gameState.energyTimer = 0; }
 
         let isBossWave = (gameState.wave % 10 === 0);
+        // 【修改】敵人數量：基礎 10，每 5 關多 5 隻
+        let enemiesThisWave = isBossWave ? 1 : (10 + Math.floor((gameState.wave - 1) / 5) * 5);
+
         gameState.spawnTimer++;
         
-        if (isBossWave) {
-            if (gameState.enemiesSpawned < 1 && gameState.spawnTimer > 60) { spawnBoss(); gameState.spawnTimer = 0; }
-        } else {
-            if (gameState.enemiesSpawned < 10 && gameState.spawnTimer > gameState.spawnInterval) { spawnEnemy(); gameState.spawnTimer = 0; }
+        if (gameState.enemiesSpawned < enemiesThisWave) {
+            let spawnDelay = isBossWave ? 60 : gameState.spawnInterval;
+            if (gameState.spawnTimer > spawnDelay) {
+                if (isBossWave) spawnBoss(); 
+                else spawnEnemy(); 
+                gameState.spawnTimer = 0; 
+            }
         }
 
-        if (((isBossWave && gameState.enemiesSpawned >= 1) || (!isBossWave && gameState.enemiesSpawned >= 10)) && gameState.enemies.length === 0) {
+        // 【修改】波次結束條件
+        if (gameState.enemiesSpawned >= enemiesThisWave && gameState.enemies.length === 0) {
             endWave();
         }
 
@@ -506,25 +497,31 @@
             }
         });
         updateBullets(); updateEnemies();
+        
+        for (let i = gameState.particles.length - 1; i >= 0; i--) {
+            let p = gameState.particles[i];
+            p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+            if (p.life <= 0) gameState.particles.splice(i, 1);
+        }
     }
 
     function endWave() {
         let finWave = gameState.wave;
-        
         let reward = (finWave % 10 === 0) ? 50 : 10;
-        metaData.techPoints += reward;
-        gameState.earnedPoints += reward;
-
+        metaData.techPoints += reward; gameState.earnedPoints += reward;
         gameState.wave++; gameState.enemiesSpawned = 0; gameState.spawnTimer = 0;
+        
         document.getElementById('current-wave').innerText = gameState.wave;
         document.getElementById('wave-type-label').innerText = (gameState.wave % 10 === 0) ? "[🔥 BOSS]" : "";
-        
         if (gameState.wave % 10 !== 0) gameState.spawnInterval = Math.max(25, 120 - Math.floor(gameState.wave * 3));
         
-        if (finWave % 5 === 0) {
-            triggerBuffSelection(); 
+        // 【修改】每 20 波給 Debuff，非 20 倍數的每 10 波給 Buff
+        if (finWave % 20 === 0) {
+            triggerBuffSelection('debuff'); 
+        } else if (finWave % 10 === 0) {
+            triggerBuffSelection('buff'); 
         } else {
-            saveProgress(); // 過關時自動存檔
+            saveProgress();
         }
     }
 
@@ -537,7 +534,7 @@
                 let finalDmg = b.damage;
                 if (gameState.buffs['dmg']) finalDmg *= (1 + gameState.buffs['dmg'] * 0.25);
                 if (gameState.buffs['crit'] && Math.random() < (gameState.buffs['crit'] * 0.15)) finalDmg *= 2.5; 
-
+                
                 b.target.hp -= finalDmg; if(b.isIce) b.target.speedMod = 0.4;
                 gameState.bullets.splice(i, 1);
             } else { b.x += (dx/dist) * b.speed; b.y += (dy/dist) * b.speed; }
@@ -547,7 +544,11 @@
     function updateEnemies() {
         for (let i = gameState.enemies.length - 1; i >= 0; i--) {
             let enemy = gameState.enemies[i];
-            if (enemy.hp <= 0) { gameState.enemies.splice(i, 1); continue; }
+            if (enemy.hp <= 0) { 
+                spawnParticles(enemy.x, enemy.y, enemy.isBoss ? '#ff003c' : '#ff00cc', enemy.isBoss ? 40 : 15, 'shatter');
+                gameState.enemies.splice(i, 1); 
+                continue; 
+            }
             if(enemy.speedMod < 1.0) enemy.speedMod += 0.003; if(enemy.speedMod > 1.0) enemy.speedMod = 1.0;
             const targetPos = gameState.path[enemy.pathIndex];
             if (targetPos) {
@@ -561,13 +562,37 @@
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawGrid(); drawPath(); drawDragRange();
+        
+        if (gameState.selectedTower) {
+            let t = gameState.selectedTower;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)'; ctx.beginPath(); ctx.arc(t.x, t.y, t.card.range, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = 'rgba(0, 243, 255, 0.3)'; ctx.lineWidth = 1; ctx.stroke();
+        }
+
         gameState.towers.forEach(tower => drawTowerObj(tower));
         gameState.enemies.forEach(enemy => drawEnemyObj(enemy));
         drawLasersAndBullets();
+        
+        gameState.particles.forEach(p => {
+            ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+            if (p.type === 'shatter') { ctx.fillRect(p.x - 2, p.y - 2, 4, 4); } 
+            else if (p.type === 'upgrade') { ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2); ctx.fill(); }
+            ctx.globalAlpha = 1.0;
+        });
     }
 
     function drawTowerObj(tower) {
         const gs = gameState.gridSize; const cx = tower.x; const cy = tower.y;
+        
+        if (tower.upgradeEffect > 0) {
+            tower.upgradeEffect -= 0.03;
+            let effSize = gs * (0.5 + (1 - tower.upgradeEffect));
+            ctx.globalAlpha = Math.max(0, tower.upgradeEffect);
+            ctx.strokeStyle = tower.card.color; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(cx, cy, effSize, 0, Math.PI*2); ctx.stroke();
+            ctx.globalAlpha = 1.0;
+        }
+
         ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(cx, cy, gs * 0.43, 0, Math.PI * 2); ctx.fill();
         
         if (tower.level === 1) {
@@ -603,22 +628,41 @@
 
     function spawnEnemy() {
         gameState.enemiesSpawned++;
-        const hp = 20 + Math.floor(gameState.wave * 12) + Math.pow(gameState.wave, 1.4); 
-        const speed = 1.0 + Math.min(1.5, gameState.wave * 0.05);
+        
+        // 【修改】隨波次增加血量 (每關 +15%)
+        let waveHpMod = 1 + (gameState.wave - 1) * 0.15;
+        let debuffHpMod = 1 + (gameState.debuffs['enemyHpUp'] || 0) * 0.20;
+        let hpMod = waveHpMod * debuffHpMod;
+        let spdMod = 1 + (gameState.debuffs['enemySpdUp'] || 0) * 0.15;
+        
+        const baseHp = 20 + Math.floor(gameState.wave * 10); 
+        const hp = baseHp * hpMod;
+        const speed = (1.0 + Math.min(1.5, gameState.wave * 0.05)) * spdMod;
+        
         gameState.enemies.push({ isBoss: false, x: gameState.path[0].x, y: gameState.path[0].y, pathIndex: 1, hp: hp, maxHp: hp, baseSpeed: speed, speedMod: 1.0 });
     }
     
     function spawnBoss() {
         gameState.enemiesSpawned++;
-        const bossHp = (200 + gameState.wave * 100) * (1 + (gameState.wave / 10) * 0.5);
-        const speed = 0.65 + (gameState.wave / 50) * 0.05;
+        
+        // 【修改】魔王血量成長倍率 (每關 +20%)
+        let waveHpMod = 1 + (gameState.wave - 1) * 0.20;
+        let debuffHpMod = 1 + (gameState.debuffs['enemyHpUp'] || 0) * 0.20;
+        let hpMod = waveHpMod * debuffHpMod;
+        let spdMod = 1 + (gameState.debuffs['enemySpdUp'] || 0) * 0.15;
+        
+        const baseHp = 200 + gameState.wave * 80;
+        const bossHp = baseHp * hpMod;
+        const speed = (0.65 + (gameState.wave / 50) * 0.05) * spdMod;
+        
         gameState.enemies.push({ isBoss: true, x: gameState.path[0].x, y: gameState.path[0].y, pathIndex: 1, hp: bossHp, maxHp: bossHp, baseSpeed: speed, speedMod: 1.0 });
     }
 
     function fireWeapon(tower, target) {
         let baseDmg = getTowerBaseDamage(tower.id);
         let mul = tower.level === 1 ? 1 : (tower.level === 2 ? 2.2 : 4.5);
-        let finalDmg = baseDmg * mul;
+        let debuffDmgMod = 1 - (gameState.debuffs['towerDmgDown'] || 0) * 0.15;
+        let finalDmg = baseDmg * mul * Math.max(0.1, debuffDmgMod);
 
         if (tower.card.type === 'projectile' || tower.card.type === 'aoe') { gameState.bullets.push({ x: tower.x, y: tower.y, target: target, speed: tower.card.bulletSpeed || 5, damage: finalDmg, color: tower.card.color, isIce: tower.card.type === 'aoe' }); } 
         else if (tower.card.type === 'laser') { 
@@ -640,11 +684,51 @@
         document.querySelectorAll('.card').forEach(c => { if (gameState.energy >= TOWER_DATA[c.getAttribute('data-type')].cost) c.classList.remove('disabled'); else c.classList.add('disabled'); });
     }
     
-    function drawGrid() { const gs = gameState.gridSize; if (gs <= 0) return; ctx.strokeStyle = 'rgba(0, 243, 255, 0.08)'; ctx.lineWidth = 1; const width = canvas.width / (window.devicePixelRatio || 1); const height = canvas.height / (window.devicePixelRatio || 1); ctx.beginPath(); for (let x = 0; x <= width; x += gs) { ctx.moveTo(x, 0); ctx.lineTo(x, height); } for (let y = 0; y <= height; y += gs) { ctx.moveTo(0, y); ctx.lineTo(width, y); } ctx.stroke(); }
-    function drawPath() { if(gameState.path.length < 2) return; ctx.strokeStyle = 'rgba(255, 0, 204, 0.15)'; ctx.lineWidth = gameState.gridSize * 0.8; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(gameState.path[0].x, gameState.path[0].y); for(let i=1; i<gameState.path.length; i++) ctx.lineTo(gameState.path[i].x, gameState.path[i].y); ctx.stroke(); }
+    function drawGrid() { const gs = gameState.gridSize; if (gs <= 0) return; ctx.strokeStyle = 'rgba(0, 243, 255, 0.05)'; ctx.lineWidth = 1; const width = canvas.width / (window.devicePixelRatio || 1); const height = canvas.height / (window.devicePixelRatio || 1); ctx.beginPath(); for (let x = 0; x <= width; x += gs) { ctx.moveTo(x, 0); ctx.lineTo(x, height); } for (let y = 0; y <= height; y += gs) { ctx.moveTo(0, y); ctx.lineTo(width, y); } ctx.stroke(); }
+    function drawPath() { if(gameState.path.length < 2) return; ctx.strokeStyle = 'rgba(255, 0, 204, 0.1)'; ctx.lineWidth = gameState.gridSize * 0.8; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(gameState.path[0].x, gameState.path[0].y); for(let i=1; i<gameState.path.length; i++) ctx.lineTo(gameState.path[i].x, gameState.path[i].y); ctx.stroke(); }
 
     function initCardIcons() { document.querySelectorAll('.card').forEach(c => { const tower = TOWER_DATA[c.getAttribute('data-type')]; const ctx = c.querySelector('.card-icon-canvas').getContext('2d'); ctx.clearRect(0, 0, 40, 40); ctx.fillStyle = '#1a1d2e'; ctx.beginPath(); ctx.arc(20, 20, 18, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = tower.color; ctx.lineWidth = 1.5; ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; tower.drawIcon(ctx, 20, 20, 20); }); }
     function initEnergyIcon() { const ctx = document.getElementById('energy-bar-icon-canvas').getContext('2d'); ctx.clearRect(0, 0, 20, 20); drawEnergyIcon(ctx, 10, 10, 18); }
+
+    // =========================================
+    // 點擊場上防禦塔與變賣邏輯
+    // =========================================
+    canvas.addEventListener('pointerdown', (e) => {
+        if(!gameState.running || gameState.paused || gameState.isSelectingBuff) return;
+        const pos = getMousePos(e); if(!pos) return;
+        const gs = gameState.gridSize; const gx = Math.floor(pos.x / gs); const gy = Math.floor(pos.y / gs);
+        
+        let clickedTower = gameState.towers.find(t => Math.floor(t.x/gs) === gx && Math.floor(t.y/gs) === gy);
+        if (clickedTower) {
+            gameState.selectedTower = clickedTower;
+            showSellButton(clickedTower);
+        } else {
+            gameState.selectedTower = null;
+            hideSellButton();
+        }
+    });
+
+    function showSellButton(tower) {
+        const btn = document.getElementById('sell-btn-overlay');
+        const refund = Math.floor(tower.card.cost / 2); 
+        btn.innerText = `賣出 $${refund}`;
+        
+        const dpr = window.devicePixelRatio || 1;
+        let cssX = tower.x / dpr; let cssY = tower.y / dpr;
+        
+        btn.style.left = cssX + 'px';
+        btn.style.top = (cssY + gameState.gridSize / dpr * 0.7) + 'px'; 
+        btn.style.display = 'block';
+        
+        btn.onclick = () => {
+            gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + refund);
+            gameState.towers = gameState.towers.filter(t => t !== tower);
+            gameState.selectedTower = null;
+            hideSellButton(); updateUIBars();
+            spawnParticles(tower.x, tower.y, '#fff', 15, 'shatter'); 
+        };
+    }
+    function hideSellButton() { document.getElementById('sell-btn-overlay').style.display = 'none'; }
 
     // =========================================
     // 拖曳與疊加進化邏輯
@@ -654,6 +738,8 @@
     function startDrag(e, cardEl) { 
         if(cardEl.classList.contains('disabled') || !gameState.running || gameState.paused) return; 
         gameState.dragState.isDragging = true; gameState.dragState.cardType = cardEl.getAttribute('data-type'); 
+        gameState.selectedTower = null; hideSellButton(); 
+        
         dragIcon.style.display = 'block'; dragCtx.clearRect(0, 0, 50, 50);
         const tower = TOWER_DATA[gameState.dragState.cardType];
         dragCtx.fillStyle = '#222'; dragCtx.beginPath(); dragCtx.arc(25, 25, 20, 0, Math.PI * 2); dragCtx.fill(); dragCtx.strokeStyle = tower.color; dragCtx.lineWidth = 2; dragCtx.stroke(); tower.drawIcon(dragCtx, 25, 25, 22);
@@ -672,7 +758,12 @@
         
         if (pos && pos.y < canvas.getBoundingClientRect().height && pos.y > 0) { 
             const gs = gameState.gridSize; const gx = Math.floor(pos.x / gs); const gy = Math.floor(pos.y / gs); 
+            const key = gx + ',' + gy;
             
+            if (gameState.pathCells.includes(key)) {
+                gameState.dragState.isDragging = false; gameState.dragState.cardType = null; return;
+            }
+
             let existingTower = gameState.towers.find(t => Math.floor(t.x/gs) === gx && Math.floor(t.y/gs) === gy);
             let metaTower = metaData.towers[type];
             
@@ -681,13 +772,17 @@
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
                     existingTower.level++; 
+                    
+                    existingTower.upgradeEffect = 1.0;
+                    spawnParticles(existingTower.x, existingTower.y, cardData.color, 20, 'upgrade');
+                    
                     updateUIBars();
                 }
             } else {
                 if (gameState.energy >= cardData.cost) {
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
-                    gameState.towers.push({ id: type, x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0, level: 1 });
+                    gameState.towers.push({ id: type, x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0, level: 1, upgradeEffect: 0 });
                     updateUIBars();
                 }
             }
@@ -701,9 +796,9 @@
         setTimeout(() => {
             resizeCanvas(); initCardIcons(); initEnergyIcon();
             gameState.running = true; gameState.paused = false; gameState.hp = gameState.maxHp; gameState.energy = 5; gameState.wave = 1; 
-            gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.buffs = {};
-            gameState.spawnTimer = 0; gameState.spawnInterval = 120; gameState.enemiesSpawned = 0; 
-            gameState.earnedPoints = 0;
+            gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.particles = []; 
+            gameState.buffs = {}; gameState.debuffs = {}; gameState.selectedTower = null; hideSellButton();
+            gameState.spawnTimer = 0; gameState.spawnInterval = 120; gameState.enemiesSpawned = 0; gameState.earnedPoints = 0;
             updateUIBars(); document.getElementById('current-wave').innerText = gameState.wave; document.getElementById('wave-type-label').innerText = "";
             cancelAnimationFrame(reqId); reqId = requestAnimationFrame(gameStateLoop); 
         }, 50);
