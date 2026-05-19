@@ -33,12 +33,11 @@
         .start-btn { background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1)); border: 2px solid #00f3ff; color: #00f3ff; padding: 18px 40px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); letter-spacing: 4px; transition: 0.2s; text-shadow: 0 0 5px #00f3ff; }
         .start-btn:active { transform: scale(0.95); box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
 
-        /* ================= 升級畫面 UI (科技研究所) ================= */
+        /* ================= 升級畫面 UI ================= */
         .upgrade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(0,243,255,0.4); padding-bottom: 15px; }
         .tech-points { color: #ffd700; font-size: 16px; font-weight: bold; text-shadow: 0 0 8px rgba(255,215,0,0.6); background: rgba(255,215,0,0.1); padding: 6px 12px; border-radius: 20px; border: 1px solid #ffd700; }
         .upgrade-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; padding-right: 5px; }
         .upgrade-card { background: linear-gradient(90deg, rgba(0, 243, 255, 0.05), rgba(0,0,0,0)); border: 1px solid #00f3ff; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; }
-        
         .upgrade-icon-wrapper { width: 55px; height: 55px; background: #0a0d14; border-radius: 8px; border: 1px solid rgba(0,243,255,0.5); display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: inset 0 0 8px rgba(0,243,255,0.2); }
         .upgrade-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .upgrade-name { color: #00f3ff; font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 6px; }
@@ -46,7 +45,6 @@
         .upgrade-stats { color: #aaa; font-size: 12px; line-height: 1.5; }
         .upgrade-stats .highlight { color: #ffd700; font-weight: bold; letter-spacing: 2px;}
         .upgrade-stats .val { color: #fff; font-weight: bold;}
-        
         .upgrade-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; width: 90px; }
         .btn-upg { background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff; border-radius: 4px; padding: 7px 0; font-size: 13px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.1s; }
         .btn-upg:active { transform: scale(0.95); background: rgba(0, 243, 255, 0.3); }
@@ -59,26 +57,18 @@
         #battle-header { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #00f3ff; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
         .header-btn { background: transparent; border: 1px solid #00f3ff; color: #00f3ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
         .header-btn.danger { border-color: #ff003c; color: #ff003c; }
-
         #base-health-container { flex: 1; margin: 0 15px; height: 16px; background: #222; border: 1px solid #ff003c; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5); }
         #base-health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #ff003c, #00ff00); transition: width 0.2s ease; }
         #base-health-text { position: absolute; width: 100%; text-align: center; top: 0; left: 0; font-size: 11px; font-weight: bold; line-height: 16px; color: #fff; text-shadow: 1px 1px 2px #000; }
-
         #battle-title-bar { text-align: center; color: #ff00cc; text-shadow: 0 0 5px rgba(255, 0, 204, 0.5); font-weight: bold; padding: 6px 0; background: #0d111a; font-size: 15px; border-bottom: 1px solid rgba(255, 0, 204, 0.2); z-index: 10; position: relative; }
         #game-canvas { width: 100%; flex: 1; display: block; }
-
-        /* 賣出按鈕浮窗樣式 */
         #sell-btn-overlay { position: absolute; background: rgba(255, 0, 60, 0.85); border: 1px solid #ff003c; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; z-index: 50; display: none; text-shadow: 0 0 5px #000; box-shadow: 0 0 10px rgba(255, 0, 60, 0.5); transform: translate(-50%, 0); transition: 0.1s; }
         #sell-btn-overlay:active { background: rgba(255, 0, 60, 1); transform: translate(-50%, 0) scale(0.95); }
-
-        /* 能量條 */
         #energy-bar-container { height: 25px; background: #050505; border-top: 2px solid #00f3ff; border-bottom: 1px solid #00f3ff; display: flex; align-items: center; padding: 0 10px; position: relative; z-index: 10; }
         #energy-bar-bg { flex: 1; height: 12px; background: #111; border: 1px solid #00a8ff; border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 0 5px #000; }
         #energy-bar-fill { height: 100%; width: 50%; background: #00d2ff; box-shadow: 0 0 10px #00d2ff; transition: width 0.2s linear; }
         #energy-bar-text { position: absolute; width: 100%; text-align: center; font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; line-height: 12px; }
         .energy-icon-canvas { display: block; filter: drop-shadow(0 0 3px #00d2ff); margin-right: 8px; }
-
-        /* 卡牌區域 */
         #card-deck-container { height: 95px; background: linear-gradient(to top, #050505, #0d111a); display: flex; align-items: center; padding: 0 10px; gap: 10px; z-index: 10; }
         .card { flex: 1; height: 80px; background: rgba(0, 243, 255, 0.05); border: 1px solid #00f3ff; border-radius: 6px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, filter 0.1s, opacity 0.1s; }
         .card.disabled { opacity: 0.4; filter: grayscale(100%); }
@@ -87,7 +77,6 @@
         .card-name { font-size: 11px; color: #00f3ff; font-weight: bold; margin-top: 4px; }
         #drag-icon { position: fixed; pointer-events: none; display: none; z-index: 100; opacity: 0.9; }
 
-        /* 【新增】卡牌刷新特效 */
         @keyframes flashRefresh {
             0% { transform: scale(0.8); opacity: 0.5; filter: brightness(2); }
             50% { transform: scale(1.15); opacity: 1; filter: brightness(1.5) drop-shadow(0 0 10px #00f3ff); }
@@ -95,35 +84,37 @@
         }
         .card.refreshing { animation: flashRefresh 0.35s ease-out; }
 
+        /* 任務畫面 (星際突圍) UI */
+        #screen-mission-game { padding: 0; background-color: #000; position: relative; overflow: hidden; }
+        #mission-top-bar { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #ff00cc; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
+        #mission-game-over { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 20; }
+        #mission-game-over h1 { color: #ff003c; margin-bottom: 5px; text-shadow: 0 0 15px #ff003c; font-size: 32px; letter-spacing: 2px; }
+        #mission-game-over .subtitle { color: #aaa; font-size: 14px; margin-bottom: 30px; }
+        #mission-game-over .reward-text { color: #ffd700; font-size: 20px; font-weight: bold; margin-bottom: 35px; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+
         /* 底部導航 */
         #bottom-nav { height: 60px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; display: none; }
         .nav-btn { background: none; border: none; color: #777; font-size: 14px; cursor: pointer; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .nav-btn.active { color: #00f3ff; text-shadow: 0 0 8px #00f3ff; border-bottom: 3px solid #00f3ff; }
 
-        /* 彈出視窗與 Buff 選擇系統 */
+        /* 共用彈出視窗 */
         #modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: none; justify-content: center; align-items: center; }
         .modal-container { background-color: #0d111a; border: 2px solid #00f3ff; border-radius: 12px; width: 85%; max-width: 350px; padding: 25px 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); transform: scale(0.9); opacity: 0; transition: 0.2s; }
         #modal-overlay.show .modal-container { transform: scale(1); opacity: 1; }
-        
         .modal-container.debuff-mode { border-color: #ff003c; box-shadow: 0 0 30px rgba(255, 0, 60, 0.4); }
-
         .modal-header { display: flex; justify-content: space-between; width: 100%; color: #00f3ff; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px;}
         .debuff-mode .modal-header { color: #ff003c; border-bottom-color: rgba(255,0,60,0.2); }
-        
         .close-btn { color: #ff003c; cursor: pointer; font-size: 20px; padding: 0 5px;}
         .modal-body { color: #ccc; font-size: 15px; text-align: center; margin: 5px 0; min-height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; line-height: 1.5; }
         .modal-footer { display: flex; gap: 10px; width: 100%;}
         .modal-confirm-btn, .modal-cancel-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.1s; }
         .modal-cancel-btn { background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
         .modal-confirm-btn { background: rgba(255, 0, 204, 0.1); border-color: #ff00cc; color: #ff00cc; box-shadow: 0 0 10px rgba(255, 0, 204, 0.2); }
-
         .buff-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .buff-card { background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(0, 243, 255, 0.02)); border: 1px solid #00a8ff; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .buff-card:hover, .buff-card:active { background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); transform: translateY(-2px); }
-        
         .debuff-card { background: linear-gradient(135deg, rgba(255, 0, 60, 0.1), rgba(255, 0, 60, 0.02)); border: 1px solid #ff003c; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .debuff-card:hover, .debuff-card:active { background: rgba(255, 0, 60, 0.25); border-color: #ff003c; box-shadow: 0 0 15px rgba(255, 0, 60, 0.5); transform: translateY(-2px); }
-
         .buff-title { color: #00f3ff; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
         .debuff-title { color: #ff003c; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
         .buff-icon-canvas { display: block; flex-shrink: 0; }
@@ -152,7 +143,7 @@
         </div>
         
         <div class="home-content" style="width: 100%; background: rgba(0, 243, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.2); text-align: center;">
-            <h2 style="color: #fff; margin-bottom: 15px; font-size: 20px;">任務：無盡防禦戰</h2>
+            <h2 style="color: #fff; margin-bottom: 15px; font-size: 20px;">戰役：無盡防禦戰</h2>
             <p style="color: #aaa; font-size: 13px; line-height: 1.6; margin-bottom: 25px;">
                 敵人將隨著波次 <span style="color:#ff003c;">逐漸增強血量與數量</span>。<br>
                 每 <span style="color:#00f3ff;">10</span> 波遭遇 BOSS 並獲得戰術晶片。<br>
@@ -160,6 +151,32 @@
                 請善用疊加進化與科技升級。
             </p>
             <button class="start-btn" onclick="enterBattle()">進入戰場</button>
+        </div>
+    </div>
+
+    <div id="screen-mission-menu" class="screen">
+        <h1>防禦陣線：無盡星海</h1>
+        <div class="user-info-bar" style="width: 100%; margin-bottom: 15px;">
+            <div class="commander-name">👤 指揮官：<span id="display-username-mission">---</span></div>
+            <button class="logout-btn" onclick="systemLogout()">登出切換</button>
+        </div>
+        
+        <div class="home-content" style="width: 100%; background: rgba(255, 0, 204, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 0, 204, 0.2); text-align: center;">
+            <h2 style="color: #ff00cc; margin-bottom: 15px; font-size: 20px;">任務：隕石突圍</h2>
+            <p style="color: #aaa; font-size: 13px; line-height: 1.6; margin-bottom: 15px;">
+                駕駛戰機穿梭星空，擊落敵軍以收集科技點數！<br>
+                <span style="color:#00f3ff;">敵軍會發射雷射反擊</span>，請注意閃避。<br>
+                收集的點數可共通使用於防禦塔升級。
+            </p>
+            
+            <div style="text-align: left; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; color: #ddd; border: 1px dashed rgba(255,0,204,0.4);">
+                <div style="color: #ff00cc; font-weight: bold; margin-bottom: 5px; text-align: center;">【戰場支援物資】</div>
+                🟨 <span style="color:#ffd700; font-weight:bold;">黃色方塊</span>：射速過載<br>
+                🟩 <span style="color:#00ff66; font-weight:bold;">綠色方塊</span>：散射強化<br>
+                ⬜ <span style="color:#ffffff; font-weight:bold;">白色方塊</span>：無敵護盾
+            </div>
+
+            <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);" onclick="enterMission()">切入星域</button>
         </div>
     </div>
     
@@ -196,9 +213,29 @@
         <div id="drag-icon"><canvas id="drag-canvas" width="50" height="50"></canvas></div>
     </div>
 
+    <div id="screen-mission-game" class="screen">
+        <div id="mission-top-bar">
+            <button class="header-btn" style="border-color:#ff003c; color:#ff003c;" onclick="requestExitMission()">◄ 返回</button>
+            <div style="color: #fff; font-size: 14px; font-weight: bold; text-shadow: 0 0 5px #ff00cc;">科技點: <span id="mission-score" style="color:#ffd700;">0</span></div>
+            <button class="header-btn" id="mission-pause-btn" style="border-color:#ff00cc; color:#ff00cc;" onclick="toggleMissionPause()">⏸ 暫停</button>
+        </div>
+        
+        <canvas id="missionCanvas" style="width: 100%; flex: 1; display: block; background: #030508;"></canvas>
+        <div id="mission-hint" style="position:absolute; bottom: 30px; width:100%; text-align:center; color:rgba(255,255,255,0.4); font-size:12px; pointer-events:none; z-index: 5; letter-spacing: 1px;">按住螢幕拖曳戰機，自動開火擊落敵軍</div>
+
+        <div id="mission-game-over">
+            <h1>戰機墜毀</h1>
+            <div class="subtitle">護盾系統已完全離線</div>
+            <div class="reward-text">本次收集科技點數: +<span id="mission-final-score">0</span></div>
+            <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; padding: 12px 30px; margin-bottom: 15px; font-size: 18px; box-shadow: 0 0 15px rgba(255,0,204,0.2);" onclick="startMission()">再次出擊</button>
+            <button class="header-btn" style="padding: 10px 20px; font-size: 16px; border-color:#555; color:#aaa;" onclick="exitMission()">返回大廳</button>
+        </div>
+    </div>
+
     <div id="bottom-nav">
         <button class="nav-btn active" id="nav-btn-levels" onclick="switchTab('levels', this)"><span>⎈</span><span>作戰</span></button>
-        <button class="nav-btn" onclick="switchTab('upgrades', this)"><span>⇪</span><span>升級</span></button>
+        <button class="nav-btn" id="nav-btn-mission" onclick="switchTab('mission-menu', this)"><span>🚀</span><span>任務</span></button>
+        <button class="nav-btn" id="nav-btn-upgrades" onclick="switchTab('upgrades', this)"><span>⇪</span><span>升級</span></button>
     </div>
 
     <div id="modal-overlay">
@@ -241,6 +278,7 @@
         else { metaData = getDefaultMetaData(); saveProgress(); }
         
         document.getElementById('display-username').innerText = currentUser;
+        document.getElementById('display-username-mission').innerText = currentUser;
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById('screen-levels').classList.add('active');
         document.getElementById('bottom-nav').style.display = 'flex';
@@ -303,7 +341,14 @@
     window.buyUpgrade = function(type) { let cost = getUpgradeCost(metaData.towers[type].level); if (metaData.techPoints >= cost) { metaData.techPoints -= cost; metaData.towers[type].level++; saveProgress(); renderUpgrades(); } }
     window.buyBreakthrough = function(type) { let cost = getBreakCost(metaData.towers[type].maxStar); if (metaData.techPoints >= cost && metaData.towers[type].maxStar < 3) { metaData.techPoints -= cost; metaData.towers[type].maxStar++; saveProgress(); renderUpgrades(); } }
 
-    function switchTab(tabName, btnElement) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-' + tabName).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); btnElement.classList.add('active'); if (tabName === 'upgrades') renderUpgrades(); }
+    function switchTab(tabName, btnElement) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById('screen-' + tabName).classList.add('active'); 
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); 
+        if (btnElement) btnElement.classList.add('active'); 
+        if (tabName === 'upgrades') renderUpgrades(); 
+    }
+
     function enterBattle() { document.getElementById('bottom-nav').style.display = 'none'; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-battle').classList.add('active'); startGameState(); }
     function exitBattle() { stopGameState(); closeModal(); hideSellButton(); document.getElementById('bottom-nav').style.display = 'flex'; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-levels').classList.add('active'); }
 
@@ -769,7 +814,6 @@
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
                     existingTower.level++; 
                     
-                    // 觸發疊加進化特效
                     existingTower.upgradeEffect = 1.0;
                     spawnParticles(existingTower.x, existingTower.y, cardData.color, 20, 'upgrade');
                     
@@ -781,10 +825,7 @@
                     gameState.energy -= cardData.cost;
                     if (gameState.buffs['refund']) gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + gameState.buffs['refund']);
                     
-                    // 【修改】為新放置的角色增加 upgradeEffect 讓它產生落地的光環特效
                     gameState.towers.push({ id: type, x: gx * gs + gs/2, y: gy * gs + gs/2, card: cardData, cooldown: 0, level: 1, upgradeEffect: 1.0 });
-                    
-                    // 【修改】放置時立刻噴射該塔顏色的升級粒子
                     spawnParticles(gx * gs + gs/2, gy * gs + gs/2, cardData.color, 15, 'upgrade');
                     
                     refreshCardSlot(gameState.dragState.cardEl);
@@ -798,9 +839,8 @@
     function refreshCardSlot(cardEl) {
         if (!cardEl) return;
         
-        // 【新增】觸發重新刷新的閃爍特效動畫
         cardEl.classList.remove('refreshing');
-        void cardEl.offsetWidth; // 強制瀏覽器重繪，讓動畫可以重複觸發
+        void cardEl.offsetWidth; 
         cardEl.classList.add('refreshing');
 
         const types = ['machineGun', 'laser', 'ice', 'sniper'];
@@ -823,6 +863,397 @@
         ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; tower.drawIcon(ctx, 20, 20, 20);
     }
 
+    // =========================================
+    // 星際突圍任務邏輯 (1942 彈幕射擊 + 掉落道具)
+    // =========================================
+    const mCanvas = document.getElementById('missionCanvas');
+    const mCtx = mCanvas.getContext('2d');
+    
+    let mPlayer, mEnemies, mBullets, mEnemyBullets, mParticles, mStars, mItems, missionScore, mFrame, missionRunning, missionPaused;
+
+    function resizeMission() {
+        const rect = mCanvas.parentNode.getBoundingClientRect();
+        if (rect.width === 0) return;
+        mCanvas.width = rect.width;
+        mCanvas.height = rect.height - 45; // 扣除 mission-top-bar
+    }
+    
+    window.addEventListener('resize', () => { if(missionRunning) resizeMission(); });
+
+    function enterMission() {
+        document.getElementById('bottom-nav').style.display = 'none';
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-mission-game').classList.add('active');
+        startMission();
+    }
+
+    function exitMission() {
+        missionRunning = false;
+        document.getElementById('bottom-nav').style.display = 'flex';
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-mission-menu').classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('nav-btn-mission').classList.add('active');
+    }
+
+    function requestExitMission() {
+        missionPaused = true;
+        showModal("離開任務", "確定要返回大廳嗎？<br>（已獲得的點數會立刻結算）", 
+            {text:"是", action: () => { 
+                metaData.techPoints += missionScore;
+                saveProgress();
+                exitMission(); 
+            }}, 
+            {text:"取消", action: () => { 
+                missionPaused = false; 
+                requestAnimationFrame(updateMission);
+            }}
+        );
+    }
+
+    function toggleMissionPause() {
+        if (!missionRunning) return;
+        missionPaused = !missionPaused;
+        document.getElementById('mission-pause-btn').innerText = missionPaused ? "▶ 繼續" : "⏸ 暫停";
+        if (missionPaused) {
+            showModal("任務暫停", "<span style='color:#ff00cc;'>任務已暫停</span><br>戰機待命中。", 
+                {text:"繼續", action: () => { 
+                    missionPaused = false; 
+                    document.getElementById('mission-pause-btn').innerText = "⏸ 暫停";
+                    requestAnimationFrame(updateMission); 
+                }}, 
+                {text:"離開", action: () => { 
+                    metaData.techPoints += missionScore;
+                    saveProgress();
+                    exitMission(); 
+                }}
+            );
+        } else {
+            requestAnimationFrame(updateMission); 
+        }
+    }
+
+    function initMStars() {
+        mStars = [];
+        for(let i=0; i<50; i++) {
+            mStars.push({ x: Math.random() * mCanvas.width, y: Math.random() * mCanvas.height, size: Math.random() * 2, speed: Math.random() * 3 + 1 });
+        }
+    }
+
+    function startMission() {
+        resizeMission();
+        document.getElementById('mission-game-over').style.display = 'none';
+        document.getElementById('mission-hint').style.display = 'block';
+        
+        // 紀錄 Buff 狀態
+        mPlayer = { 
+            x: mCanvas.width/2, y: mCanvas.height - 80, size: 16, color: '#00f3ff', 
+            fireRate: 12, fireTimer: 0,
+            buffs: { fastFire: 0, multiShot: 0, invincible: 0 }
+        };
+        mEnemies = [];
+        mBullets = [];
+        mEnemyBullets = [];
+        mParticles = [];
+        mItems = []; 
+        initMStars();
+        
+        missionScore = 0;
+        mFrame = 0;
+        missionRunning = true;
+        missionPaused = false;
+        document.getElementById('mission-score').innerText = missionScore;
+        document.getElementById('mission-pause-btn').innerText = "⏸ 暫停";
+        requestAnimationFrame(updateMission);
+    }
+
+    let mIsDragging = false;
+    mCanvas.addEventListener('pointerdown', (e) => { 
+        if(!missionRunning || missionPaused) return; 
+        mIsDragging = true; 
+        moveMPlayer(e); 
+        document.getElementById('mission-hint').style.display = 'none'; 
+    });
+    mCanvas.addEventListener('pointermove', (e) => { if(mIsDragging) moveMPlayer(e); });
+    window.addEventListener('pointerup', () => { mIsDragging = false; });
+    
+    function moveMPlayer(e) {
+        if(!missionRunning || missionPaused) return;
+        const rect = mCanvas.getBoundingClientRect();
+        let cx = e.clientX || (e.touches && e.touches[0].clientX);
+        let cy = e.clientY || (e.touches && e.touches[0].clientY);
+        
+        mPlayer.x = cx - rect.left;
+        mPlayer.y = cy - rect.top;
+        
+        if(mPlayer.x < mPlayer.size) mPlayer.x = mPlayer.size;
+        if(mPlayer.x > mCanvas.width - mPlayer.size) mPlayer.x = mCanvas.width - mPlayer.size;
+        if(mPlayer.y < mPlayer.size) mPlayer.y = mPlayer.size;
+        if(mPlayer.y > mCanvas.height - mPlayer.size) mPlayer.y = mCanvas.height - mPlayer.size;
+    }
+
+    function createMExplosion(x, y, color, count) {
+        for(let i=0; i<count; i++) {
+            mParticles.push({
+                x: x, y: y,
+                vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8,
+                size: Math.random() * 3 + 1,
+                color: color, alpha: 1
+            });
+        }
+    }
+
+    function updateMission() {
+        if(!missionRunning) return;
+        if(missionPaused) return; 
+
+        mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
+        mFrame++;
+
+        // 遞減 Buff 時間 (60 幀 = 1秒)
+        if (mPlayer.buffs.fastFire > 0) mPlayer.buffs.fastFire--;
+        if (mPlayer.buffs.multiShot > 0) mPlayer.buffs.multiShot--;
+        if (mPlayer.buffs.invincible > 0) mPlayer.buffs.invincible--;
+
+        // 星空背景
+        mCtx.fillStyle = '#fff';
+        mStars.forEach(star => {
+            star.y += star.speed;
+            if (star.y > mCanvas.height) {
+                star.y = 0;
+                star.x = Math.random() * mCanvas.width;
+            }
+            mCtx.globalAlpha = star.speed / 4;
+            mCtx.fillRect(star.x, star.y, star.size, star.size);
+        });
+        mCtx.globalAlpha = 1.0;
+
+        // 玩家開火 (套用道具加成)
+        if (mIsDragging) {
+            mPlayer.fireTimer++;
+            // 若持有 fastFire 道具，射速減半 (最快極限為每 4 幀發射)
+            let currentFireRate = mPlayer.buffs.fastFire > 0 ? Math.max(4, mPlayer.fireRate / 2) : mPlayer.fireRate;
+            
+            if (mPlayer.fireTimer >= currentFireRate) {
+                mPlayer.fireTimer = 0;
+                
+                if (mPlayer.buffs.multiShot > 0) {
+                    // 三連發散彈
+                    mBullets.push({ x: mPlayer.x - 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66' });
+                    mBullets.push({ x: mPlayer.x, y: mPlayer.y - mPlayer.size - 6, speed: 12, color: '#00ff66' });
+                    mBullets.push({ x: mPlayer.x + 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66' });
+                } else {
+                    // 預設雙連發
+                    mBullets.push({ x: mPlayer.x - 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
+                    mBullets.push({ x: mPlayer.x + 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
+                }
+            }
+        }
+
+        // 更新玩家子彈
+        for (let i = mBullets.length - 1; i >= 0; i--) {
+            let b = mBullets[i];
+            b.y -= b.speed;
+            mCtx.fillStyle = b.color;
+            mCtx.fillRect(b.x - 2, b.y - 8, 4, 16);
+            if (b.y < 0) mBullets.splice(i, 1);
+        }
+
+        // 生成敵機
+        let spawnRate = Math.max(20, 60 - Math.floor(mFrame / 120));
+        if(mFrame % spawnRate === 0) {
+            let type = Math.random() > 0.8 ? 'heavy' : 'light';
+            let size = type === 'heavy' ? 22 : 14;
+            mEnemies.push({
+                x: Math.random() * (mCanvas.width - size*2) + size,
+                y: -size,
+                size: size,
+                hp: type === 'heavy' ? 5 : 1,
+                speed: (type === 'heavy' ? 2 : 4) + (mFrame/1000),
+                color: type === 'heavy' ? '#ffaa00' : '#ff003c',
+                type: type,
+                fireTimer: 0 
+            });
+        }
+
+        // 更新敵機與敵機子彈發射
+        for(let i = mEnemies.length-1; i >= 0; i--) {
+            let e = mEnemies[i];
+            e.y += e.speed;
+            
+            // 敵機定期開火
+            e.fireTimer++;
+            let eFireRate = e.type === 'heavy' ? 80 : 150;
+            if (e.fireTimer >= eFireRate) {
+                e.fireTimer = 0;
+                mEnemyBullets.push({ x: e.x, y: e.y + e.size, speed: e.speed + 3, color: '#ff00cc' });
+            }
+
+            mCtx.fillStyle = e.color;
+            mCtx.beginPath();
+            mCtx.moveTo(e.x, e.y + e.size);
+            mCtx.lineTo(e.x - e.size, e.y - e.size);
+            mCtx.lineTo(e.x + e.size, e.y - e.size);
+            mCtx.fill();
+
+            let isDead = false;
+            for(let j = mBullets.length - 1; j >= 0; j--) {
+                let b = mBullets[j];
+                if (Math.abs(b.x - e.x) < e.size && Math.abs(b.y - e.y) < e.size) {
+                    e.hp--;
+                    createMExplosion(b.x, b.y, '#fff', 3);
+                    mBullets.splice(j, 1);
+                    if (e.hp <= 0) {
+                        isDead = true;
+                        break;
+                    }
+                }
+            }
+
+            if (isDead) {
+                createMExplosion(e.x, e.y, e.color, 15);
+                missionScore += (e.color === '#ffaa00' ? 5 : 1);
+                document.getElementById('mission-score').innerText = missionScore;
+                
+                // 敵機死亡：20% 機率掉落道具
+                if (Math.random() < 0.20) {
+                    let buffTypes = ['fastFire', 'multiShot', 'invincible'];
+                    mItems.push({
+                        x: e.x, y: e.y, size: 12, speed: 2.5,
+                        type: buffTypes[Math.floor(Math.random() * buffTypes.length)]
+                    });
+                }
+                
+                mEnemies.splice(i, 1);
+                continue;
+            }
+
+            // 玩家與敵機相撞
+            let dx = mPlayer.x - e.x;
+            let dy = mPlayer.y - e.y;
+            if(Math.sqrt(dx*dx + dy*dy) < mPlayer.size + e.size - 6) {
+                if (mPlayer.buffs.invincible > 0) {
+                    // 若玩家有無敵護盾，敵機直接被撞爆
+                    e.hp = 0; 
+                } else {
+                    createMExplosion(mPlayer.x, mPlayer.y, '#00f3ff', 30);
+                    missionGameOver();
+                    return;
+                }
+            }
+
+            if(e.y > mCanvas.height + e.size) mEnemies.splice(i, 1);
+        }
+
+        // 更新敵機子彈
+        for (let i = mEnemyBullets.length - 1; i >= 0; i--) {
+            let b = mEnemyBullets[i];
+            b.y += b.speed;
+            mCtx.fillStyle = b.color;
+            mCtx.fillRect(b.x - 2, b.y, 4, 12);
+
+            let dx = mPlayer.x - b.x;
+            let dy = mPlayer.y - b.y;
+            if (Math.abs(dx) < mPlayer.size && Math.abs(dy) < mPlayer.size) {
+                if (mPlayer.buffs.invincible > 0) {
+                    // 無敵狀態下擋掉子彈
+                    createMExplosion(b.x, b.y, b.color, 3);
+                    mEnemyBullets.splice(i, 1);
+                } else {
+                    createMExplosion(mPlayer.x, mPlayer.y, '#00f3ff', 30);
+                    missionGameOver();
+                    return;
+                }
+            } else if (b.y > mCanvas.height) {
+                mEnemyBullets.splice(i, 1);
+            }
+        }
+
+        // 更新與繪製道具 (Items)
+        for (let i = mItems.length - 1; i >= 0; i--) {
+            let item = mItems[i];
+            item.y += item.speed;
+
+            // 繪製道具方形 (已經移除裡面的英文字母)
+            mCtx.fillStyle = item.type === 'fastFire' ? '#ffd700' : (item.type === 'multiShot' ? '#00ff66' : '#ffffff');
+            mCtx.shadowBlur = 10;
+            mCtx.shadowColor = mCtx.fillStyle;
+            mCtx.fillRect(item.x - item.size, item.y - item.size, item.size * 2, item.size * 2);
+            mCtx.shadowBlur = 0;
+
+            // 玩家吃到道具
+            let dx = mPlayer.x - item.x;
+            let dy = mPlayer.y - item.y;
+            if (Math.sqrt(dx*dx + dy*dy) < mPlayer.size + item.size) {
+                // 給予 5 秒 (300 幀) 的 Buff
+                if (item.type === 'fastFire') mPlayer.buffs.fastFire = 300;
+                if (item.type === 'multiShot') mPlayer.buffs.multiShot = 300;
+                if (item.type === 'invincible') mPlayer.buffs.invincible = 300;
+                mItems.splice(i, 1);
+                continue;
+            }
+
+            if (item.y > mCanvas.height + item.size) mItems.splice(i, 1);
+        }
+
+        // 更新粒子
+        for(let i = mParticles.length - 1; i >= 0; i--) {
+            let p = mParticles[i];
+            p.x += p.vx; p.y += p.vy;
+            p.alpha -= 0.05;
+            if (p.alpha <= 0) {
+                mParticles.splice(i, 1);
+            } else {
+                mCtx.globalAlpha = p.alpha;
+                mCtx.fillStyle = p.color;
+                mCtx.fillRect(p.x, p.y, p.size, p.size);
+            }
+        }
+        mCtx.globalAlpha = 1.0;
+
+        // 繪製玩家飛船
+        mCtx.fillStyle = mPlayer.color;
+        mCtx.shadowBlur = 10;
+        mCtx.shadowColor = mPlayer.color;
+        mCtx.beginPath();
+        mCtx.moveTo(mPlayer.x, mPlayer.y - mPlayer.size);
+        mCtx.lineTo(mPlayer.x + mPlayer.size, mPlayer.y + mPlayer.size);
+        mCtx.lineTo(mPlayer.x, mPlayer.y + mPlayer.size - 5);
+        mCtx.lineTo(mPlayer.x - mPlayer.size, mPlayer.y + mPlayer.size);
+        mCtx.closePath();
+        mCtx.fill();
+        mCtx.shadowBlur = 0;
+
+        // 若無敵，畫一圈白色護盾
+        if (mPlayer.buffs.invincible > 0) {
+            mCtx.strokeStyle = `rgba(255, 255, 255, ${0.5 + Math.sin(mFrame * 0.2) * 0.5})`; // 呼吸燈特效
+            mCtx.lineWidth = 3;
+            mCtx.beginPath();
+            mCtx.arc(mPlayer.x, mPlayer.y + 2, mPlayer.size + 8, 0, Math.PI * 2);
+            mCtx.stroke();
+        }
+
+        requestAnimationFrame(updateMission);
+    }
+
+    function missionGameOver() {
+        missionRunning = false;
+        mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
+        mParticles.forEach(p => {
+            mCtx.globalAlpha = p.alpha;
+            mCtx.fillStyle = p.color;
+            mCtx.fillRect(p.x, p.y, p.size, p.size);
+        });
+        
+        setTimeout(() => {
+            document.getElementById('mission-game-over').style.display = 'flex';
+            document.getElementById('mission-final-score').innerText = missionScore;
+        }, 500);
+
+        metaData.techPoints += missionScore;
+        saveProgress();
+    }
+
     window.addEventListener('mousemove', handleMove); window.addEventListener('mouseup', handleUp); window.addEventListener('touchmove', handleMove, {passive: false}); window.addEventListener('touchend', handleUp);
 
     function startGameState() { 
@@ -833,7 +1264,7 @@
                 c.setAttribute('data-type', type);
                 c.querySelector('.card-cost').innerText = TOWER_DATA[type].cost;
                 c.querySelector('.card-name').innerText = type === 'machineGun' ? '機槍塔' : type === 'laser' ? '雷射塔' : type === 'ice' ? '冰凍塔' : '狙擊塔';
-                c.classList.remove('refreshing'); // 確保開始時沒有殘留特效
+                c.classList.remove('refreshing'); 
             });
 
             resizeCanvas(); initCardIcons(); initEnergyIcon();
