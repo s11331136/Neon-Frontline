@@ -84,17 +84,6 @@
         }
         .card.refreshing { animation: flashRefresh 0.35s ease-out; }
 
-        /* ================= 新手教學 UI ================= */
-        #tutorial-hint {
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.85); border: 2px solid #00f3ff; color: #fff;
-            padding: 15px 20px; border-radius: 8px; font-size: 15px; text-align: center;
-            z-index: 100; box-shadow: 0 0 20px rgba(0,243,255,0.6); pointer-events: none;
-            display: none; width: 85%; line-height: 1.6;
-        }
-        #tutorial-hint .highlight { color: #00f3ff; font-weight: bold; }
-        #tutorial-hint .highlight-pink { color: #ff00cc; font-weight: bold; }
-
         /* 任務畫面 (星際突圍) UI */
         #screen-mission-game { padding: 0; background-color: #000; position: relative; overflow: hidden; }
         #mission-top-bar { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #ff00cc; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
@@ -182,9 +171,9 @@
             
             <div style="text-align: left; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; color: #ddd; border: 1px dashed rgba(255,0,204,0.4);">
                 <div style="color: #ff00cc; font-weight: bold; margin-bottom: 5px; text-align: center;">【戰場支援物資】</div>
-                🟨 <span style="color:#ffd700; font-weight:bold;">黃色方塊</span>：射速過載 (瘋狂連發)<br>
-                🟩 <span style="color:#00ff66; font-weight:bold;">綠色方塊</span>：散射強化 (三向開火)<br>
-                ⬜ <span style="color:#ffffff; font-weight:bold;">白色方塊</span>：無敵護盾 (可衝撞敵機)
+                🟨 <span style="color:#ffd700; font-weight:bold;">黃色方塊</span>：射速過載<br>
+                🟩 <span style="color:#00ff66; font-weight:bold;">綠色方塊</span>：散射強化<br>
+                ⬜ <span style="color:#ffffff; font-weight:bold;">白色方塊</span>：無敵護盾
             </div>
 
             <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);" onclick="enterMission()">切入星域</button>
@@ -208,8 +197,6 @@
         </div>
         <div id="battle-title-bar">波次 <span id="current-wave">1</span> <span id="wave-type-label" style="color:#ff003c; margin-left:8px;"></span></div>
         
-        <div id="tutorial-hint"></div>
-
         <div id="sell-btn-overlay">賣出 $0</div>
         
         <canvas id="game-canvas"></canvas>
@@ -273,7 +260,6 @@
     function getDefaultMetaData() {
         return {
             techPoints: 100, 
-            tutorialDone: false, // 【新增】記錄新手教學是否完成
             towers: {
                 'machineGun': { id: 'machineGun', title: '機槍塔', level: 1, maxStar: 1, baseDmg: 6, dmgGrowth: 2.0 },
                 'laser':      { id: 'laser', title: '雷射塔', level: 1, maxStar: 1, baseDmg: 0.4, dmgGrowth: 0.2 },
@@ -291,9 +277,6 @@
         if (savedData) metaData = JSON.parse(savedData);
         else { metaData = getDefaultMetaData(); saveProgress(); }
         
-        // 防呆：如果是舊版存檔沒有這個屬性，就設為 true 避免舊玩家重新跑教學
-        if (metaData.tutorialDone === undefined) metaData.tutorialDone = true;
-
         document.getElementById('display-username').innerText = currentUser;
         document.getElementById('display-username-mission').innerText = currentUser;
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -485,8 +468,7 @@
         'sniper':     { cost: 6, color: '#ffaa00', range: 250, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
     };
 
-    // 【修改】加入 tutorialStep 狀態
-    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null, cardEl: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null, tutorialStep: 0 };
+    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null, cardEl: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null };
 
     function resizeCanvas() { const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = rect.width*dpr; canvas.height = rect.height*dpr; ctx.scale(dpr, dpr); gameState.gridSize = rect.width/gameState.cols; createPath(rect.height); hideSellButton(); }
     
@@ -754,8 +736,6 @@
     // =========================================
     canvas.addEventListener('pointerdown', (e) => {
         if(!gameState.running || gameState.paused || gameState.isSelectingBuff) return;
-        if(gameState.tutorialStep > 0) return; // 【保護機制】新手教學期間不給賣塔，避免誤觸
-
         const pos = getMousePos(e); if(!pos) return;
         const gs = gameState.gridSize; const gx = Math.floor(pos.x / gs); const gy = Math.floor(pos.y / gs);
         
@@ -839,15 +819,6 @@
                     
                     refreshCardSlot(gameState.dragState.cardEl);
                     updateUIBars();
-
-                    // 【新增】教學步驟 2：完成升級
-                    if (gameState.tutorialStep === 2) {
-                        gameState.tutorialStep = 0;
-                        metaData.tutorialDone = true;
-                        saveProgress();
-                        document.getElementById('tutorial-hint').innerHTML = "【教學完成】<br>防禦塔已成功升級！<br><span class='highlight-pink'>擊落敵軍可獲得聖水</span>，努力生存下去吧！";
-                        setTimeout(() => { document.getElementById('tutorial-hint').style.display = 'none'; }, 4000);
-                    }
                 }
             } else {
                 if (gameState.energy >= cardData.cost) {
@@ -859,12 +830,6 @@
                     
                     refreshCardSlot(gameState.dragState.cardEl);
                     updateUIBars();
-
-                    // 【新增】教學步驟 1：完成部署
-                    if (gameState.tutorialStep === 1) {
-                        gameState.tutorialStep = 2;
-                        document.getElementById('tutorial-hint').innerHTML = "【新手指南 2/2】<br>太棒了！現在試著將<span class='highlight'>相同的卡片</span><br>拖曳到剛才的塔上進行<span class='highlight-pink'>【合併升星】</span>！";
-                    }
                 }
             }
         } 
@@ -1307,18 +1272,6 @@
             gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.particles = []; 
             gameState.buffs = {}; gameState.debuffs = {}; gameState.selectedTower = null; hideSellButton();
             gameState.spawnTimer = 0; gameState.spawnInterval = 120; gameState.enemiesSpawned = 0; gameState.earnedPoints = 0;
-            
-            // 【新增】檢查是否需要進行新手教學
-            if (!metaData.tutorialDone) {
-                gameState.tutorialStep = 1;
-                gameState.energy = 20; // 教學模式給予大量初始能量
-                document.getElementById('tutorial-hint').style.display = 'block';
-                document.getElementById('tutorial-hint').innerHTML = "【新手指南 1/2】<br>請按住下方的<span class='highlight'>防禦塔卡片</span>，<br>拖曳到上方網格中進行部署。";
-            } else {
-                gameState.tutorialStep = 0;
-                document.getElementById('tutorial-hint').style.display = 'none';
-            }
-
             updateUIBars(); document.getElementById('current-wave').innerText = gameState.wave; document.getElementById('wave-type-label').innerText = "";
             cancelAnimationFrame(reqId); reqId = requestAnimationFrame(gameStateLoop); 
         }, 50);
