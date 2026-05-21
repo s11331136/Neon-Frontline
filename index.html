@@ -774,7 +774,7 @@
                 gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + energyGained);
                 
                 // 2. 【新增】殺死敵人獲得外面的科技點！
-                let techPointsGained = enemy.isBoss ? 20 : 2;
+                let techPointsGained = enemy.isBoss ? 30 : 5;
                 metaData.techPoints += techPointsGained;
                 gameState.earnedPoints += techPointsGained;
 
