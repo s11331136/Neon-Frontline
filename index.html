@@ -7,7 +7,7 @@
     <style>
         /* 基礎與排版 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, sans-serif; user-select: none; -webkit-touch-callout: none; }
-        body { background-color: #050505; display: flex; justify-content: center; align-items: center; height: 100vh; color: #fff; overflow: hidden; }
+        body { background-color: #050505; display: flex; justify-content: center; align-items: center; height: 100vh; color: #fff; overflow: hidden; touch-action: none; }
         #game-container { width: 100%; max-width: 420px; height: 100%; max-height: 850px; background-color: #0a0d14; position: relative; overflow: hidden; border: 2px solid #00f3ff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); display: flex; flex-direction: column; }
         .screen { flex: 1; display: none; padding: 20px; overflow-y: auto; }
         .screen.active { display: flex; flex-direction: column; }
@@ -33,11 +33,12 @@
         .start-btn { background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1)); border: 2px solid #00f3ff; color: #00f3ff; padding: 18px 40px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); letter-spacing: 4px; transition: 0.2s; text-shadow: 0 0 5px #00f3ff; }
         .start-btn:active { transform: scale(0.95); box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
 
-        /* ================= 升級畫面 UI ================= */
+        /* ================= 升級畫面 UI (科技研究所) ================= */
         .upgrade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(0,243,255,0.4); padding-bottom: 15px; }
         .tech-points { color: #ffd700; font-size: 16px; font-weight: bold; text-shadow: 0 0 8px rgba(255,215,0,0.6); background: rgba(255,215,0,0.1); padding: 6px 12px; border-radius: 20px; border: 1px solid #ffd700; }
         .upgrade-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; padding-right: 5px; }
         .upgrade-card { background: linear-gradient(90deg, rgba(0, 243, 255, 0.05), rgba(0,0,0,0)); border: 1px solid #00f3ff; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; }
+        
         .upgrade-icon-wrapper { width: 55px; height: 55px; background: #0a0d14; border-radius: 8px; border: 1px solid rgba(0,243,255,0.5); display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: inset 0 0 8px rgba(0,243,255,0.2); }
         .upgrade-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .upgrade-name { color: #00f3ff; font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 6px; }
@@ -45,6 +46,7 @@
         .upgrade-stats { color: #aaa; font-size: 12px; line-height: 1.5; }
         .upgrade-stats .highlight { color: #ffd700; font-weight: bold; letter-spacing: 2px;}
         .upgrade-stats .val { color: #fff; font-weight: bold;}
+        
         .upgrade-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; width: 90px; }
         .btn-upg { background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff; border-radius: 4px; padding: 7px 0; font-size: 13px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.1s; }
         .btn-upg:active { transform: scale(0.95); background: rgba(0, 243, 255, 0.3); }
@@ -57,18 +59,29 @@
         #battle-header { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #00f3ff; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
         .header-btn { background: transparent; border: 1px solid #00f3ff; color: #00f3ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
         .header-btn.danger { border-color: #ff003c; color: #ff003c; }
-        #base-health-container { flex: 1; margin: 0 15px; height: 16px; background: #222; border: 1px solid #ff003c; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5); }
+        
+        /* 加速按鈕 */
+        .btn-speed { background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; color: #ffd700; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; margin-right: 8px; font-weight: bold; transition: 0.2s; }
+
+        #base-health-container { flex: 1; margin: 0 10px; height: 16px; background: #222; border: 1px solid #ff003c; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5); }
         #base-health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #ff003c, #00ff00); transition: width 0.2s ease; }
         #base-health-text { position: absolute; width: 100%; text-align: center; top: 0; left: 0; font-size: 11px; font-weight: bold; line-height: 16px; color: #fff; text-shadow: 1px 1px 2px #000; }
+
         #battle-title-bar { text-align: center; color: #ff00cc; text-shadow: 0 0 5px rgba(255, 0, 204, 0.5); font-weight: bold; padding: 6px 0; background: #0d111a; font-size: 15px; border-bottom: 1px solid rgba(255, 0, 204, 0.2); z-index: 10; position: relative; }
-        #game-canvas { width: 100%; flex: 1; display: block; }
+        #game-canvas { width: 100%; flex: 1; display: block; touch-action: none; }
+
+        /* 賣出按鈕浮窗樣式 */
         #sell-btn-overlay { position: absolute; background: rgba(255, 0, 60, 0.85); border: 1px solid #ff003c; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; z-index: 50; display: none; text-shadow: 0 0 5px #000; box-shadow: 0 0 10px rgba(255, 0, 60, 0.5); transform: translate(-50%, 0); transition: 0.1s; }
         #sell-btn-overlay:active { background: rgba(255, 0, 60, 1); transform: translate(-50%, 0) scale(0.95); }
+
+        /* 能量條 */
         #energy-bar-container { height: 25px; background: #050505; border-top: 2px solid #00f3ff; border-bottom: 1px solid #00f3ff; display: flex; align-items: center; padding: 0 10px; position: relative; z-index: 10; }
         #energy-bar-bg { flex: 1; height: 12px; background: #111; border: 1px solid #00a8ff; border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 0 5px #000; }
         #energy-bar-fill { height: 100%; width: 50%; background: #00d2ff; box-shadow: 0 0 10px #00d2ff; transition: width 0.2s linear; }
         #energy-bar-text { position: absolute; width: 100%; text-align: center; font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; line-height: 12px; }
         .energy-icon-canvas { display: block; filter: drop-shadow(0 0 3px #00d2ff); margin-right: 8px; }
+
+        /* 卡牌區域 */
         #card-deck-container { height: 95px; background: linear-gradient(to top, #050505, #0d111a); display: flex; align-items: center; padding: 0 10px; gap: 10px; z-index: 10; }
         .card { flex: 1; height: 80px; background: rgba(0, 243, 255, 0.05); border: 1px solid #00f3ff; border-radius: 6px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, filter 0.1s, opacity 0.1s; }
         .card.disabled { opacity: 0.4; filter: grayscale(100%); }
@@ -84,7 +97,7 @@
         }
         .card.refreshing { animation: flashRefresh 0.35s ease-out; }
 
-        /* 任務畫面 (星際突圍) UI */
+        /* ================= 任務畫面 (星際突圍) UI ================= */
         #screen-mission-game { padding: 0; background-color: #000; position: relative; overflow: hidden; }
         #mission-top-bar { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #ff00cc; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
         #mission-game-over { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 20; }
@@ -92,29 +105,40 @@
         #mission-game-over .subtitle { color: #aaa; font-size: 14px; margin-bottom: 30px; }
         #mission-game-over .reward-text { color: #ffd700; font-size: 20px; font-weight: bold; margin-bottom: 35px; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
 
+        /* 虛擬搖桿 UI */
+        #joystick-zone { position: absolute; bottom: 30px; left: 30px; width: 120px; height: 120px; display: none; z-index: 50; touch-action: none; opacity: 0.4; }
+        #joystick-base { width: 100px; height: 100px; background: rgba(0, 243, 255, 0.05); border: 2px solid rgba(0, 243, 255, 0.2); border-radius: 50%; position: absolute; bottom: 10px; left: 10px; box-shadow: 0 0 10px rgba(0, 243, 255, 0.1); }
+        #joystick-knob { width: 40px; height: 40px; background: radial-gradient(circle, rgba(0, 243, 255, 0.8), rgba(0, 85, 255, 0.8)); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 10px #00f3ff; pointer-events: none; }
+
         /* 底部導航 */
         #bottom-nav { height: 60px; background-color: #0a0d14; border-top: 1px solid #00f3ff; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; display: none; }
         .nav-btn { background: none; border: none; color: #777; font-size: 14px; cursor: pointer; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .nav-btn.active { color: #00f3ff; text-shadow: 0 0 8px #00f3ff; border-bottom: 3px solid #00f3ff; }
 
-        /* 共用彈出視窗 */
+        /* 彈出視窗與 Buff 選擇系統 */
         #modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: none; justify-content: center; align-items: center; }
         .modal-container { background-color: #0d111a; border: 2px solid #00f3ff; border-radius: 12px; width: 85%; max-width: 350px; padding: 25px 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); transform: scale(0.9); opacity: 0; transition: 0.2s; }
         #modal-overlay.show .modal-container { transform: scale(1); opacity: 1; }
+        
         .modal-container.debuff-mode { border-color: #ff003c; box-shadow: 0 0 30px rgba(255, 0, 60, 0.4); }
+
         .modal-header { display: flex; justify-content: space-between; width: 100%; color: #00f3ff; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px;}
         .debuff-mode .modal-header { color: #ff003c; border-bottom-color: rgba(255,0,60,0.2); }
+        
         .close-btn { color: #ff003c; cursor: pointer; font-size: 20px; padding: 0 5px;}
         .modal-body { color: #ccc; font-size: 15px; text-align: center; margin: 5px 0; min-height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; line-height: 1.5; }
         .modal-footer { display: flex; gap: 10px; width: 100%;}
         .modal-confirm-btn, .modal-cancel-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.1s; }
         .modal-cancel-btn { background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
         .modal-confirm-btn { background: rgba(255, 0, 204, 0.1); border-color: #ff00cc; color: #ff00cc; box-shadow: 0 0 10px rgba(255, 0, 204, 0.2); }
+
         .buff-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .buff-card { background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(0, 243, 255, 0.02)); border: 1px solid #00a8ff; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .buff-card:hover, .buff-card:active { background: rgba(0, 243, 255, 0.2); border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); transform: translateY(-2px); }
+        
         .debuff-card { background: linear-gradient(135deg, rgba(255, 0, 60, 0.1), rgba(255, 0, 60, 0.02)); border: 1px solid #ff003c; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .debuff-card:hover, .debuff-card:active { background: rgba(255, 0, 60, 0.25); border-color: #ff003c; box-shadow: 0 0 15px rgba(255, 0, 60, 0.5); transform: translateY(-2px); }
+
         .buff-title { color: #00f3ff; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
         .debuff-title { color: #ff003c; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
         .buff-icon-canvas { display: block; flex-shrink: 0; }
@@ -163,19 +187,11 @@
         
         <div class="home-content" style="width: 100%; background: rgba(255, 0, 204, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 0, 204, 0.2); text-align: center;">
             <h2 style="color: #ff00cc; margin-bottom: 15px; font-size: 20px;">任務：隕石突圍</h2>
-            <p style="color: #aaa; font-size: 13px; line-height: 1.6; margin-bottom: 15px;">
+            <p style="color: #aaa; font-size: 13px; line-height: 1.6; margin-bottom: 25px;">
                 駕駛戰機穿梭星空，擊落敵軍以收集科技點數！<br>
-                <span style="color:#00f3ff;">敵軍會發射雷射反擊</span>，請注意閃避。<br>
+                <span style="color:#00f3ff;">敵軍也會發射雷射反擊</span>，請注意閃避。<br>
                 收集的點數可共通使用於防禦塔升級。
             </p>
-            
-            <div style="text-align: left; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; color: #ddd; border: 1px dashed rgba(255,0,204,0.4);">
-                <div style="color: #ff00cc; font-weight: bold; margin-bottom: 5px; text-align: center;">【戰場支援物資】</div>
-                🟨 <span style="color:#ffd700; font-weight:bold;">黃色方塊</span>：射速過載<br>
-                🟩 <span style="color:#00ff66; font-weight:bold;">綠色方塊</span>：散射強化<br>
-                ⬜ <span style="color:#ffffff; font-weight:bold;">白色方塊</span>：無敵護盾
-            </div>
-
             <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);" onclick="enterMission()">切入星域</button>
         </div>
     </div>
@@ -193,7 +209,10 @@
         <div id="battle-header">
             <button class="header-btn danger" onclick="requestExit()">◄ 撤退</button>
             <div id="base-health-container"><div id="base-health-fill"></div><div id="base-health-text">10 / 10</div></div>
-            <button class="header-btn" onclick="requestPause()">⏸ 暫停</button>
+            <div style="display:flex; align-items:center;">
+                <button class="btn-speed" id="btn-speed-toggle" onclick="toggleGameSpeed()">▶ 1x</button>
+                <button class="header-btn" onclick="requestPause()">⏸ 暫停</button>
+            </div>
         </div>
         <div id="battle-title-bar">波次 <span id="current-wave">1</span> <span id="wave-type-label" style="color:#ff003c; margin-left:8px;"></span></div>
         
@@ -220,8 +239,14 @@
             <button class="header-btn" id="mission-pause-btn" style="border-color:#ff00cc; color:#ff00cc;" onclick="toggleMissionPause()">⏸ 暫停</button>
         </div>
         
-        <canvas id="missionCanvas" style="width: 100%; flex: 1; display: block; background: #030508;"></canvas>
-        <div id="mission-hint" style="position:absolute; bottom: 30px; width:100%; text-align:center; color:rgba(255,255,255,0.4); font-size:12px; pointer-events:none; z-index: 5; letter-spacing: 1px;">按住螢幕拖曳戰機，自動開火擊落敵軍</div>
+        <canvas id="missionCanvas" style="width: 100%; flex: 1; display: block; background: #030508; touch-action: none;"></canvas>
+        <div id="mission-hint" style="position:absolute; bottom: 30px; width:100%; text-align:center; color:rgba(255,255,255,0.4); font-size:12px; pointer-events:none; z-index: 5; letter-spacing: 1px;">使用左下角搖桿移動戰機 (全自動射擊)</div>
+
+        <div id="joystick-zone">
+            <div id="joystick-base">
+                <div id="joystick-knob"></div>
+            </div>
+        </div>
 
         <div id="mission-game-over">
             <h1>戰機墜毀</h1>
@@ -468,7 +493,19 @@
         'sniper':     { cost: 6, color: '#ffaa00', range: 250, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
     };
 
-    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null, cardEl: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null };
+    let gameState = { running: false, paused: false, isSelectingBuff: false, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null, cardEl: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null, gameSpeed: 1 };
+
+    function toggleGameSpeed() {
+        if (gameState.gameSpeed === 1) {
+            gameState.gameSpeed = 2;
+            document.getElementById('btn-speed-toggle').innerText = "▶▶ 2x";
+            document.getElementById('btn-speed-toggle').style.background = "rgba(255, 215, 0, 0.3)";
+        } else {
+            gameState.gameSpeed = 1;
+            document.getElementById('btn-speed-toggle').innerText = "▶ 1x";
+            document.getElementById('btn-speed-toggle').style.background = "rgba(255, 215, 0, 0.1)";
+        }
+    }
 
     function resizeCanvas() { const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = rect.width*dpr; canvas.height = rect.height*dpr; ctx.scale(dpr, dpr); gameState.gridSize = rect.width/gameState.cols; createPath(rect.height); hideSellButton(); }
     
@@ -508,7 +545,17 @@
     }
 
     let lastEvent = null; let reqId;
-    function gameStateLoop() { if (gameState.running) { if (!gameState.paused) update(); draw(); reqId = requestAnimationFrame(gameStateLoop); } }
+    function gameStateLoop() { 
+        if (gameState.running) { 
+            if (!gameState.paused) { 
+                for(let i=0; i<gameState.gameSpeed; i++) {
+                    update(); 
+                }
+                draw(); 
+            } 
+            reqId = requestAnimationFrame(gameStateLoop); 
+        } 
+    }
 
     function update() {
         gameState.energyTimer++;
@@ -864,18 +911,62 @@
     }
 
     // =========================================
-    // 星際突圍任務邏輯 (1942 彈幕射擊 + 掉落道具)
+    // 星際突圍任務邏輯 (虛擬搖桿 + 自動射擊)
     // =========================================
     const mCanvas = document.getElementById('missionCanvas');
     const mCtx = mCanvas.getContext('2d');
     
-    let mPlayer, mEnemies, mBullets, mEnemyBullets, mParticles, mStars, mItems, missionScore, mFrame, missionRunning, missionPaused;
+    let mPlayer, mEnemies, mBullets, mEnemyBullets, mParticles, mStars, missionScore, mFrame, missionRunning, missionPaused;
+
+    // 虛擬搖桿狀態
+    const joyZone = document.getElementById('joystick-zone');
+    const joyKnob = document.getElementById('joystick-knob');
+    let isJoyDragging = false;
+    let joyCenter = { x: 0, y: 0 };
+    let joyVector = { x: 0, y: 0 };
+    const joyMaxRadius = 35;
+
+    // 綁定虛擬搖桿事件
+    function startJoy(clientX, clientY) {
+        isJoyDragging = true;
+        const rect = joyZone.getBoundingClientRect();
+        joyCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+        document.getElementById('mission-hint').style.display = 'none';
+        updateJoyVector(clientX, clientY);
+    }
+    
+    function moveJoy(clientX, clientY) {
+        if (!isJoyDragging) return;
+        updateJoyVector(clientX, clientY);
+    }
+    
+    function endJoy() {
+        isJoyDragging = false;
+        joyVector.x = 0; joyVector.y = 0;
+        joyKnob.style.transform = `translate(-50%, -50%)`;
+    }
+    
+    function updateJoyVector(clientX, clientY) {
+        let dx = clientX - joyCenter.x;
+        let dy = clientY - joyCenter.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist > joyMaxRadius) { dx = (dx/dist) * joyMaxRadius; dy = (dy/dist) * joyMaxRadius; }
+        joyKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        joyVector.x = dx / joyMaxRadius; joyVector.y = dy / joyMaxRadius;
+    }
+
+    joyZone.addEventListener('touchstart', (e) => { e.preventDefault(); startJoy(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+    joyZone.addEventListener('touchmove', (e) => { e.preventDefault(); moveJoy(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+    joyZone.addEventListener('touchend', endJoy);
+    joyZone.addEventListener('mousedown', (e) => { startJoy(e.clientX, e.clientY); });
+    window.addEventListener('mousemove', (e) => { moveJoy(e.clientX, e.clientY); });
+    window.addEventListener('mouseup', endJoy);
 
     function resizeMission() {
         const rect = mCanvas.parentNode.getBoundingClientRect();
         if (rect.width === 0) return;
         mCanvas.width = rect.width;
-        mCanvas.height = rect.height - 45; // 扣除 mission-top-bar
+        mCanvas.height = rect.height - 45; 
     }
     
     window.addEventListener('resize', () => { if(missionRunning) resizeMission(); });
@@ -884,16 +975,16 @@
         document.getElementById('bottom-nav').style.display = 'none';
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById('screen-mission-game').classList.add('active');
+        joyZone.style.display = 'block'; // 顯示搖桿
         startMission();
     }
 
     function exitMission() {
         missionRunning = false;
+        joyZone.style.display = 'none'; // 隱藏搖桿
         document.getElementById('bottom-nav').style.display = 'flex';
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('screen-mission-menu').classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('nav-btn-mission').classList.add('active');
+        switchTab('mission-menu', document.getElementById('nav-btn-mission'));
     }
 
     function requestExitMission() {
@@ -945,61 +1036,19 @@
         document.getElementById('mission-game-over').style.display = 'none';
         document.getElementById('mission-hint').style.display = 'block';
         
-        // 紀錄 Buff 狀態
-        mPlayer = { 
-            x: mCanvas.width/2, y: mCanvas.height - 80, size: 16, color: '#00f3ff', 
-            fireRate: 12, fireTimer: 0,
-            buffs: { fastFire: 0, multiShot: 0, invincible: 0 }
-        };
-        mEnemies = [];
-        mBullets = [];
-        mEnemyBullets = [];
-        mParticles = [];
-        mItems = []; 
+        mPlayer = { x: mCanvas.width/2, y: mCanvas.height - 80, size: 16, color: '#00f3ff', fireRate: 12, fireTimer: 0 };
+        mEnemies = []; mBullets = []; mParticles = [];
         initMStars();
         
-        missionScore = 0;
-        mFrame = 0;
-        missionRunning = true;
-        missionPaused = false;
+        missionScore = 0; mFrame = 0; missionRunning = true; missionPaused = false;
         document.getElementById('mission-score').innerText = missionScore;
         document.getElementById('mission-pause-btn').innerText = "⏸ 暫停";
         requestAnimationFrame(updateMission);
     }
 
-    let mIsDragging = false;
-    mCanvas.addEventListener('pointerdown', (e) => { 
-        if(!missionRunning || missionPaused) return; 
-        mIsDragging = true; 
-        moveMPlayer(e); 
-        document.getElementById('mission-hint').style.display = 'none'; 
-    });
-    mCanvas.addEventListener('pointermove', (e) => { if(mIsDragging) moveMPlayer(e); });
-    window.addEventListener('pointerup', () => { mIsDragging = false; });
-    
-    function moveMPlayer(e) {
-        if(!missionRunning || missionPaused) return;
-        const rect = mCanvas.getBoundingClientRect();
-        let cx = e.clientX || (e.touches && e.touches[0].clientX);
-        let cy = e.clientY || (e.touches && e.touches[0].clientY);
-        
-        mPlayer.x = cx - rect.left;
-        mPlayer.y = cy - rect.top;
-        
-        if(mPlayer.x < mPlayer.size) mPlayer.x = mPlayer.size;
-        if(mPlayer.x > mCanvas.width - mPlayer.size) mPlayer.x = mCanvas.width - mPlayer.size;
-        if(mPlayer.y < mPlayer.size) mPlayer.y = mPlayer.size;
-        if(mPlayer.y > mCanvas.height - mPlayer.size) mPlayer.y = mCanvas.height - mPlayer.size;
-    }
-
     function createMExplosion(x, y, color, count) {
         for(let i=0; i<count; i++) {
-            mParticles.push({
-                x: x, y: y,
-                vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8,
-                size: Math.random() * 3 + 1,
-                color: color, alpha: 1
-            });
+            mParticles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8, size: Math.random() * 3 + 1, color: color, alpha: 1 });
         }
     }
 
@@ -1010,44 +1059,34 @@
         mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
         mFrame++;
 
-        // 遞減 Buff 時間 (60 幀 = 1秒)
-        if (mPlayer.buffs.fastFire > 0) mPlayer.buffs.fastFire--;
-        if (mPlayer.buffs.multiShot > 0) mPlayer.buffs.multiShot--;
-        if (mPlayer.buffs.invincible > 0) mPlayer.buffs.invincible--;
-
         // 星空背景
         mCtx.fillStyle = '#fff';
         mStars.forEach(star => {
             star.y += star.speed;
-            if (star.y > mCanvas.height) {
-                star.y = 0;
-                star.x = Math.random() * mCanvas.width;
-            }
+            if (star.y > mCanvas.height) { star.y = 0; star.x = Math.random() * mCanvas.width; }
             mCtx.globalAlpha = star.speed / 4;
             mCtx.fillRect(star.x, star.y, star.size, star.size);
         });
         mCtx.globalAlpha = 1.0;
 
-        // 玩家開火 (套用道具加成)
-        if (mIsDragging) {
-            mPlayer.fireTimer++;
-            // 若持有 fastFire 道具，射速減半 (最快極限為每 4 幀發射)
-            let currentFireRate = mPlayer.buffs.fastFire > 0 ? Math.max(4, mPlayer.fireRate / 2) : mPlayer.fireRate;
+        // 玩家移動 (套用虛擬搖桿向量)
+        if(joyVector.x !== 0 || joyVector.y !== 0) {
+            // 速度乘數放大，補償向量移動手感
+            mPlayer.x += joyVector.x * 6.5; 
+            mPlayer.y += joyVector.y * 6.5;
             
-            if (mPlayer.fireTimer >= currentFireRate) {
-                mPlayer.fireTimer = 0;
-                
-                if (mPlayer.buffs.multiShot > 0) {
-                    // 三連發散彈
-                    mBullets.push({ x: mPlayer.x - 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66' });
-                    mBullets.push({ x: mPlayer.x, y: mPlayer.y - mPlayer.size - 6, speed: 12, color: '#00ff66' });
-                    mBullets.push({ x: mPlayer.x + 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66' });
-                } else {
-                    // 預設雙連發
-                    mBullets.push({ x: mPlayer.x - 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
-                    mBullets.push({ x: mPlayer.x + 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
-                }
-            }
+            if(mPlayer.x < mPlayer.size) mPlayer.x = mPlayer.size;
+            if(mPlayer.x > mCanvas.width - mPlayer.size) mPlayer.x = mCanvas.width - mPlayer.size;
+            if(mPlayer.y < mPlayer.size) mPlayer.y = mPlayer.size;
+            if(mPlayer.y > mCanvas.height - mPlayer.size) mPlayer.y = mCanvas.height - mPlayer.size;
+        }
+
+        // 玩家全自動開火
+        mPlayer.fireTimer++;
+        if (mPlayer.fireTimer >= mPlayer.fireRate) {
+            mPlayer.fireTimer = 0;
+            mBullets.push({ x: mPlayer.x - 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
+            mBullets.push({ x: mPlayer.x + 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
         }
 
         // 更新玩家子彈
@@ -1065,35 +1104,18 @@
             let type = Math.random() > 0.8 ? 'heavy' : 'light';
             let size = type === 'heavy' ? 22 : 14;
             mEnemies.push({
-                x: Math.random() * (mCanvas.width - size*2) + size,
-                y: -size,
-                size: size,
-                hp: type === 'heavy' ? 5 : 1,
-                speed: (type === 'heavy' ? 2 : 4) + (mFrame/1000),
-                color: type === 'heavy' ? '#ffaa00' : '#ff003c',
-                type: type,
-                fireTimer: 0 
+                x: Math.random() * (mCanvas.width - size*2) + size, y: -size, size: size,
+                hp: type === 'heavy' ? 5 : 1, speed: (type === 'heavy' ? 2 : 4) + (mFrame/1000), color: type === 'heavy' ? '#ffaa00' : '#ff003c'
             });
         }
 
-        // 更新敵機與敵機子彈發射
+        // 更新敵機
         for(let i = mEnemies.length-1; i >= 0; i--) {
             let e = mEnemies[i];
             e.y += e.speed;
             
-            // 敵機定期開火
-            e.fireTimer++;
-            let eFireRate = e.type === 'heavy' ? 80 : 150;
-            if (e.fireTimer >= eFireRate) {
-                e.fireTimer = 0;
-                mEnemyBullets.push({ x: e.x, y: e.y + e.size, speed: e.speed + 3, color: '#ff00cc' });
-            }
-
-            mCtx.fillStyle = e.color;
-            mCtx.beginPath();
-            mCtx.moveTo(e.x, e.y + e.size);
-            mCtx.lineTo(e.x - e.size, e.y - e.size);
-            mCtx.lineTo(e.x + e.size, e.y - e.size);
+            mCtx.fillStyle = e.color; mCtx.beginPath();
+            mCtx.moveTo(e.x, e.y + e.size); mCtx.lineTo(e.x - e.size, e.y - e.size); mCtx.lineTo(e.x + e.size, e.y - e.size);
             mCtx.fill();
 
             let isDead = false;
@@ -1103,10 +1125,7 @@
                     e.hp--;
                     createMExplosion(b.x, b.y, '#fff', 3);
                     mBullets.splice(j, 1);
-                    if (e.hp <= 0) {
-                        isDead = true;
-                        break;
-                    }
+                    if (e.hp <= 0) { isDead = true; break; }
                 }
             }
 
@@ -1114,136 +1133,47 @@
                 createMExplosion(e.x, e.y, e.color, 15);
                 missionScore += (e.color === '#ffaa00' ? 5 : 1);
                 document.getElementById('mission-score').innerText = missionScore;
-                
-                // 敵機死亡：20% 機率掉落道具
-                if (Math.random() < 0.20) {
-                    let buffTypes = ['fastFire', 'multiShot', 'invincible'];
-                    mItems.push({
-                        x: e.x, y: e.y, size: 12, speed: 2.5,
-                        type: buffTypes[Math.floor(Math.random() * buffTypes.length)]
-                    });
-                }
-                
                 mEnemies.splice(i, 1);
                 continue;
             }
 
-            // 玩家與敵機相撞
-            let dx = mPlayer.x - e.x;
-            let dy = mPlayer.y - e.y;
+            // 相撞判定
+            let dx = mPlayer.x - e.x; let dy = mPlayer.y - e.y;
             if(Math.sqrt(dx*dx + dy*dy) < mPlayer.size + e.size - 6) {
-                if (mPlayer.buffs.invincible > 0) {
-                    // 若玩家有無敵護盾，敵機直接被撞爆
-                    e.hp = 0; 
-                } else {
-                    createMExplosion(mPlayer.x, mPlayer.y, '#00f3ff', 30);
-                    missionGameOver();
-                    return;
-                }
+                createMExplosion(mPlayer.x, mPlayer.y, '#00f3ff', 30);
+                missionGameOver();
+                return;
             }
 
             if(e.y > mCanvas.height + e.size) mEnemies.splice(i, 1);
         }
 
-        // 更新敵機子彈
-        for (let i = mEnemyBullets.length - 1; i >= 0; i--) {
-            let b = mEnemyBullets[i];
-            b.y += b.speed;
-            mCtx.fillStyle = b.color;
-            mCtx.fillRect(b.x - 2, b.y, 4, 12);
-
-            let dx = mPlayer.x - b.x;
-            let dy = mPlayer.y - b.y;
-            if (Math.abs(dx) < mPlayer.size && Math.abs(dy) < mPlayer.size) {
-                if (mPlayer.buffs.invincible > 0) {
-                    // 無敵狀態下擋掉子彈
-                    createMExplosion(b.x, b.y, b.color, 3);
-                    mEnemyBullets.splice(i, 1);
-                } else {
-                    createMExplosion(mPlayer.x, mPlayer.y, '#00f3ff', 30);
-                    missionGameOver();
-                    return;
-                }
-            } else if (b.y > mCanvas.height) {
-                mEnemyBullets.splice(i, 1);
-            }
-        }
-
-        // 更新與繪製道具 (Items)
-        for (let i = mItems.length - 1; i >= 0; i--) {
-            let item = mItems[i];
-            item.y += item.speed;
-
-            // 繪製道具方形 (已經移除裡面的英文字母)
-            mCtx.fillStyle = item.type === 'fastFire' ? '#ffd700' : (item.type === 'multiShot' ? '#00ff66' : '#ffffff');
-            mCtx.shadowBlur = 10;
-            mCtx.shadowColor = mCtx.fillStyle;
-            mCtx.fillRect(item.x - item.size, item.y - item.size, item.size * 2, item.size * 2);
-            mCtx.shadowBlur = 0;
-
-            // 玩家吃到道具
-            let dx = mPlayer.x - item.x;
-            let dy = mPlayer.y - item.y;
-            if (Math.sqrt(dx*dx + dy*dy) < mPlayer.size + item.size) {
-                // 給予 5 秒 (300 幀) 的 Buff
-                if (item.type === 'fastFire') mPlayer.buffs.fastFire = 300;
-                if (item.type === 'multiShot') mPlayer.buffs.multiShot = 300;
-                if (item.type === 'invincible') mPlayer.buffs.invincible = 300;
-                mItems.splice(i, 1);
-                continue;
-            }
-
-            if (item.y > mCanvas.height + item.size) mItems.splice(i, 1);
-        }
-
-        // 更新粒子
+        // 更新粒子特效
         for(let i = mParticles.length - 1; i >= 0; i--) {
             let p = mParticles[i];
-            p.x += p.vx; p.y += p.vy;
-            p.alpha -= 0.05;
-            if (p.alpha <= 0) {
-                mParticles.splice(i, 1);
-            } else {
-                mCtx.globalAlpha = p.alpha;
-                mCtx.fillStyle = p.color;
-                mCtx.fillRect(p.x, p.y, p.size, p.size);
-            }
+            p.x += p.vx; p.y += p.vy; p.alpha -= 0.05;
+            if (p.alpha <= 0) { mParticles.splice(i, 1); } 
+            else { mCtx.globalAlpha = p.alpha; mCtx.fillStyle = p.color; mCtx.fillRect(p.x, p.y, p.size, p.size); }
         }
         mCtx.globalAlpha = 1.0;
 
-        // 繪製玩家飛船
-        mCtx.fillStyle = mPlayer.color;
-        mCtx.shadowBlur = 10;
-        mCtx.shadowColor = mPlayer.color;
+        // 繪製玩家戰機
+        mCtx.fillStyle = mPlayer.color; mCtx.shadowBlur = 10; mCtx.shadowColor = mPlayer.color;
         mCtx.beginPath();
         mCtx.moveTo(mPlayer.x, mPlayer.y - mPlayer.size);
         mCtx.lineTo(mPlayer.x + mPlayer.size, mPlayer.y + mPlayer.size);
         mCtx.lineTo(mPlayer.x, mPlayer.y + mPlayer.size - 5);
         mCtx.lineTo(mPlayer.x - mPlayer.size, mPlayer.y + mPlayer.size);
-        mCtx.closePath();
-        mCtx.fill();
-        mCtx.shadowBlur = 0;
-
-        // 若無敵，畫一圈白色護盾
-        if (mPlayer.buffs.invincible > 0) {
-            mCtx.strokeStyle = `rgba(255, 255, 255, ${0.5 + Math.sin(mFrame * 0.2) * 0.5})`; // 呼吸燈特效
-            mCtx.lineWidth = 3;
-            mCtx.beginPath();
-            mCtx.arc(mPlayer.x, mPlayer.y + 2, mPlayer.size + 8, 0, Math.PI * 2);
-            mCtx.stroke();
-        }
+        mCtx.closePath(); mCtx.fill(); mCtx.shadowBlur = 0;
 
         requestAnimationFrame(updateMission);
     }
 
     function missionGameOver() {
         missionRunning = false;
+        joyZone.style.display = 'none'; // 死掉時隱藏搖桿
         mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
-        mParticles.forEach(p => {
-            mCtx.globalAlpha = p.alpha;
-            mCtx.fillStyle = p.color;
-            mCtx.fillRect(p.x, p.y, p.size, p.size);
-        });
+        mParticles.forEach(p => { mCtx.globalAlpha = p.alpha; mCtx.fillStyle = p.color; mCtx.fillRect(p.x, p.y, p.size, p.size); });
         
         setTimeout(() => {
             document.getElementById('mission-game-over').style.display = 'flex';
@@ -1253,8 +1183,6 @@
         metaData.techPoints += missionScore;
         saveProgress();
     }
-
-    window.addEventListener('mousemove', handleMove); window.addEventListener('mouseup', handleUp); window.addEventListener('touchmove', handleMove, {passive: false}); window.addEventListener('touchend', handleUp);
 
     function startGameState() { 
         setTimeout(() => {
@@ -1269,6 +1197,8 @@
 
             resizeCanvas(); initCardIcons(); initEnergyIcon();
             gameState.running = true; gameState.paused = false; gameState.hp = gameState.maxHp; gameState.energy = 5; gameState.wave = 1; 
+            gameState.gameSpeed = 1; document.getElementById('btn-speed-toggle').innerText = "▶ 1x"; document.getElementById('btn-speed-toggle').style.background = "rgba(255, 215, 0, 0.1)";
+
             gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.particles = []; 
             gameState.buffs = {}; gameState.debuffs = {}; gameState.selectedTower = null; hideSellButton();
             gameState.spawnTimer = 0; gameState.spawnInterval = 120; gameState.enemiesSpawned = 0; gameState.earnedPoints = 0;
