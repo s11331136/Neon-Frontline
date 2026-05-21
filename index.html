@@ -12,15 +12,13 @@
         .screen { flex: 1; display: none; padding: 20px; overflow-y: auto; }
         .screen.active { display: flex; flex-direction: column; }
         
-        /* 標題樣式 */
         h1 { text-align: center; color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin: 30px 0 20px 0; font-size: 26px; letter-spacing: 2px; }
         
-        /* ================= 登入系統 UI ================= */
+        /* 登入系統 UI */
         .login-box { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px; }
         .login-title { color: #ff00cc; font-size: 20px; font-weight: bold; text-shadow: 0 0 8px #ff00cc; }
         .login-input { width: 100%; max-width: 250px; padding: 12px 15px; border-radius: 8px; border: 2px solid #00f3ff; background: rgba(0, 243, 255, 0.05); color: #fff; font-size: 16px; text-align: center; outline: none; transition: 0.2s; }
         .login-input:focus { background: rgba(0, 243, 255, 0.15); box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
-        .login-input::placeholder { color: #555; }
         .login-hint { font-size: 12px; color: #777; text-align: center; line-height: 1.5; }
         
         .user-info-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0, 243, 255, 0.1); padding: 10px 15px; border-radius: 8px; border: 1px solid #00f3ff; margin-bottom: 20px; }
@@ -28,25 +26,30 @@
         .logout-btn { background: rgba(ff, 0, 60, 0.2); border: 1px solid #ff003c; color: #ff003c; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.1s; }
         .logout-btn:active { background: rgba(ff, 0, 60, 0.4); }
 
-        /* 首頁與按鈕 */
         .home-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .start-btn { background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.1)); border: 2px solid #00f3ff; color: #00f3ff; padding: 18px 40px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); letter-spacing: 4px; transition: 0.2s; text-shadow: 0 0 5px #00f3ff; }
         .start-btn:active { transform: scale(0.95); box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
 
-        /* ================= 升級畫面通用 UI ================= */
+        /* 各系統卡片通用樣式 */
         .upgrade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(0,243,255,0.4); padding-bottom: 15px; }
         .tech-points { color: #ffd700; font-size: 16px; font-weight: bold; text-shadow: 0 0 8px rgba(255,215,0,0.6); background: rgba(255,215,0,0.1); padding: 6px 12px; border-radius: 20px; border: 1px solid #ffd700; }
-        .upgrade-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; padding-right: 5px; }
-        .upgrade-card { background: linear-gradient(90deg, rgba(0, 243, 255, 0.05), rgba(0,0,0,0)); border: 1px solid #00f3ff; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; }
         
+        .item-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; overflow-y: auto; flex: 1; }
+        .sys-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(0,243,255,0.2); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .sys-info { display: flex; justify-content: space-between; align-items: center; }
+        .sys-title { font-weight: bold; color: #fff; font-size: 15px; }
+        .sys-desc { font-size: 12px; color: #aaa; line-height: 1.4; }
+        .sys-cost { color: #ffeb3b; font-size: 13px; font-weight: bold; }
+
+        /* 升級頁面專屬 */
+        .upgrade-card { flex-direction: row; gap: 12px; }
         .upgrade-icon-wrapper { width: 55px; height: 55px; background: #0a0d14; border-radius: 8px; border: 1px solid rgba(0,243,255,0.5); display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: inset 0 0 8px rgba(0,243,255,0.2); }
         .upgrade-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .upgrade-name { color: #00f3ff; font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 6px; }
         .upgrade-lvl { font-size: 12px; color: #fff; background: #ff00cc; padding: 2px 6px; border-radius: 4px; box-shadow: 0 0 5px #ff00cc; }
         .upgrade-stats { color: #aaa; font-size: 12px; line-height: 1.5; }
-        .upgrade-stats .highlight { color: #ffd700; font-weight: bold; letter-spacing: 2px;}
+        .upgrade-stats .highlight { color: #ffd700; font-weight: bold; }
         .upgrade-stats .val { color: #fff; font-weight: bold;}
-        
         .upgrade-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; width: 90px; }
         .btn-upg { background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff; border-radius: 4px; padding: 7px 0; font-size: 13px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.1s; }
         .btn-upg:active { transform: scale(0.95); background: rgba(0, 243, 255, 0.3); }
@@ -54,78 +57,56 @@
         .btn-break:active { transform: scale(0.95); background: rgba(255, 0, 204, 0.3); }
         .btn-disabled { opacity: 0.3; pointer-events: none; filter: grayscale(100%); }
 
-        /* ================= 無人機採礦 UI ================= */
-        .mining-dashboard { background: rgba(10, 13, 20, 0.9); border: 2px solid #00f3ff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: inset 0 0 20px rgba(0,243,255,0.1); margin-bottom: 20px; }
-        .yield-display { font-size: 40px; font-weight: bold; color: #4caf50; text-shadow: 0 0 15px rgba(76, 175, 80, 0.6); margin: 10px 0; }
-        .mining-btn-large { background: linear-gradient(135deg, #0055ff, #00f3ff); color: #fff; font-size: 18px; font-weight: bold; border: none; border-radius: 8px; padding: 15px 0; width: 100%; cursor: pointer; box-shadow: 0 0 15px rgba(0,243,255,0.4); text-transform: uppercase; letter-spacing: 2px; transition: 0.2s; }
-        .mining-btn-large:active { transform: scale(0.95); }
-        .mining-grid { display: flex; gap: 10px; margin-top: 15px; }
-        .mining-card { flex: 1; background: rgba(0,243,255,0.05); border: 1px solid #00f3ff; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .mining-card:active { transform: scale(0.95); background: rgba(0,243,255,0.2); }
-        .mining-card-title { font-size: 13px; color: #fff; margin-bottom: 5px; font-weight: bold; }
-        .mining-card-val { font-size: 12px; color: #aaa; margin-bottom: 5px; }
-        .mining-card-cost { color: #ffeb3b; font-size: 12px; font-weight: bold; }
-        .progress-container { background: #222; border-radius: 6px; height: 10px; overflow: hidden; border: 1px solid #444; margin: 10px 0; }
+        /* 採礦專屬 */
+        .mining-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(0,243,255,0.1); padding: 10px; border-radius: 6px; text-align: center; }
+        .stat-label { font-size: 11px; color: #8ab4f8; }
+        .stat-val { font-size: 16px; font-weight: bold; margin-top: 4px; }
+        .progress-container { background: #222; border-radius: 6px; height: 12px; overflow: hidden; border: 1px solid #444; margin-bottom: 15px; }
         .progress-bar { background: linear-gradient(90deg, #4caf50, #8bc34a); width: 0%; height: 100%; transition: width 0.3s ease; }
 
-        /* ================= 改裝廠 UI ================= */
-        .ship-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
-        .ship-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(0,243,255,0.2); padding: 15px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+        /* 改裝廠專屬 */
         .ship-card.equipped { border-color: #ffeb3b; background: rgba(255, 235, 59, 0.05); }
-        .ship-info { display: flex; justify-content: space-between; align-items: center; }
-        .ship-title { font-weight: bold; color: #fff; font-size: 16px; }
-        .ship-desc { font-size: 13px; color: #aaa; line-height: 1.5; }
-        .equipped-badge { position: absolute; top: 10px; right: 10px; background: #ffeb3b; color: #000; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-        .btn-ship { background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; border-radius: 4px; padding: 8px; font-size: 14px; cursor: pointer; text-align: center; font-weight: bold; width: 100%; transition: 0.1s; }
+        .equipped-badge { position: absolute; top: 12px; right: 12px; background: #ffeb3b; color: #000; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .btn-ship { background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; border-radius: 4px; padding: 8px; font-size: 14px; cursor: pointer; text-align: center; font-weight: bold; width: 100%; transition: 0.1s; margin-top: 5px; }
         .btn-ship:active { transform: scale(0.97); }
 
-        /* ================= 戰鬥畫面 UI ================= */
+        /* 戰鬥畫面 UI */
         #screen-battle { padding: 0; background-color: #000; position: relative; overflow: hidden; }
         #battle-header { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #00f3ff; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
         .header-btn { background: transparent; border: 1px solid #00f3ff; color: #00f3ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
         .header-btn.danger { border-color: #ff003c; color: #ff003c; }
-
         #base-health-container { flex: 1; margin: 0 15px; height: 16px; background: #222; border: 1px solid #ff003c; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5); }
         #base-health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #ff003c, #00ff00); transition: width 0.2s ease; }
         #base-health-text { position: absolute; width: 100%; text-align: center; top: 0; left: 0; font-size: 11px; font-weight: bold; line-height: 16px; color: #fff; text-shadow: 1px 1px 2px #000; }
-
         #battle-title-bar { text-align: center; color: #ff00cc; text-shadow: 0 0 5px rgba(255, 0, 204, 0.5); font-weight: bold; padding: 6px 0; background: #0d111a; font-size: 15px; border-bottom: 1px solid rgba(255, 0, 204, 0.2); z-index: 10; position: relative; }
-        #game-canvas { width: 100%; flex: 1; display: block; touch-action: none; }
-
+        
+        #game-canvas { width: 100%; flex: 1; display: block; touch-action: none; -webkit-tap-highlight-color: transparent; }
         #sell-btn-overlay { position: absolute; background: rgba(244, 67, 54, 0.9); border: 2px solid #ff7961; color: white; padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; display: none; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 100; transform: translate(-50%, 0); transition: 0.1s; }
-        #sell-btn-overlay:active { transform: translate(-50%, 0) scale(0.9); }
-
+        
         #energy-bar-container { height: 25px; background: #050505; border-top: 2px solid #00f3ff; border-bottom: 1px solid #00f3ff; display: flex; align-items: center; padding: 0 10px; position: relative; z-index: 10; }
         #energy-bar-bg { flex: 1; height: 12px; background: #111; border: 1px solid #00a8ff; border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 0 5px #000; }
         #energy-bar-fill { height: 100%; width: 50%; background: #00d2ff; box-shadow: 0 0 10px #00d2ff; transition: width 0.2s linear; }
-        #energy-bar-text { position: absolute; width: 100%; text-align: center; font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; line-height: 12px; }
-        .energy-icon-canvas { display: block; filter: drop-shadow(0 0 3px #00d2ff); margin-right: 8px; }
-
+        #energy-bar-text { position: absolute; width: 100%; text-align: center; font-size: 10px; font-weight: bold; color: #fff; line-height: 12px; }
+        .energy-icon-canvas { display: block; filter: drop-shadow(0 0 3px #00d2ff); margin-right: 8px; width: 20px; height: 20px; }
+        
         #card-deck-container { height: 95px; background: linear-gradient(to top, #050505, #0d111a); display: flex; align-items: center; padding: 0 10px; gap: 10px; z-index: 10; }
-        .card { flex: 1; height: 80px; background: rgba(0, 243, 255, 0.05); border: 1px solid #00f3ff; border-radius: 6px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, filter 0.1s, opacity 0.1s; }
+        .card { flex: 1; height: 80px; background: rgba(0, 243, 255, 0.05); border: 1px solid #00f3ff; border-radius: 6px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .card.disabled { opacity: 0.4; filter: grayscale(100%); }
-        .card:active:not(.disabled) { transform: scale(0.95); background: rgba(0, 243, 255, 0.2); }
-        .card-cost { position: absolute; top: -6px; left: -6px; background: #050505; color: #00d2ff; width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; border: 1px solid #00d2ff; box-shadow: 0 0 5px rgba(0, 210, 255, 0.5); }
+        .card-cost { position: absolute; top: -6px; left: -6px; background: #050505; color: #00d2ff; width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; border: 1px solid #00d2ff; }
         .card-name { font-size: 11px; color: #00f3ff; font-weight: bold; margin-top: 4px; }
         #drag-icon { position: fixed; pointer-events: none; display: none; z-index: 100; opacity: 0.9; }
 
-        @keyframes flashRefresh {
-            0% { transform: scale(0.8); opacity: 0.5; filter: brightness(2); }
-            50% { transform: scale(1.15); opacity: 1; filter: brightness(1.5) drop-shadow(0 0 10px #00f3ff); }
-            100% { transform: scale(1); filter: brightness(1); }
-        }
-        .card.refreshing { animation: flashRefresh 0.35s ease-out; }
-
-        /* ================= 任務畫面 (星際突圍) UI ================= */
+        /* 任務畫面 (星際突圍) UI */
         #screen-mission-game { padding: 0; background-color: #000; position: relative; overflow: hidden; }
         #mission-top-bar { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #ff00cc; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
-        #missionCanvas { width: 100%; flex: 1; display: block; background: #030508; touch-action: none; }
+        #missionCanvas { width: 100%; flex: 1; display: block; background: #030508; touch-action: none; -webkit-tap-highlight-color: transparent; }
         
         #mission-game-over { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 20; }
         #mission-game-over h1 { color: #ff003c; margin-bottom: 5px; text-shadow: 0 0 15px #ff003c; font-size: 32px; letter-spacing: 2px; }
         #mission-game-over .reward-text { color: #ffd700; font-size: 20px; font-weight: bold; margin-bottom: 35px; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
 
-        /* 虛擬搖桿 */
+        /* 虛擬搖桿 UI */
         #joystick-zone { position: absolute; bottom: 30px; left: 30px; width: 120px; height: 120px; display: none; z-index: 15; touch-action: none; }
         #joystick-base { width: 100px; height: 100px; background: rgba(0, 243, 255, 0.1); border: 2px solid rgba(0, 243, 255, 0.3); border-radius: 50%; position: absolute; bottom: 10px; left: 10px; box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
         #joystick-knob { width: 40px; height: 40px; background: radial-gradient(circle, #00f3ff, #0055ff); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 10px #00f3ff; pointer-events: none; }
@@ -136,7 +117,7 @@
         .nav-btn { background: none; border: none; color: #777; font-size: 14px; cursor: pointer; flex: 0 0 80px; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.2s; }
         .nav-btn.active { color: #00f3ff; text-shadow: 0 0 8px #00f3ff; border-bottom: 3px solid #00f3ff; background: rgba(0,243,255,0.05); }
 
-        /* ================= 共用彈出視窗 (Modal & Alert) ================= */
+        /* 共用彈出視窗 (Modal / Alert) */
         #modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: none; justify-content: center; align-items: center; }
         .modal-container { background-color: #0d111a; border: 2px solid #00f3ff; border-radius: 12px; width: 85%; max-width: 320px; padding: 25px 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); transform: scale(0.9); opacity: 0; transition: 0.2s; }
         #modal-overlay.show .modal-container { transform: scale(1); opacity: 1; }
@@ -149,7 +130,6 @@
         .modal-confirm-btn, .modal-cancel-btn { flex: 1; padding: 10px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.1s; }
         .modal-cancel-btn { background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; color: #00f3ff; }
         .modal-confirm-btn { background: rgba(255, 0, 204, 0.1); border-color: #ff00cc; color: #ff00cc; box-shadow: 0 0 10px rgba(255, 0, 204, 0.2); }
-        
         .buff-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .buff-card { background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(0, 243, 255, 0.02)); border: 1px solid #00a8ff; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
         .debuff-card { background: linear-gradient(135deg, rgba(255, 0, 60, 0.1), rgba(255, 0, 60, 0.02)); border: 1px solid #ff003c; border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
@@ -206,6 +186,14 @@
                 <span style="color:#00f3ff;">戰機已設定為自動開火</span>，請專注於閃避！<br>
                 擊毀隕石收集的點數可共通使用於防禦塔升級。
             </p>
+            
+            <div style="text-align: left; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; color: #ddd; border: 1px dashed rgba(255,0,204,0.4);">
+                <div style="color: #ff00cc; font-weight: bold; margin-bottom: 5px; text-align: center;">【戰場支援物資】</div>
+                🟨 <span style="color:#ffd700; font-weight:bold;">黃色方塊</span>：射速過載 (瘋狂連發)<br>
+                🟩 <span style="color:#00ff66; font-weight:bold;">綠色方塊</span>：散射強化 (三向開火)<br>
+                ⬜ <span style="color:#ffffff; font-weight:bold;">白色方塊</span>：無敵護盾 (可衝撞敵機)
+            </div>
+
             <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);" onclick="enterMission()">切入星域</button>
         </div>
     </div>
@@ -225,31 +213,40 @@
             <div class="tech-points">科技點: <span id="mining-points">0</span></div>
         </div>
         
-        <div class="mining-dashboard">
-            <h2 style="color: #ccc; margin-bottom: 5px; font-size: 14px;">累積離線收益</h2>
-            <div class="yield-display">
-                <span id="mining-current-amt">0</span> <span style="font-size: 14px; color:#aaa;">/ <span id="mining-max-display">500</span></span>
+        <div class="sys-card" style="padding: 15px;">
+            <div class="mining-stats">
+                <div class="stat-box">
+                    <div class="stat-label">採礦速率</div>
+                    <div class="stat-val" id="mining-rate-display">10 點/小時</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">儲存容量上限</div>
+                    <div class="stat-val" id="mining-max-display">500 點</div>
+                </div>
+            </div>
+            
+            <div style="font-size:13px; margin-bottom:5px; display:flex; justify-content:space-between;">
+                <span>🔋 當前無人機貨艙積蓄：</span>
+                <span id="mining-current-amt" style="font-weight:bold; color:#4caf50;">0</span>
             </div>
             <div class="progress-container">
                 <div id="mining-progress" class="progress-bar"></div>
             </div>
             
-            <button class="mining-btn-large" onclick="collectMiningPoints()">部署無人機並收取</button>
-        </div>
-
-        <div class="mining-grid">
-            <div class="mining-card" onclick="upgradeMineHardware('rate')">
-                <div style="font-size: 24px; margin-bottom:5px;">⚡</div>
-                <div class="mining-card-title">升級採集速度</div>
-                <div class="mining-card-val">目前: Lv.<span id="mine-lvl-rate">1</span></div>
-                <div class="mining-card-val">效率: <span id="mining-rate-display">10</span>/時</div>
-                <div class="mining-card-cost" id="btn-upgrade-mine-rate">花費: 100</div>
-            </div>
-            <div class="mining-card" onclick="upgradeMineHardware('cap')">
-                <div style="font-size: 24px; margin-bottom:5px;">📦</div>
-                <div class="mining-card-title">升級儲存上限</div>
-                <div class="mining-card-val">目前: Lv.<span id="mine-lvl-cap">1</span></div>
-                <div class="mining-card-cost" id="btn-upgrade-mine-cap">花費: 150</div>
+            <button class="start-btn" style="width: 100%; font-size: 16px; padding: 12px; border-color: #4caf50; color: #4caf50; box-shadow: 0 0 10px rgba(76, 175, 80, 0.4); margin-bottom:15px;" onclick="collectMiningPoints()">
+                📥 部署無人機並收取
+            </button>
+            
+            <div style="border-top:1px solid rgba(0,243,255,0.2); padding-top:10px;">
+                <div style="font-size:12px; font-weight:bold; color:#00f3ff; margin-bottom:8px;">🛠️ 無人機硬體升級：</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="logout-btn" style="flex:1; padding:8px; font-size:11px; border-color:#00f3ff; color:#00f3ff;" id="btn-upgrade-mine-rate" onclick="upgradeMineHardware('rate')">
+                        升級速率
+                    </button>
+                    <button class="logout-btn" style="flex:1; padding:8px; font-size:11px; border-color:#00f3ff; color:#00f3ff;" id="btn-upgrade-mine-cap" onclick="upgradeMineHardware('cap')">
+                        升級容量
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -259,29 +256,29 @@
             <h1 style="margin:0; font-size:22px;">戰機改裝廠</h1>
             <div class="tech-points">科技點: <span id="workshop-points">0</span></div>
         </div>
-        <div class="ship-list">
-            <div class="ship-card equipped" id="ship-card-0">
-                <div class="ship-info">
-                    <div class="ship-title">🔷 標準突擊者 (預設)</div>
+        <div class="item-list">
+            <div class="sys-card ship-card equipped" id="ship-card-0">
+                <div class="sys-info">
+                    <div class="sys-title">🔷 標準突擊者 (預設)</div>
                     <span class="equipped-badge" id="badge-ship-0">配備中</span>
                 </div>
-                <div class="ship-desc">均衡型作戰星艦，發射標準能量彈。</div>
+                <div class="sys-desc">均衡型作戰星艦，發射標準能量彈。</div>
                 <button class="btn-ship" onclick="selectShip(0)">裝備切換</button>
             </div>
-            <div class="ship-card" id="ship-card-1">
-                <div class="ship-info">
-                    <div class="ship-title">🔺 重裝攔截艦</div>
-                    <div class="sys-cost" id="cost-ship-1">解鎖需 1500 點</div>
+            <div class="sys-card ship-card" id="ship-card-1">
+                <div class="sys-info">
+                    <div class="sys-title">🔺 重裝攔截艦</div>
+                    <div class="sys-cost" id="cost-ship-1">已解鎖</div>
                 </div>
-                <div class="ship-desc">移動稍慢，但有 <span style="color:#ff4d4d">2 點血量</span>，且發射<span style="color:#ffeb3b">三向散彈</span>！</div>
+                <div class="sys-desc">移動稍慢，但有 <span style="color:#ff4d4d">2 點血量</span>，且發射<span style="color:#ffeb3b">三向散彈</span>！</div>
                 <button class="btn-ship" style="border-color:#ff4d4d; color:#ff4d4d;" id="btn-ship-1" onclick="selectShip(1)">解鎖 (1500點)</button>
             </div>
-            <div class="ship-card" id="ship-card-2">
-                <div class="ship-info">
-                    <div class="ship-title">🟢 光速隱形機</div>
+            <div class="sys-card ship-card" id="ship-card-2">
+                <div class="sys-info">
+                    <div class="sys-title">🟢 光速隱形機</div>
                     <div class="sys-cost" id="cost-ship-2">解鎖需 3000 點</div>
                 </div>
-                <div class="ship-desc">極速飆升。<span style="color:#4caf50">每隔 15 秒自動進入 3 秒無敵隱形</span>！</div>
+                <div class="sys-desc">極速飆升。<span style="color:#4caf50">每隔 15 秒自動進入 3 秒無敵隱形</span>！</div>
                 <button class="btn-ship" style="border-color:#4caf50; color:#4caf50;" id="btn-ship-2" onclick="selectShip(2)">解鎖 (3000點)</button>
             </div>
         </div>
@@ -356,7 +353,7 @@
 
 <script>
     // =========================================
-    // 自訂優化版 Alert 彈窗 (取代瀏覽器原生 alert)
+    // 自訂優化版 Alert 彈窗
     // =========================================
     function showAlert(msg) {
         const wasRunning = gameState.running;
@@ -408,10 +405,10 @@
         const input = document.getElementById('username-input').value.trim();
         if (!input) { showAlert("請輸入指揮官代號！"); return; }
         currentUser = input;
-        const savedData = localStorage.getItem('defense_save_v4_' + currentUser);
+        const savedData = localStorage.getItem('defense_save_v5_' + currentUser);
         if (savedData) {
             metaData = JSON.parse(savedData);
-            // 補齊舊存檔資料防呆
+            // 補齊舊存檔可能缺少的資料
             if (!metaData.unlockedShips) metaData.unlockedShips = [true, false, false];
             if (metaData.currentShip === undefined) metaData.currentShip = 0;
             if (!metaData.mining) metaData.mining = { lvlRate: 1, lvlCap: 1, lastTime: Date.now(), savedPoints: 0 };
@@ -436,10 +433,10 @@
         document.getElementById('bottom-nav').style.display = 'none';
     }
 
-    function saveProgress() { if (currentUser) localStorage.setItem('defense_save_v4_' + currentUser, JSON.stringify(metaData)); }
+    function saveProgress() { if (currentUser) localStorage.setItem('defense_save_v5_' + currentUser, JSON.stringify(metaData)); }
 
     // =========================================
-    // 局外成長資料系統 (各分頁 UI 渲染)
+    // 局外成長資料系統 (各分頁的 UI 渲染)
     // =========================================
     function getTowerBaseDamage(type) { let t = metaData.towers[type]; return t.baseDmg + (t.level - 1) * t.dmgGrowth; }
     function getUpgradeCost(level) { return 10 + Math.floor((level - 1) / 5) * 5; }
@@ -496,8 +493,8 @@
         let costRate = metaData.mining.lvlRate * 100;
         let costCap = metaData.mining.lvlCap * 150;
         
-        document.getElementById('btn-upgrade-mine-rate').innerHTML = metaData.mining.lvlRate >= 10 ? "已達上限" : `花費: ${costRate}`;
-        document.getElementById('btn-upgrade-mine-cap').innerHTML = metaData.mining.lvlCap >= 10 ? "已達上限" : `花費: ${costCap}`;
+        document.getElementById('btn-upgrade-mine-rate').innerHTML = metaData.mining.lvlRate >= 10 ? "已達上限" : `升級速率 (花費: ${costRate})`;
+        document.getElementById('btn-upgrade-mine-cap').innerHTML = metaData.mining.lvlCap >= 10 ? "已達上限" : `升級容量 (花費: ${costCap})`;
         
         document.getElementById('mining-current-amt').innerText = Math.floor(metaData.mining.savedPoints);
         const pct = Math.min(100, (metaData.mining.savedPoints / cap) * 100);
@@ -1153,7 +1150,7 @@
     const mCanvas = document.getElementById('missionCanvas');
     const mCtx = mCanvas.getContext('2d');
     
-    let mPlayer, mEnemies, mBullets, mEnemyBullets, mParticles, mStars, missionScore, mFrame, missionRunning, missionPaused;
+    let mPlayer, mEnemies, mBullets, mEnemyBullets, mParticles, mStars, mItems, missionScore, mFrame, missionRunning, missionPaused;
 
     // 虛擬搖桿狀態
     const joyZone = document.getElementById('joystick-zone');
@@ -1163,41 +1160,42 @@
     let joyVector = { x: 0, y: 0 };
     const joyMaxRadius = 35;
 
-    // 綁定虛擬搖桿事件
-    joyZone.addEventListener('touchstart', (e) => {
+    // 綁定虛擬搖桿事件 (支援觸控與滑鼠)
+    function startJoy(clientX, clientY) {
         isJoyDragging = true;
         const rect = joyZone.getBoundingClientRect();
         joyCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
         document.getElementById('mission-hint').style.display = 'none';
-        handleJoyMove(e.touches[0]);
-    }, {passive: false});
-
-    joyZone.addEventListener('touchmove', (e) => {
+        updateJoyVector(clientX, clientY);
+    }
+    
+    function moveJoy(clientX, clientY) {
         if (!isJoyDragging) return;
-        e.preventDefault(); // 防止滾動畫面
-        handleJoyMove(e.touches[0]);
-    }, {passive: false});
-
-    joyZone.addEventListener('touchend', () => {
+        updateJoyVector(clientX, clientY);
+    }
+    
+    function endJoy() {
         isJoyDragging = false;
         joyVector.x = 0; joyVector.y = 0;
         joyKnob.style.transform = `translate(-50%, -50%)`;
-    });
-
-    function handleJoyMove(touch) {
-        let dx = touch.clientX - joyCenter.x;
-        let dy = touch.clientY - joyCenter.y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        
-        if(dist > joyMaxRadius) {
-            dx = (dx/dist) * joyMaxRadius;
-            dy = (dy/dist) * joyMaxRadius;
-        }
-        
-        joyKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-        joyVector.x = dx / joyMaxRadius;
-        joyVector.y = dy / joyMaxRadius;
     }
+    
+    function updateJoyVector(clientX, clientY) {
+        let dx = clientX - joyCenter.x;
+        let dy = clientY - joyCenter.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist > joyMaxRadius) { dx = (dx/dist) * joyMaxRadius; dy = (dy/dist) * joyMaxRadius; }
+        joyKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        joyVector.x = dx / joyMaxRadius; joyVector.y = dy / joyMaxRadius;
+    }
+
+    joyZone.addEventListener('touchstart', (e) => { e.preventDefault(); startJoy(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+    joyZone.addEventListener('touchmove', (e) => { e.preventDefault(); moveJoy(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+    joyZone.addEventListener('touchend', endJoy);
+    
+    joyZone.addEventListener('mousedown', (e) => { startJoy(e.clientX, e.clientY); });
+    window.addEventListener('mousemove', (e) => { moveJoy(e.clientX, e.clientY); });
+    window.addEventListener('mouseup', endJoy);
 
     function resizeMission() {
         const rect = mCanvas.parentNode.getBoundingClientRect();
@@ -1251,7 +1249,6 @@
         document.getElementById('mission-game-over').style.display = 'none';
         document.getElementById('mission-hint').style.display = 'block';
         
-        // 讀取配備戰機屬性
         let baseHp = 1, baseSpeed = 5.0;
         if(metaData.currentShip === 1) { baseHp = 2; baseSpeed = 3.5; }
         if(metaData.currentShip === 2) { baseHp = 1; baseSpeed = 7.0; }
@@ -1259,9 +1256,10 @@
         mPlayer = { 
             x: mCanvas.width/2, y: mCanvas.height - 80, size: 16, color: '#00f3ff', 
             fireRate: 12, fireTimer: 0,
-            hp: baseHp, maxHp: baseHp, invuln: 60
+            hp: baseHp, maxHp: baseHp, invuln: 60,
+            buffs: { fastFire: 0, multiShot: 0 } // 【修正】恢復 buffs 物件
         };
-        mEnemies = []; mBullets = []; mEnemyBullets = []; mParticles = []; 
+        mEnemies = []; mBullets = []; mEnemyBullets = []; mParticles = []; mItems = []; 
         initMStars();
         
         missionScore = 0; mFrame = 0; missionRunning = true; missionPaused = false;
@@ -1278,6 +1276,11 @@
         if(!missionRunning || missionPaused) return; 
         mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height); mFrame++;
 
+        // 遞減 Buff 時間
+        if (mPlayer.buffs.fastFire > 0) mPlayer.buffs.fastFire--;
+        if (mPlayer.buffs.multiShot > 0) mPlayer.buffs.multiShot--;
+        if (mPlayer.invuln > 0) mPlayer.invuln--;
+
         // 星空背景
         mCtx.fillStyle = '#fff';
         mStars.forEach(star => {
@@ -1285,27 +1288,29 @@
             mCtx.globalAlpha = star.speed / 4; mCtx.fillRect(star.x, star.y, star.size, star.size);
         }); mCtx.globalAlpha = 1.0;
 
-        // 【更新】玩家飛機移動 (透過虛擬搖桿向量)
+        // 玩家飛機移動 (透過虛擬搖桿向量)
         if(joyVector.x !== 0 || joyVector.y !== 0) {
             mPlayer.x += joyVector.x * mPlayer.speed;
             mPlayer.y += joyVector.y * mPlayer.speed;
             
-            // 邊界限制
             if(mPlayer.x < mPlayer.size) mPlayer.x = mPlayer.size; 
             if(mPlayer.x > mCanvas.width - mPlayer.size) mPlayer.x = mCanvas.width - mPlayer.size;
             if(mPlayer.y < mPlayer.size) mPlayer.y = mPlayer.size; 
             if(mPlayer.y > mCanvas.height - mPlayer.size) mPlayer.y = mCanvas.height - mPlayer.size;
         }
 
-        // 【更新】玩家全自動開火
+        // 玩家全自動開火
         mPlayer.fireTimer++;
-        if (mPlayer.fireTimer >= mPlayer.fireRate) {
+        let currentFireRate = mPlayer.buffs.fastFire > 0 ? Math.max(4, mPlayer.fireRate / 2) : mPlayer.fireRate;
+        
+        if (mPlayer.fireTimer >= currentFireRate) {
             mPlayer.fireTimer = 0;
-            if (metaData.currentShip === 1) { // 散彈
+            let isMulti = mPlayer.buffs.multiShot > 0 || metaData.currentShip === 1;
+            if (isMulti) {
                 mBullets.push({ x: mPlayer.x - 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66', vx: -1.5 }); 
                 mBullets.push({ x: mPlayer.x, y: mPlayer.y - mPlayer.size - 6, speed: 12, color: '#00ff66', vx: 0 }); 
                 mBullets.push({ x: mPlayer.x + 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66', vx: 1.5 });
-            } else { // 預設雙連發
+            } else {
                 mBullets.push({ x: mPlayer.x - 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff', vx: 0 }); 
                 mBullets.push({ x: mPlayer.x + 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff', vx: 0 });
             }
@@ -1313,7 +1318,6 @@
 
         // 隱形機每15秒無敵3秒
         if (metaData.currentShip === 2 && mFrame % 900 === 0) mPlayer.invuln = 180;
-        if (mPlayer.invuln > 0) mPlayer.invuln--;
 
         // 更新玩家子彈
         for (let i = mBullets.length - 1; i >= 0; i--) {
@@ -1346,6 +1350,8 @@
                 let gain = e.color === '#ffaa00' ? 5 : 1;
                 missionScore += gain;
                 document.getElementById('mission-score').innerText = missionScore;
+                
+                if (Math.random() < 0.20) { let buffTypes = ['fastFire', 'multiShot', 'invincible']; mItems.push({ x: e.x, y: e.y, size: 12, speed: 2.5, type: buffTypes[Math.floor(Math.random() * buffTypes.length)] }); }
                 mEnemies.splice(i, 1); continue;
             }
 
@@ -1370,6 +1376,20 @@
                     if(mPlayer.hp <= 0) { missionGameOver(); return; } else { mPlayer.invuln = 90; }
                 }
             } else if (b.y > mCanvas.height) { mEnemyBullets.splice(i, 1); }
+        }
+
+        for (let i = mItems.length - 1; i >= 0; i--) {
+            let item = mItems[i]; item.y += item.speed;
+            mCtx.fillStyle = item.type === 'fastFire' ? '#ffd700' : (item.type === 'multiShot' ? '#00ff66' : '#ffffff');
+            mCtx.shadowBlur = 10; mCtx.shadowColor = mCtx.fillStyle; mCtx.fillRect(item.x - item.size, item.y - item.size, item.size * 2, item.size * 2); mCtx.shadowBlur = 0;
+            let dx = mPlayer.x - item.x; let dy = mPlayer.y - item.y;
+            if (Math.sqrt(dx*dx + dy*dy) < mPlayer.size + item.size) {
+                if (item.type === 'fastFire') mPlayer.buffs.fastFire = 300;
+                if (item.type === 'multiShot') mPlayer.buffs.multiShot = 300;
+                if (item.type === 'invincible') mPlayer.invuln = 300;
+                mItems.splice(i, 1); continue;
+            }
+            if (item.y > mCanvas.height + item.size) mItems.splice(i, 1);
         }
 
         for(let i = mParticles.length - 1; i >= 0; i--) {
@@ -1415,7 +1435,11 @@
 
             resizeCanvas(); initCardIcons(); initEnergyIcon();
             gameState.running = true; gameState.paused = false; 
-            gameState.maxHp = 10; gameState.hp = gameState.maxHp; gameState.energy = 5;
+            
+            gameState.maxHp = 10; 
+            gameState.hp = gameState.maxHp; 
+            gameState.energy = 5;
+
             gameState.wave = 1; 
             gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.particles = []; 
             gameState.buffs = {}; gameState.debuffs = {}; gameState.selectedTower = null; hideSellButton();
