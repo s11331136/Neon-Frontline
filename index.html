@@ -769,8 +769,15 @@
             if (enemy.hp <= 0) { 
                 spawnParticles(enemy.x, enemy.y, enemy.isBoss ? '#ff003c' : '#ff00cc', enemy.isBoss ? 40 : 15, 'shatter');
                 
+                // 1. 局內的能量 (聖水) 掉落保持不變
                 let energyGained = enemy.isBoss ? 5 : 1;
                 gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + energyGained);
+                
+                // 2. 【新增】殺死敵人獲得外面的科技點！
+                let techPointsGained = enemy.isBoss ? 20 : 2;
+                metaData.techPoints += techPointsGained;
+                gameState.earnedPoints += techPointsGained;
+
                 updateUIBars();
 
                 gameState.enemies.splice(i, 1); 
