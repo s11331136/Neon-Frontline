@@ -57,10 +57,14 @@
         #battle-header { height: 45px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #00f3ff; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 10; }
         .header-btn { background: transparent; border: 1px solid #00f3ff; color: #00f3ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
         .header-btn.danger { border-color: #ff003c; color: #ff003c; }
-        #base-health-container { flex: 1; margin: 0 15px; height: 16px; background: #222; border: 1px solid #ff003c; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5); }
+        #base-health-container { flex: 1; margin: 0 10px; height: 16px; background: #222; border: 1px solid #ff003c; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(255,0,60,0.5); }
         #base-health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #ff003c, #00ff00); transition: width 0.2s ease; }
         #base-health-text { position: absolute; width: 100%; text-align: center; top: 0; left: 0; font-size: 11px; font-weight: bold; line-height: 16px; color: #fff; text-shadow: 1px 1px 2px #000; }
         #battle-title-bar { text-align: center; color: #ff00cc; text-shadow: 0 0 5px rgba(255, 0, 204, 0.5); font-weight: bold; padding: 6px 0; background: #0d111a; font-size: 15px; border-bottom: 1px solid rgba(255, 0, 204, 0.2); z-index: 10; position: relative; }
+        
+        /* 變速齒輪按鈕 */
+        #btn-speed-toggle { background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; color: #ffd700; font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 0 5px rgba(255,215,0,0.2); margin-right: 6px;}
+        
         #game-canvas { width: 100%; flex: 1; display: block; }
         #sell-btn-overlay { position: absolute; background: rgba(255, 0, 60, 0.85); border: 1px solid #ff003c; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; z-index: 50; display: none; text-shadow: 0 0 5px #000; box-shadow: 0 0 10px rgba(255, 0, 60, 0.5); transform: translate(-50%, 0); transition: 0.1s; }
         #sell-btn-overlay:active { background: rgba(255, 0, 60, 1); transform: translate(-50%, 0) scale(0.95); }
@@ -83,6 +87,36 @@
             100% { transform: scale(1); filter: brightness(1); }
         }
         .card.refreshing { animation: flashRefresh 0.35s ease-out; }
+
+        /* ================= 【優化】局內微型直行側滑升級視窗 ================= */
+        #in-game-upgrade-btn {
+            position: absolute; right: 0; top: 45%; transform: translateY(-50%);
+            background: rgba(0, 243, 255, 0.15); border: 1px solid #00f3ff; border-right: none;
+            color: #00f3ff; padding: 12px 6px; border-radius: 8px 0 0 8px; cursor: pointer;
+            font-size: 11px; font-weight: bold; box-shadow: -2px 0 10px rgba(0,243,255,0.4); z-index: 60;
+            transition: 0.2s; writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 2px;
+        }
+        #in-game-upgrade-btn:active { background: rgba(0, 243, 255, 0.3); }
+
+        #in-game-upgrade-panel {
+            position: absolute; right: -150px; top: 15%; width: 140px; height: 62%;
+            background: rgba(10, 13, 20, 0.95); border: 2px solid #00f3ff; border-right: none; border-radius: 12px 0 0 12px;
+            box-shadow: -5px 0 20px rgba(0,243,255,0.3); z-index: 65; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; padding: 10px;
+        }
+        #in-game-upgrade-panel.open { right: 0; }
+
+        .ig-upg-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,243,255,0.3); padding-bottom: 6px; margin-bottom: 8px; }
+        .ig-upg-title { color: #fff; font-size: 14px; font-weight: bold; text-shadow: 0 0 5px #00f3ff; letter-spacing: 1px; }
+        .ig-upg-close { color: #ff003c; cursor: pointer; font-size: 15px; font-weight: bold; }
+        
+        .ig-upg-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding-right: 2px; }
+        .ig-upg-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 4px; text-align: center; }
+        .ig-upg-name { color: #00f3ff; font-size: 11px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 2px; }
+        .ig-upg-lvl { font-size: 10px; color: #fff; background: #ff00cc; padding: 1px 3px; border-radius: 3px; box-shadow: 0 0 3px #ff00cc; margin-left: 3px; font-weight: bold; }
+        .ig-upg-btn { background: rgba(0, 243, 255, 0.15); border: 1px solid #00f3ff; color: #00f3ff; border-radius: 4px; padding: 5px 0; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
+        .ig-upg-btn:active { background: rgba(0, 243, 255, 0.35); }
+        .ig-upg-btn.disabled { opacity: 0.3; filter: grayscale(100%); pointer-events: none; }
 
         /* 任務畫面 (星際突圍) UI */
         #screen-mission-game { padding: 0; background-color: #000; position: relative; overflow: hidden; }
@@ -193,8 +227,11 @@
         <div id="battle-header">
             <button class="header-btn danger" onclick="requestExit()">◄ 撤退</button>
             <div id="base-health-container"><div id="base-health-fill"></div><div id="base-health-text">10 / 10</div></div>
-            <div style="display:flex; gap: 8px;">
-                <button class="header-btn" id="btn-speed-toggle" style="color: #ffd700; border-color: #ffd700;" onclick="toggleGameSpeed()">▶ 1x</button>
+            
+            <div style="font-size:11px; color:#ffd700; font-weight:bold; margin-right:4px; white-space:nowrap;">✨ 科技點: <span id="battle-tech-points">0</span></div>
+            
+            <div style="display:flex; align-items:center;">
+                <button class="header-btn" id="btn-speed-toggle" onclick="toggleGameSpeed()">▶ 1x</button>
                 <button class="header-btn" onclick="requestPause()">⏸ 暫停</button>
             </div>
         </div>
@@ -203,6 +240,37 @@
         <div id="sell-btn-overlay">賣出 $0</div>
         
         <canvas id="game-canvas"></canvas>
+
+        <div id="in-game-upgrade-btn" onclick="toggleInGameUpgradePanel()">⏫<br>升<br>級</div>
+        
+        <div id="in-game-upgrade-panel">
+            <div class="ig-upg-header">
+                <span class="ig-upg-title">升級</span>
+                <span class="ig-upg-close" onclick="toggleInGameUpgradePanel()">✖</span>
+            </div>
+            
+            <div class="ig-upg-list">
+                <div class="ig-upg-item">
+                    <span class="ig-upg-name">機槍塔<span class="ig-upg-lvl" id="ig-machineGun-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-machineGun" onclick="buyInGameTowerUpgrade('machineGun')">升級 $5</button>
+                </div>
+
+                <div class="ig-upg-item">
+                    <span class="ig-upg-name">雷射塔<span class="ig-upg-lvl" id="ig-laser-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-laser" onclick="buyInGameTowerUpgrade('laser')">升級 $5</button>
+                </div>
+
+                <div class="ig-upg-item">
+                    <span class="ig-upg-name">冰凍塔<span class="ig-upg-lvl" id="ig-ice-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-ice" onclick="buyInGameTowerUpgrade('ice')">升級 $5</button>
+                </div>
+
+                <div class="ig-upg-item">
+                    <span class="ig-upg-name">狙擊塔<span class="ig-upg-lvl" id="ig-sniper-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-sniper" onclick="buyInGameTowerUpgrade('sniper')">升級 $5</button>
+                </div>
+            </div>
+        </div>
         <div id="energy-bar-container">
             <canvas class="energy-icon-canvas" id="energy-bar-icon-canvas" width="20" height="20"></canvas>
             <div id="energy-bar-bg"><div id="energy-bar-fill"></div><div id="energy-bar-text">5 / 10</div></div>
@@ -298,11 +366,16 @@
     function saveProgress() { if (currentUser) localStorage.setItem('defense_save_' + currentUser, JSON.stringify(metaData)); }
 
     // =========================================
-    // 局外成長資料系統
+    // 局外永久成長資料系統 (花費較高，具備突破極限)
     // =========================================
-    function getTowerBaseDamage(type) { let t = metaData.towers[type]; return t.baseDmg + (t.level - 1) * t.dmgGrowth; }
-    function getUpgradeCost(level) { return 10 + Math.floor((level - 1) / 5) * 5; }
-    function getBreakCost(maxStar) { return 100 + (maxStar - 1) * 50; }
+    function getTowerBaseDamage(type) { 
+        let t = metaData.towers[type]; 
+        // 局外基礎等級傷害 + 局內戰術點升級附加等級傷害
+        let inGameLvl = (gameState.running && gameState.inGameTowerLevels) ? (gameState.inGameTowerLevels[type] || 0) : 0;
+        return t.baseDmg + (t.level + inGameLvl - 1) * t.dmgGrowth; 
+    }
+    function getUpgradeCost(level) { return 30 + Math.floor((level - 1) / 3) * 15; } // 調高外部局外永久升級成本
+    function getBreakCost(maxStar) { return 150 + (maxStar - 1) * 80; } // 調高外部突破成本
 
     function renderUpgrades() {
         document.getElementById('tech-points-display').innerText = metaData.techPoints;
@@ -310,7 +383,7 @@
         container.innerHTML = '';
         Object.keys(metaData.towers).forEach(type => {
             let data = metaData.towers[type];
-            let currentDmg = getTowerBaseDamage(type);
+            let currentDmg = data.baseDmg + (data.level - 1) * data.dmgGrowth;
             let nextDmg = currentDmg + data.dmgGrowth;
             let upgCost = getUpgradeCost(data.level);
             let breakCost = getBreakCost(data.maxStar);
@@ -323,7 +396,7 @@
                 <div class="upgrade-icon-wrapper"><canvas id="upg-icon-${type}" width="40" height="40"></canvas></div>
                 <div class="upgrade-info">
                     <div class="upgrade-name">${data.title} <span class="upgrade-lvl">Lv.${data.level}</span></div>
-                    <div class="upgrade-stats">傷害: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span></div>
+                    <div class="upgrade-stats">開局基礎傷害: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span></div>
                 </div>
                 <div class="upgrade-actions">
                     <div class="btn-upg ${canUpg ? '' : 'btn-disabled'}" onclick="buyUpgrade('${type}')">升級 $${upgCost}</div>
@@ -472,23 +545,92 @@
     };
 
     // =========================================
-    // 【新增】gameSpeed 記錄當前遊戲速度
+    // 遊戲運行時總狀態資料
     // =========================================
-    let gameState = { running: false, paused: false, isSelectingBuff: false, gameSpeed: 1, hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null, cardEl: null }, buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null };
+    let gameState = { 
+        running: false, paused: false, isSelectingBuff: false, 
+        gameSpeed: 1, // 【保留】變速齒輪倍率
+        inGameTowerLevels: { machineGun: 0, laser: 0, ice: 0, sniper: 0 }, // 【新增】局內臨時升級等級，每局會重置
+        hp: 10, maxHp: 10, energy: 5, maxEnergy: 10, wave: 1, enemiesSpawned: 0, 
+        gridSize: 0, cols: 8, path: [], pathCells: [], towers: [], enemies: [], bullets: [], lasers: [], particles: [], 
+        spawnTimer: 0, spawnInterval: 120, energyTimer: 0, dragState: { isDragging: false, cardType: null, cardEl: null }, 
+        buffs: {}, debuffs: {}, earnedPoints: 0, selectedTower: null 
+    };
 
-    // =========================================
-    // 【新增】變速齒輪切換功能
-    // =========================================
+    // 【保留功能】變速齒輪切換功能
     function toggleGameSpeed() {
         if (!gameState.gameSpeed) gameState.gameSpeed = 1;
         if (gameState.gameSpeed === 1) {
             gameState.gameSpeed = 2;
             document.getElementById('btn-speed-toggle').innerText = "▶▶ 2x";
-            document.getElementById('btn-speed-toggle').style.background = "rgba(255, 215, 0, 0.2)";
+            document.getElementById('btn-speed-toggle').style.background = "rgba(255, 215, 0, 0.25)";
         } else {
             gameState.gameSpeed = 1;
             document.getElementById('btn-speed-toggle').innerText = "▶ 1x";
-            document.getElementById('btn-speed-toggle').style.background = "transparent";
+            document.getElementById('btn-speed-toggle').style.background = "rgba(255, 215, 0, 0.1)";
+        }
+    }
+
+    // =========================================
+    // 【全新優化】局內側滑升級系統 (花費少，重啟即歸零)
+    // =========================================
+    function toggleInGameUpgradePanel() {
+        const panel = document.getElementById('in-game-upgrade-panel');
+        if (panel.classList.contains('open')) {
+            panel.classList.remove('open');
+        } else {
+            updateInGameUpgradeUI();
+            panel.classList.add('open');
+        }
+    }
+
+    // 計算局內升級所需便宜花費公式
+    function getInGameTowerUpgradeCost(type) {
+        let currentInGameLvl = gameState.inGameTowerLevels[type] || 0;
+        return 5 + currentInGameLvl * 4; // 局內初始只要 5 點，每次升級遞增 4 點
+    }
+
+    function updateInGameUpgradeUI() {
+        const types = ['machineGun', 'laser', 'ice', 'sniper'];
+        types.forEach(type => {
+            let lvl = gameState.inGameTowerLevels[type] || 0;
+            document.getElementById(`ig-${type}-lvl`).innerText = `+Lv.${lvl}`;
+            
+            let cost = getInGameTowerUpgradeCost(type);
+            let btn = document.getElementById(`ig-btn-${type}`);
+            btn.innerText = `升級 $${cost}`;
+            
+            // 根據玩家身上擁有的科技點決定是否亮起可購買
+            if (metaData.techPoints >= cost) {
+                btn.classList.remove('disabled');
+            } else {
+                btn.classList.add('disabled');
+            }
+        });
+        
+        // 即時刷新戰鬥畫面的科技點看板
+        if (document.getElementById('battle-tech-points')) {
+            document.getElementById('battle-tech-points').innerText = metaData.techPoints;
+        }
+    }
+
+    function buyInGameTowerUpgrade(type) {
+        let cost = getInGameTowerUpgradeCost(type);
+        if (metaData.techPoints >= cost) {
+            metaData.techPoints -= cost; // 扣除全域科技點
+            gameState.inGameTowerLevels[type] = (gameState.inGameTowerLevels[type] || 0) + 1;
+            
+            saveProgress();
+            updateUIBars();
+            updateInGameUpgradeUI();
+            
+            // 在場上所有該種類防禦塔上方爆發升級粒子，增強視覺回饋
+            gameState.towers.forEach(t => {
+                if (t.id === type) {
+                    t.upgradeEffect = 1.0;
+                    spawnParticles(t.x, t.y, TOWER_DATA[type].color, 12, 'upgrade');
+                }
+            });
         }
     }
 
@@ -533,8 +675,8 @@
     function gameStateLoop() { 
         if (gameState.running) { 
             if (!gameState.paused) { 
-                // 【新增】根據 gameSpeed 執行多次 update，達成真正無損加速
-                for(let i=0; i < (gameState.gameSpeed || 1); i++) {
+                // 變速齒輪核心實現：一幀內跑多次 update
+                for(let i=0; i < gameState.gameSpeed; i++) {
                     update(); 
                 }
                 draw(); 
@@ -602,6 +744,7 @@
         } else {
             saveProgress();
         }
+        updateUIBars();
     }
 
     function updateBullets() {
@@ -733,10 +876,10 @@
     }
 
     function fireWeapon(tower, target) {
-        let baseDmg = getTowerBaseDamage(tower.id);
+        let finalDmg = getTowerBaseDamage(tower.id);
         let mul = tower.level === 1 ? 1 : (tower.level === 2 ? 2.2 : 4.5);
         let debuffDmgMod = 1 - (gameState.debuffs['towerDmgDown'] || 0) * 0.15;
-        let finalDmg = baseDmg * mul * Math.max(0.1, debuffDmgMod);
+        finalDmg = finalDmg * mul * Math.max(0.1, debuffDmgMod);
 
         if (tower.card.type === 'projectile' || tower.card.type === 'aoe') { gameState.bullets.push({ x: tower.x, y: tower.y, target: target, speed: tower.card.bulletSpeed || 5, damage: finalDmg, color: tower.card.color, isIce: tower.card.type === 'aoe' }); } 
         else if (tower.card.type === 'laser') { 
@@ -765,6 +908,15 @@
         document.getElementById('energy-bar-fill').style.width = (gameState.energy / gameState.maxEnergy) * 100 + '%';
         document.getElementById('energy-bar-text').innerText = `${Math.floor(gameState.energy)} / ${gameState.maxEnergy}`;
         document.querySelectorAll('.card').forEach(c => { if (gameState.energy >= TOWER_DATA[c.getAttribute('data-type')].cost) c.classList.remove('disabled'); else c.classList.add('disabled'); });
+        
+        // 戰鬥畫面頂部科技點更新
+        if (document.getElementById('battle-tech-points')) {
+            document.getElementById('battle-tech-points').innerText = metaData.techPoints;
+        }
+        // 即時聯動更新局內側滑面版的購買按鈕亮暗
+        if (document.getElementById('in-game-upgrade-panel').classList.contains('open')) {
+            updateInGameUpgradeUI();
+        }
     }
     
     function drawGrid() { const gs = gameState.gridSize; if (gs <= 0) return; ctx.strokeStyle = 'rgba(0, 243, 255, 0.05)'; ctx.lineWidth = 1; const width = canvas.width / (window.devicePixelRatio || 1); const height = canvas.height / (window.devicePixelRatio || 1); ctx.beginPath(); for (let x = 0; x <= width; x += gs) { ctx.moveTo(x, 0); ctx.lineTo(x, height); } for (let y = 0; y <= height; y += gs) { ctx.moveTo(0, y); ctx.lineTo(width, y); } ctx.stroke(); }
@@ -788,6 +940,8 @@
         } else {
             gameState.selectedTower = null;
             hideSellButton();
+            // 點擊空白處自動收合右側微型面板
+            document.getElementById('in-game-upgrade-panel').classList.remove('open');
         }
     });
 
@@ -846,7 +1000,6 @@
         dragIcon.style.display = 'none'; 
         
         const pos = getMousePos(lastEvent); 
-        
         const type = gameState.dragState.cardType; 
         const cardData = TOWER_DATA[type]; 
         
@@ -913,10 +1066,7 @@
         ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; tower.drawIcon(ctx, 20, 20, 20);
     }
 
-    window.addEventListener('mousemove', handleMove); 
-    window.addEventListener('mouseup', handleUp); 
-    window.addEventListener('touchmove', handleMove, {passive: false}); 
-    window.addEventListener('touchend', handleUp, {passive: false});
+    window.addEventListener('mousemove', handleMove); window.addEventListener('mouseup', handleUp); window.addEventListener('touchmove', handleMove, {passive: false}); window.addEventListener('touchend', handleUp);
 
     // =========================================
     // 星際突圍任務邏輯 
@@ -924,7 +1074,7 @@
     const mCanvas = document.getElementById('missionCanvas');
     const mCtx = mCanvas.getContext('2d');
     
-    let mPlayer, mEnemies, mBullets, mEnemyBullets, mParticles, mStars, missionScore, mFrame, missionRunning, missionPaused;
+    let mPlayer, mEnemies, mBullets, mEnemyBullets, mParticles, mStars, mItems, missionScore, mFrame, missionRunning, missionPaused;
 
     function resizeMission() {
         const rect = mCanvas.parentNode.getBoundingClientRect();
@@ -944,7 +1094,7 @@
         missionRunning = false;
         document.getElementById('bottom-nav').style.display = 'flex';
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        switchTab('mission-menu', document.getElementById('nav-btn-mission'));
+        document.getElementById('screen-mission-menu').classList.add('active');
     }
 
     function requestExitMission() {
@@ -978,9 +1128,10 @@
         
         mPlayer = { 
             x: mCanvas.width/2, y: mCanvas.height - 80, size: 16, color: '#00f3ff', 
-            fireRate: 12, fireTimer: 0, hp: 1, maxHp: 1, invuln: 60
+            fireRate: 12, fireTimer: 0,
+            buffs: { fastFire: 0, multiShot: 0, invincible: 0 }
         };
-        mEnemies = []; mBullets = []; mEnemyBullets = []; mParticles = []; 
+        mEnemies = []; mBullets = []; mEnemyBullets = []; mParticles = []; mItems = []; 
         initMStars();
         
         missionScore = 0; mFrame = 0; missionRunning = true; missionPaused = false;
@@ -990,30 +1141,15 @@
     }
 
     let mIsDragging = false;
-    
-    function startMissionDrag(e) {
-        if(!missionRunning || missionPaused) return; 
-        mIsDragging = true; 
-        moveMPlayer(e); 
-        document.getElementById('mission-hint').style.display = 'none'; 
-    }
-    function moveMissionDrag(e) {
-        if(!missionRunning || missionPaused) return; 
-        if(mIsDragging) { moveMPlayer(e); }
-    }
-    
-    mCanvas.addEventListener('mousedown', startMissionDrag);
-    mCanvas.addEventListener('mousemove', (e) => { if(mIsDragging) moveMPlayer(e); });
-    window.addEventListener('mouseup', () => { mIsDragging = false; });
-    
-    mCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); startMissionDrag(e); }, {passive: false});
-    mCanvas.addEventListener('touchmove', moveMissionDrag, {passive: false});
-    window.addEventListener('touchend', (e) => { mIsDragging = false; }, {passive: false});
+    mCanvas.addEventListener('pointerdown', (e) => { if(!missionRunning || missionPaused) return; mIsDragging = true; moveMPlayer(e); document.getElementById('mission-hint').style.display = 'none'; });
+    mCanvas.addEventListener('pointermove', (e) => { if(mIsDragging) moveMPlayer(e); });
+    window.addEventListener('pointerup', () => { mIsDragging = false; });
     
     function moveMPlayer(e) {
-        const rect = mCanvas.getBoundingClientRect(); 
-        let cx = e.clientX, cy = e.clientY;
-        if(e.touches && e.touches.length > 0) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+        if(!missionRunning || missionPaused) return;
+        const rect = mCanvas.getBoundingClientRect();
+        let cx = e.clientX || (e.touches && e.touches[0].clientX);
+        let cy = e.clientY || (e.touches && e.touches[0].clientY);
         
         mPlayer.x = cx - rect.left; mPlayer.y = cy - rect.top;
         if(mPlayer.x < mPlayer.size) mPlayer.x = mPlayer.size; if(mPlayer.x > mCanvas.width - mPlayer.size) mPlayer.x = mCanvas.width - mPlayer.size;
@@ -1028,7 +1164,9 @@
         if(!missionRunning || missionPaused) return; 
         mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height); mFrame++;
 
-        if (mPlayer.invuln > 0) mPlayer.invuln--;
+        if (mPlayer.buffs.fastFire > 0) mPlayer.buffs.fastFire--;
+        if (mPlayer.buffs.multiShot > 0) mPlayer.buffs.multiShot--;
+        if (mPlayer.buffs.invincible > 0) mPlayer.buffs.invincible--;
 
         mCtx.fillStyle = '#fff';
         mStars.forEach(star => {
@@ -1038,16 +1176,22 @@
 
         if (mIsDragging) {
             mPlayer.fireTimer++;
-            if (mPlayer.fireTimer >= mPlayer.fireRate) {
+            let currentFireRate = mPlayer.buffs.fastFire > 0 ? Math.max(4, mPlayer.fireRate / 2) : mPlayer.fireRate;
+            if (mPlayer.fireTimer >= currentFireRate) {
                 mPlayer.fireTimer = 0;
-                mBullets.push({ x: mPlayer.x - 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' }); 
-                mBullets.push({ x: mPlayer.x + 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
+                if (mPlayer.buffs.multiShot > 0) {
+                    mBullets.push({ x: mPlayer.x - 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66' });
+                    mBullets.push({ x: mPlayer.x, y: mPlayer.y - mPlayer.size - 6, speed: 12, color: '#00ff66' });
+                    mBullets.push({ x: mPlayer.x + 12, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00ff66' });
+                } else {
+                    mBullets.push({ x: mPlayer.x - 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
+                    mBullets.push({ x: mPlayer.x + 6, y: mPlayer.y - mPlayer.size, speed: 12, color: '#00f3ff' });
+                }
             }
         }
 
         for (let i = mBullets.length - 1; i >= 0; i--) {
-            let b = mBullets[i]; b.y -= b.speed;
-            mCtx.fillStyle = b.color; mCtx.fillRect(b.x - 2, b.y - 8, 4, 16); 
+            let b = mBullets[i]; b.y -= b.speed; mCtx.fillStyle = b.color; mCtx.fillRect(b.x - 2, b.y - 8, 4, 16);
             if (b.y < 0) mBullets.splice(i, 1);
         }
 
@@ -1071,19 +1215,17 @@
             }
 
             if (isDead) {
-                createMExplosion(e.x, e.y, e.color, 15);
-                missionScore += (e.color === '#ffaa00' ? 5 : 1);
-                document.getElementById('mission-score').innerText = missionScore;
+                createMExplosion(e.x, e.y, e.color, 15); missionScore += (e.color === '#ffaa00' ? 5 : 1); document.getElementById('mission-score').innerText = missionScore;
+                if (Math.random() < 0.20) {
+                    let buffTypes = ['fastFire', 'multiShot', 'invincible'];
+                    mItems.push({ x: e.x, y: e.y, size: 12, speed: 2.5, type: buffTypes[Math.floor(Math.random() * buffTypes.length)] });
+                }
                 mEnemies.splice(i, 1); continue;
             }
 
             let dx = mPlayer.x - e.x; let dy = mPlayer.y - e.y;
             if(Math.sqrt(dx*dx + dy*dy) < mPlayer.size + e.size - 6) {
-                if (mPlayer.invuln > 0) { e.hp = 0; } 
-                else {
-                    mPlayer.hp--; createMExplosion(mPlayer.x, mPlayer.y, '#ff3333', 25); mEnemies.splice(i, 1);
-                    if(mPlayer.hp <= 0) { missionGameOver(); return; } else { mPlayer.invuln = 90; }
-                }
+                if (mPlayer.buffs.invincible > 0) { e.hp = 0; } else { createMExplosion(mPlayer.x, mPlayer.y, '#00f3ff', 30); missionGameOver(); return; }
             }
             if(e.y > mCanvas.height + e.size) mEnemies.splice(i, 1);
         }
@@ -1092,12 +1234,23 @@
             let b = mEnemyBullets[i]; b.y += b.speed; mCtx.fillStyle = b.color; mCtx.fillRect(b.x - 2, b.y, 4, 12);
             let dx = mPlayer.x - b.x; let dy = mPlayer.y - b.y;
             if (Math.abs(dx) < mPlayer.size && Math.abs(dy) < mPlayer.size) {
-                if (mPlayer.invuln > 0) { createMExplosion(b.x, b.y, b.color, 3); mEnemyBullets.splice(i, 1); } 
-                else {
-                    mPlayer.hp--; createMExplosion(mPlayer.x, mPlayer.y, '#ff3333', 25); mEnemyBullets.splice(i, 1);
-                    if(mPlayer.hp <= 0) { missionGameOver(); return; } else { mPlayer.invuln = 90; }
-                }
+                if (mPlayer.buffs.invincible > 0) { createMExplosion(b.x, b.y, b.color, 3); mEnemyBullets.splice(i, 1); } else { createMExplosion(mPlayer.x, mPlayer.y, '#00f3ff', 30); missionGameOver(); return; }
             } else if (b.y > mCanvas.height) { mEnemyBullets.splice(i, 1); }
+        }
+
+        for (let i = mItems.length - 1; i >= 0; i--) {
+            let item = mItems[i]; item.y += item.speed;
+            mCtx.fillStyle = item.type === 'fastFire' ? '#ffd700' : (item.type === 'multiShot' ? '#00ff66' : '#ffffff');
+            mCtx.shadowBlur = 10; mCtx.shadowColor = mCtx.fillStyle; mCtx.fillRect(item.x - item.size, item.y - item.size, item.size * 2, item.size * 2); mCtx.shadowBlur = 0;
+
+            let dx = mPlayer.x - item.x; let dy = mPlayer.y - item.y;
+            if (Math.sqrt(dx*dx + dy*dy) < mPlayer.size + item.size) {
+                if (item.type === 'fastFire') mPlayer.buffs.fastFire = 300;
+                if (item.type === 'multiShot') mPlayer.buffs.multiShot = 300;
+                if (item.type === 'invincible') mPlayer.buffs.invincible = 300;
+                mItems.splice(i, 1); continue;
+            }
+            if (item.y > mCanvas.height + item.size) mItems.splice(i, 1);
         }
 
         for(let i = mParticles.length - 1; i >= 0; i--) {
@@ -1105,26 +1258,23 @@
             if (p.alpha <= 0) { mParticles.splice(i, 1); } else { mCtx.globalAlpha = p.alpha; mCtx.fillStyle = p.color; mCtx.fillRect(p.x, p.y, p.size, p.size); }
         } mCtx.globalAlpha = 1.0;
 
-        if(mPlayer.invuln % 4 < 2) {
-            let shipColor = mPlayer.invuln > 60 ? "#fff" : mPlayer.color;
-            mCtx.fillStyle = shipColor; mCtx.shadowBlur = 10; mCtx.shadowColor = shipColor;
-            mCtx.beginPath(); mCtx.moveTo(mPlayer.x, mPlayer.y - mPlayer.size); mCtx.lineTo(mPlayer.x + mPlayer.size, mPlayer.y + mPlayer.size); mCtx.lineTo(mPlayer.x, mPlayer.y + mPlayer.size - 5); mCtx.lineTo(mPlayer.x - mPlayer.size, mPlayer.y + mPlayer.size); mCtx.closePath(); mCtx.fill();
-            mCtx.shadowBlur = 0;
-        }
+        mCtx.fillStyle = mPlayer.color; mCtx.shadowBlur = 10; mCtx.shadowColor = mPlayer.color;
+        mCtx.beginPath(); mCtx.moveTo(mPlayer.x, mPlayer.y - mPlayer.size); mCtx.lineTo(mPlayer.x + mPlayer.size, mPlayer.y + mPlayer.size); mCtx.lineTo(mPlayer.x, mPlayer.y + mPlayer.size - 5); mCtx.lineTo(mPlayer.x - mPlayer.size, mPlayer.y + mPlayer.size); mCtx.closePath(); mCtx.fill(); mCtx.shadowBlur = 0;
 
-        if (mPlayer.invuln > 0) { mCtx.strokeStyle = `rgba(255, 255, 255, ${0.5 + Math.sin(mFrame * 0.2) * 0.5})`; mCtx.lineWidth = 3; mCtx.beginPath(); mCtx.arc(mPlayer.x, mPlayer.y + 2, mPlayer.size + 8, 0, Math.PI * 2); mCtx.stroke(); }
+        if (mPlayer.buffs.invincible > 0) { mCtx.strokeStyle = `rgba(255, 255, 255, ${0.5 + Math.sin(mFrame * 0.2) * 0.5})`; mCtx.lineWidth = 3; mCtx.beginPath(); mCtx.arc(mPlayer.x, mPlayer.y + 2, mPlayer.size + 8, 0, Math.PI * 2); mCtx.stroke(); }
         requestAnimationFrame(updateMission);
     }
 
     function missionGameOver() {
-        missionRunning = false;
-        mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
+        missionRunning = false; mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
         mParticles.forEach(p => { mCtx.globalAlpha = p.alpha; mCtx.fillStyle = p.color; mCtx.fillRect(p.x, p.y, p.size, p.size); });
-        
         setTimeout(() => { document.getElementById('mission-game-over').style.display = 'flex'; document.getElementById('mission-final-score').innerText = missionScore; }, 500);
         metaData.techPoints += missionScore; saveProgress();
     }
 
+    // =========================================
+    // 戰鬥開局/重置管理器
+    // =========================================
     function startGameState() { 
         setTimeout(() => {
             const types = ['machineGun', 'laser', 'ice', 'sniper'];
@@ -1139,10 +1289,15 @@
             resizeCanvas(); initCardIcons(); initEnergyIcon();
             gameState.running = true; gameState.paused = false; gameState.hp = 10; gameState.maxHp = 10; gameState.energy = 5; gameState.wave = 1; 
             
-            // 【新增】：重置遊戲時將變速齒輪調回 1x
+            // 【新增機制】每次開新局，局內臨時升級全部重置歸零！
+            gameState.inGameTowerLevels = { machineGun: 0, laser: 0, ice: 0, sniper: 0 };
+            document.getElementById('in-game-upgrade-panel').classList.remove('open');
+            updateInGameUpgradeUI();
+
+            // 【保留】變速齒輪開局重置回 1x
             gameState.gameSpeed = 1; 
             document.getElementById('btn-speed-toggle').innerText = "▶ 1x"; 
-            document.getElementById('btn-speed-toggle').style.background = "transparent";
+            document.getElementById('btn-speed-toggle').style.background = "rgba(255, 215, 0, 0.1)";
 
             gameState.towers = []; gameState.enemies = []; gameState.bullets = []; gameState.lasers = []; gameState.particles = []; 
             gameState.buffs = {}; gameState.debuffs = {}; gameState.selectedTower = null; hideSellButton();
