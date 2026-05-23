@@ -65,6 +65,67 @@
         /* 變速齒輪按鈕 */
         #btn-speed-toggle { background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; color: #ffd700; font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 0 5px rgba(255,215,0,0.2); margin-right: 6px;}
         
+        /* 無人機採礦面板樣式 */
+        .mining-dashboard {
+            background: rgba(10, 13, 20, 0.9);
+            border: 2px solid #00f3ff;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2) inset;
+            margin-bottom: 25px;
+        }
+        .yield-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
+        }
+        .mining-btn-large {
+            background: linear-gradient(135deg, #0055ff, #00f3ff);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            padding: 20px 0;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .mining-btn-large:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 5px rgba(0, 243, 255, 0.8);
+        }
+        
+        /* 升級卡片 (致敬圖片中的發光感) */
+        .upgrade-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+        }
+        .upgrade-card {
+            flex: 1;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upgrade-card:hover {
+            background: rgba(0, 243, 255, 0.2);
+            border-color: #00f3ff;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+        .card-icon { font-size: 30px; margin-bottom: 5px; }
+        .cost { margin-top: 10px; color: #ff5555; font-weight: bold; font-size: 14px; }
+                
         #game-canvas { width: 100%; flex: 1; display: block; }
         #sell-btn-overlay { position: absolute; background: rgba(255, 0, 60, 0.85); border: 1px solid #ff003c; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; z-index: 50; display: none; text-shadow: 0 0 5px #000; box-shadow: 0 0 10px rgba(255, 0, 60, 0.5); transform: translate(-50%, 0); transition: 0.1s; }
         #sell-btn-overlay:active { background: rgba(255, 0, 60, 1); transform: translate(-50%, 0) scale(0.95); }
@@ -153,6 +214,7 @@
         .debuff-title { color: #ff003c; font-weight: bold; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
         .buff-icon-canvas { display: block; flex-shrink: 0; }
         .buff-desc { color: #aaa; font-size: 12px; line-height: 1.4; }
+        
     </style>
 </head>
 <body>
@@ -223,6 +285,38 @@
             </div>
     </div>
 
+    <div id="mining-screen" class="screen">
+        <h1 style="color: #00f3ff; text-shadow: 0 0 10px #00f3ff; margin-bottom: 20px;">無人機星際礦場</h1>
+        
+        <div class="mining-dashboard">
+            <h2 style="color: #ccc; margin-bottom: 10px;">累積離線收益</h2>
+            <div class="yield-display">
+                <span id="offline-yield">0</span> <span style="font-size: 16px;">科技點</span>
+            </div>
+            <p style="margin: 10px 0; color: #888;">離線時間：<span id="offline-time">0</span> 分鐘</p>
+            
+            <button class="mining-btn-large" onclick="claimMiningRewards()">部署無人機並收取</button>
+        </div>
+    
+        <div class="upgrade-grid">
+            <div class="upgrade-card" onclick="upgradeMiningSpeed()">
+                <div class="card-icon">⚡</div>
+                <h3>升級採集速度</h3>
+                <p>目前等級：<span id="speed-lvl">1</span></p>
+                <p>效率：<span id="speed-val">10</span>/小時</p>
+                <div class="cost">升級花費: <span id="speed-cost">100</span></div>
+            </div>
+            <div class="upgrade-card" onclick="upgradeMiningCap()">
+                <div class="card-icon">📦</div>
+                <h3>升級儲存上限</h3>
+                <p>目前等級：<span id="cap-lvl">1</span></p>
+                <p>上限：<span id="cap-val">500</span></p>
+                <div class="cost">升級花費: <span id="cap-cost">150</span></div>
+            </div>
+        </div>
+        <button class="btn" style="margin-top: auto;" onclick="showScreen('start-screen')">返回基地</button>
+    </div>
+    
     <div id="screen-battle" class="screen">
         <div id="battle-header">
             <button class="header-btn danger" onclick="requestExit()">◄ 撤退</button>
@@ -544,6 +638,88 @@
         'sniper':     { cost: 6, color: '#ffaa00', range: 250, fireRate: 120, type: 'projectile', bulletSpeed: 10, drawIcon: drawSniperIcon }
     };
 
+    // 離線採礦狀態管理
+    const miningData = {
+        lastLogin: parseInt(localStorage.getItem('lastLogin')) || Date.now(),
+        speedLvl: parseInt(localStorage.getItem('miningSpeedLvl')) || 1,
+        capLvl: parseInt(localStorage.getItem('miningCapLvl')) || 1,
+        unclaimedRewards: 0,
+        baseSpeed: 10, // 每小時基礎收益
+        baseCap: 500   // 基礎容量上限
+    };
+    
+    function initIdleMining() {
+        const now = Date.now();
+        const diffHours = (now - miningData.lastLogin) / (1000 * 60 * 60);
+        
+        // 計算收益 (速度 * 時間)
+        const currentSpeed = miningData.baseSpeed * miningData.speedLvl;
+        const currentCap = miningData.baseCap * miningData.capLvl;
+        
+        let generated = Math.floor(diffHours * currentSpeed);
+        miningData.unclaimedRewards = Math.min(generated, currentCap); // 不超過儲存上限
+        
+        // 更新 UI
+        document.getElementById('offline-yield').innerText = miningData.unclaimedRewards;
+        document.getElementById('offline-time').innerText = Math.floor(diffHours * 60);
+        updateMiningUI();
+        
+        // 更新登入時間
+        localStorage.setItem('lastLogin', now.toString());
+    }
+    
+    function claimMiningRewards() {
+        if (miningData.unclaimedRewards > 0) {
+            gameState.energy += miningData.unclaimedRewards; // 假設貨幣是 energy 或 techPoints
+            alert(`成功收取 ${miningData.unclaimedRewards} 資源！無人機已重新部署。`);
+            miningData.unclaimedRewards = 0;
+            miningData.lastLogin = Date.now();
+            localStorage.setItem('lastLogin', miningData.lastLogin.toString());
+            
+            document.getElementById('offline-yield').innerText = "0";
+            document.getElementById('offline-time').innerText = "0";
+            updateUIBars(); // 更新你原有的頂部資源條
+        } else {
+            alert("目前礦倉空空如也，請讓無人機再工作一會兒。");
+        }
+    }
+    
+    function updateMiningUI() {
+        document.getElementById('speed-lvl').innerText = miningData.speedLvl;
+        document.getElementById('speed-val').innerText = miningData.baseSpeed * miningData.speedLvl;
+        document.getElementById('speed-cost').innerText = miningData.speedLvl * 100;
+    
+        document.getElementById('cap-lvl').innerText = miningData.capLvl;
+        document.getElementById('cap-val').innerText = miningData.baseCap * miningData.capLvl;
+        document.getElementById('cap-cost').innerText = miningData.capLvl * 150;
+    }
+    
+    function upgradeMiningSpeed() {
+        let cost = miningData.speedLvl * 100;
+        if (gameState.energy >= cost) { // 依據你的實際遊戲幣變數替換 gameState.energy
+            gameState.energy -= cost;
+            miningData.speedLvl++;
+            localStorage.setItem('miningSpeedLvl', miningData.speedLvl);
+            updateMiningUI();
+            updateUIBars();
+        } else {
+            alert("資源不足無法升級！");
+        }
+    }
+    
+    function upgradeMiningCap() {
+        let cost = miningData.capLvl * 150;
+        if (gameState.energy >= cost) {
+            gameState.energy -= cost;
+            miningData.capLvl++;
+            localStorage.setItem('miningCapLvl', miningData.capLvl);
+            updateMiningUI();
+            updateUIBars();
+        } else {
+            alert("資源不足無法升級！");
+        }
+    }
+    
     // =========================================
     // 遊戲運行時總狀態資料
     // =========================================
