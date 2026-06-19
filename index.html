@@ -490,7 +490,7 @@
                 <div class="upgrade-icon-wrapper"><canvas id="upg-icon-${type}" width="40" height="40"></canvas></div>
                 <div class="upgrade-info">
                     <div class="upgrade-name">${data.title} <span class="upgrade-lvl">Lv.${data.level}</span></div>
-                    <div class="upgrade-stats">Basic Damage: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span></div>
+                    <div class="upgrade-stats">Basic Damage: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>Tier Limit: <span class="highlight">${'★'.repeat(data.maxStar)}</span></div>
                 </div>
                 <div class="upgrade-actions">
                     <div class="btn-upg ${canUpg ? '' : 'btn-disabled'}" onclick="buyUpgrade('${type}')">Upgrade $${upgCost}</div>
@@ -1282,9 +1282,9 @@
 
     function requestExitMission() {
         missionPaused = true;
-        showModal("離開任務", "確定要返回大廳嗎？<br>（已獲得的點數會立刻結算）", 
-            {text:"是", action: () => { metaData.techPoints += missionScore; saveProgress(); exitMission(); }}, 
-            {text:"取消", action: () => { missionPaused = false; requestAnimationFrame(updateMission); }}
+        showModal("Leave Mission", "Return Menu?<br>(Earned Tech Points will be kept)", 
+            {text:"Yes", action: () => { metaData.techPoints += missionScore; saveProgress(); exitMission(); }}, 
+            {text:"No", action: () => { missionPaused = false; requestAnimationFrame(updateMission); }}
         );
     }
 
