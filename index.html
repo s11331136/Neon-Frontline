@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>防禦陣線：無盡星海</title>
+    <title>Neon-Frontline</title>
     <style>
         /* 基礎與排版 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, sans-serif; user-select: none; -webkit-touch-callout: none; }
@@ -222,64 +222,64 @@
 <div id="game-container">
     
     <div id="screen-login" class="screen active">
-        <h1>防禦陣線：無盡星海</h1>
+        <h1>Neon-Frontline</h1>
         <div class="login-box">
-            <div class="login-title">指揮官識別系統</div>
-            <input type="text" id="username-input" class="login-input" placeholder="請輸入指揮官代號..." maxlength="12">
-            <button class="start-btn" style="padding: 15px 30px; font-size: 18px;" onclick="systemLogin()">登入 / 註冊</button>
-            <div class="login-hint">系統會將您的科技點數與升級進度<br>自動保存於您的裝置中。</div>
+            <div class="login-title">Commander Identification System</div>
+            <input type="text" id="username-input" class="login-input" placeholder="Enter Commander Callsign..." maxlength="12">
+            <button class="start-btn" style="padding: 15px 30px; font-size: 18px;" onclick="systemLogin()">Login/Register</button>
+            <div class="login-hint">Your tech points and upgrade progress<br> will be automatically saved on this device.</div>
         </div>
     </div>
 
     <div id="screen-levels" class="screen">
-        <h1>防禦陣線：無盡星海</h1>
+        <h1>Neon-Frontline</h1>
         <div class="user-info-bar" style="width: 100%; margin-bottom: 15px;">
-            <div class="commander-name">👤 指揮官：<span id="display-username">---</span></div>
-            <button class="logout-btn" onclick="systemLogout()">登出切換</button>
+            <div class="commander-name">👤 Commander:<span id="display-username">---</span></div>
+            <button class="logout-btn" onclick="systemLogout()">Logout</button>
         </div>
         
         <div class="home-content" style="width: 100%; background: rgba(0, 243, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.2); text-align: center;">
-            <h2 style="color: #fff; margin-bottom: 15px; font-size: 20px;">戰役：無盡防禦戰</h2>
+            <h2 style="color: #fff; margin-bottom: 15px; font-size: 20px;">Campaign: Endless Defense</h2>
             <p style="color: #aaa; font-size: 13px; line-height: 1.6; margin-bottom: 25px;">
-                敵人將隨著波次 <span style="color:#ff003c;">逐漸增強血量與數量</span>。<br>
-                每 <span style="color:#00f3ff;">10</span> 波遭遇 BOSS 並獲得戰術晶片。<br>
-                每 <span style="color:#ff003c;">20</span> 波將承受深空負面效應！<br>
-                請善用疊加進化與科技升級。
+                Enemies will <span style="color:#ff003c;">gradually increase in health and numbers</span> with each wave.<br>
+                Encounter a BOSS and obtain Tactical Chips every <span style="color:#00f3ff;">10</span> waves.<br>
+                Suffer deep-space negative effects every <span style="color:#ff003c;">20</span> waves!<br>
+                Please make good use of stacking evolution and tech upgrades.
             </p>
-            <button class="start-btn" onclick="enterBattle()">進入戰場</button>
+            <button class="start-btn" onclick="enterBattle()">Enter Battlefield</button>
         </div>
     </div>
 
     <div id="screen-mission-menu" class="screen">
-        <h1>防禦陣線：無盡星海</h1>
+        <h1>Neon-Frontline</h1>
         <div class="user-info-bar" style="width: 100%; margin-bottom: 15px;">
-            <div class="commander-name">👤 指揮官：<span id="display-username-mission">---</span></div>
-            <button class="logout-btn" onclick="systemLogout()">登出切換</button>
+            <div class="commander-name">👤 Commander:<span id="display-username-mission">---</span></div>
+            <button class="logout-btn" onclick="systemLogout()">Logout</button>
         </div>
         
         <div class="home-content" style="width: 100%; background: rgba(255, 0, 204, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 0, 204, 0.2); text-align: center;">
-            <h2 style="color: #ff00cc; margin-bottom: 15px; font-size: 20px;">任務：隕石突圍</h2>
+            <h2 style="color: #ff00cc; margin-bottom: 15px; font-size: 20px;">Mission: Meteor Breakout</h2>
             <p style="color: #aaa; font-size: 13px; line-height: 1.6; margin-bottom: 15px;">
-                駕駛戰機穿梭星空，擊落敵軍以收集科技點數！<br>
-                <span style="color:#00f3ff;">敵軍會發射雷射反擊</span>，請注意閃避。<br>
-                收集的點數可共通使用於防禦塔升級。
+                Pilot your fighter through space and shoot down enemies to collect Tech Points!<br>
+                <span style="color:#00f3ff;">Enemies will fire lasers to counterattack</span>, so be sure to dodge.<br>
+                Collected points are shared and can be used for defense tower upgrades.
             </p>
             
             <div style="text-align: left; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; color: #ddd; border: 1px dashed rgba(255,0,204,0.4);">
-                <div style="color: #ff00cc; font-weight: bold; margin-bottom: 5px; text-align: center;">【戰場支援物資】</div>
-                🟨 <span style="color:#ffd700; font-weight:bold;">黃色方塊</span>：射速過載 (瘋狂連發)<br>
-                🟩 <span style="color:#00ff66; font-weight:bold;">綠色方塊</span>：散射強化 (三向開火)<br>
-                ⬜ <span style="color:#ffffff; font-weight:bold;">白色方塊</span>：無敵護盾 (可衝撞敵機)
+                <div style="color: #ff00cc; font-weight: bold; margin-bottom: 5px; text-align: center;">【Battlefield Support Supplies】</div>
+                🟨 <span style="color:#ffd700; font-weight:bold;">Yellow Cube</span>: Fire Rate Overload (Rapid Fire)<br>
+                🟩 <span style="color:#00ff66; font-weight:bold;">Green Cube</span>: Spread Shot Upgrade (3-Way Fire)<br>
+                ⬜ <span style="color:#ffffff; font-weight:bold;">White Cube</span>: Invincible Shield (Can ram enemies)
             </div>
 
-            <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);" onclick="enterMission()">切入星域</button>
+            <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);" onclick="enterMission()">Enter Sector</button>
         </div>
     </div>
     
     <div id="screen-upgrades" class="screen">
         <div class="upgrade-header">
-            <h1 style="margin:0; font-size:22px;">科技研究所</h1>
-            <div class="tech-points">科技點: <span id="tech-points-display">0</span></div>
+            <h1 style="margin:0; font-size:22px;">Tech Lab</h1>
+            <div class="tech-points">Tech points: <span id="tech-points-display">0</span></div>
         </div>
         <div class="upgrade-list" id="upgrades-list">
             </div>
@@ -319,49 +319,49 @@
     
     <div id="screen-battle" class="screen">
         <div id="battle-header">
-            <button class="header-btn danger" onclick="requestExit()">◄ 撤退</button>
+            <button class="header-btn danger" onclick="requestExit()">◄ Retreat</button>
             <div id="base-health-container"><div id="base-health-fill"></div><div id="base-health-text">10 / 10</div></div>
             
-            <div style="font-size:11px; color:#ffd700; font-weight:bold; margin-right:4px; white-space:nowrap;">✨ 科技點: <span id="battle-tech-points">0</span></div>
+            <div style="font-size:11px; color:#ffd700; font-weight:bold; margin-right:4px; white-space:nowrap;">✨Tech points: <span id="battle-tech-points">0</span></div>
             
             <div style="display:flex; align-items:center;">
                 <button class="header-btn" id="btn-speed-toggle" onclick="toggleGameSpeed()">▶ 1x</button>
-                <button class="header-btn" onclick="requestPause()">⏸ 暫停</button>
+                <button class="header-btn" onclick="requestPause()">⏸ Pause</button>
             </div>
         </div>
-        <div id="battle-title-bar">波次 <span id="current-wave">1</span> <span id="wave-type-label" style="color:#ff003c; margin-left:8px;"></span></div>
+        <div id="battle-title-bar">Wave <span id="current-wave">1</span> <span id="wave-type-label" style="color:#ff003c; margin-left:8px;"></span></div>
         
-        <div id="sell-btn-overlay">賣出 $0</div>
+        <div id="sell-btn-overlay">Sell $0</div>
         
         <canvas id="game-canvas"></canvas>
 
-        <div id="in-game-upgrade-btn" onclick="toggleInGameUpgradePanel()">⏫<br>升<br>級</div>
+        <div id="in-game-upgrade-btn" onclick="toggleInGameUpgradePanel()">Upgrade</div>
         
         <div id="in-game-upgrade-panel">
             <div class="ig-upg-header">
-                <span class="ig-upg-title">升級</span>
+                <span class="ig-upg-title">Upgrade</span>
                 <span class="ig-upg-close" onclick="toggleInGameUpgradePanel()">✖</span>
             </div>
             
             <div class="ig-upg-list">
                 <div class="ig-upg-item">
-                    <span class="ig-upg-name">機槍塔<span class="ig-upg-lvl" id="ig-machineGun-lvl">+Lv.0</span></span>
-                    <button class="ig-upg-btn" id="ig-btn-machineGun" onclick="buyInGameTowerUpgrade('machineGun')">升級 $5</button>
+                    <span class="ig-upg-name">Gun Tower<span class="ig-upg-lvl" id="ig-machineGun-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-machineGun" onclick="buyInGameTowerUpgrade('machineGun')">Upgrade $5</button>
                 </div>
 
                 <div class="ig-upg-item">
-                    <span class="ig-upg-name">雷射塔<span class="ig-upg-lvl" id="ig-laser-lvl">+Lv.0</span></span>
-                    <button class="ig-upg-btn" id="ig-btn-laser" onclick="buyInGameTowerUpgrade('laser')">升級 $5</button>
+                    <span class="ig-upg-name">Laser Tower<span class="ig-upg-lvl" id="ig-laser-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-laser" onclick="buyInGameTowerUpgrade('laser')">Upgrade $5</button>
                 </div>
 
                 <div class="ig-upg-item">
-                    <span class="ig-upg-name">冰凍塔<span class="ig-upg-lvl" id="ig-ice-lvl">+Lv.0</span></span>
-                    <button class="ig-upg-btn" id="ig-btn-ice" onclick="buyInGameTowerUpgrade('ice')">升級 $5</button>
+                    <span class="ig-upg-name">Freeze Tower<span class="ig-upg-lvl" id="ig-ice-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-ice" onclick="buyInGameTowerUpgrade('ice')">Upgrade $5</button>
                 </div>
 
                 <div class="ig-upg-item">
-                    <span class="ig-upg-name">狙擊塔<span class="ig-upg-lvl" id="ig-sniper-lvl">+Lv.0</span></span>
-                    <button class="ig-upg-btn" id="ig-btn-sniper" onclick="buyInGameTowerUpgrade('sniper')">升級 $5</button>
+                    <span class="ig-upg-name">Sniper Tower<span class="ig-upg-lvl" id="ig-sniper-lvl">+Lv.0</span></span>
+                    <button class="ig-upg-btn" id="ig-btn-sniper" onclick="buyInGameTowerUpgrade('sniper')">Upgrade $5</button>
                 </div>
             </div>
         </div>
@@ -370,37 +370,37 @@
             <div id="energy-bar-bg"><div id="energy-bar-fill"></div><div id="energy-bar-text">5 / 10</div></div>
         </div>
         <div id="card-deck-container">
-            <div class="card" data-type="machineGun"><div class="card-cost">3</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">機槍塔</div></div>
-            <div class="card" data-type="laser"><div class="card-cost">5</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">雷射塔</div></div>
-            <div class="card" data-type="ice"><div class="card-cost">4</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">冰凍塔</div></div>
-            <div class="card" data-type="sniper"><div class="card-cost">6</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">狙擊塔</div></div>
+            <div class="card" data-type="machineGun"><div class="card-cost">3</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">Gun</div></div>
+            <div class="card" data-type="laser"><div class="card-cost">5</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">Lazer</div></div>
+            <div class="card" data-type="ice"><div class="card-cost">4</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">Freeze</div></div>
+            <div class="card" data-type="sniper"><div class="card-cost">6</div><canvas class="card-icon-canvas" width="40" height="40"></canvas><div class="card-name">Sniper</div></div>
         </div>
         <div id="drag-icon"><canvas id="drag-canvas" width="50" height="50"></canvas></div>
     </div>
 
     <div id="screen-mission-game" class="screen">
         <div id="mission-top-bar">
-            <button class="header-btn" style="border-color:#ff003c; color:#ff003c;" onclick="requestExitMission()">◄ 返回</button>
-            <div style="color: #fff; font-size: 14px; font-weight: bold; text-shadow: 0 0 5px #ff00cc;">科技點: <span id="mission-score" style="color:#ffd700;">0</span></div>
-            <button class="header-btn" id="mission-pause-btn" style="border-color:#ff00cc; color:#ff00cc;" onclick="toggleMissionPause()">⏸ 暫停</button>
+            <button class="header-btn" style="border-color:#ff003c; color:#ff003c;" onclick="requestExitMission()">◄ Back</button>
+            <div style="color: #fff; font-size: 14px; font-weight: bold; text-shadow: 0 0 5px #ff00cc;">Tech points: <span id="mission-score" style="color:#ffd700;">0</span></div>
+            <button class="header-btn" id="mission-pause-btn" style="border-color:#ff00cc; color:#ff00cc;" onclick="toggleMissionPause()">⏸ Pause</button>
         </div>
         
         <canvas id="missionCanvas" style="width: 100%; flex: 1; display: block; background: #030508;"></canvas>
         <div id="mission-hint" style="position:absolute; bottom: 30px; width:100%; text-align:center; color:rgba(255,255,255,0.4); font-size:12px; pointer-events:none; z-index: 5; letter-spacing: 1px;">按住螢幕拖曳戰機，自動開火擊落敵軍</div>
 
         <div id="mission-game-over">
-            <h1>戰機墜毀</h1>
-            <div class="subtitle">護盾系統已完全離線</div>
-            <div class="reward-text">本次收集科技點數: +<span id="mission-final-score">0</span></div>
-            <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; padding: 12px 30px; margin-bottom: 15px; font-size: 18px; box-shadow: 0 0 15px rgba(255,0,204,0.2);" onclick="startMission()">再次出擊</button>
-            <button class="header-btn" style="padding: 10px 20px; font-size: 16px; border-color:#555; color:#aaa;" onclick="exitMission()">返回大廳</button>
+            <h1>Fighter Destroyed</h1>
+            <div class="subtitle">Shield Systems Offline</div>
+            <div class="reward-text">Tech Points Collected: +<span id="mission-final-score">0</span></div>
+            <button class="start-btn" style="border-color:#ff00cc; color:#ff00cc; padding: 12px 30px; margin-bottom: 15px; font-size: 18px; box-shadow: 0 0 15px rgba(255,0,204,0.2);" onclick="startMission()">Deploy Again</button>
+            <button class="header-btn" style="padding: 10px 20px; font-size: 16px; border-color:#555; color:#aaa;" onclick="exitMission()">Return to Menu</button>
         </div>
     </div>
 
     <div id="bottom-nav">
-        <button class="nav-btn active" id="nav-btn-levels" onclick="switchTab('levels', this)"><span>⎈</span><span>作戰</span></button>
-        <button class="nav-btn" id="nav-btn-mission" onclick="switchTab('mission-menu', this)"><span>🚀</span><span>任務</span></button>
-        <button class="nav-btn" id="nav-btn-upgrades" onclick="switchTab('upgrades', this)"><span>⇪</span><span>升級</span></button>
+        <button class="nav-btn active" id="nav-btn-levels" onclick="switchTab('levels', this)"><span>⎈</span><span>Battle</span></button>
+        <button class="nav-btn" id="nav-btn-mission" onclick="switchTab('mission-menu', this)"><span>🚀</span><span>Mission</span></button>
+        <button class="nav-btn" id="nav-btn-upgrades" onclick="switchTab('upgrades', this)"><span>⇪</span><span>Upgrade</span></button>
     </div>
 
     <div id="modal-overlay">
@@ -408,8 +408,8 @@
             <div class="modal-header"><span id="modal-title">標題</span><span class="close-btn" id="modal-close-x" onclick="closeModal()">✖</span></div>
             <div class="modal-body" id="modal-body">內容區域</div>
             <div class="modal-footer" id="modal-footer">
-                <div class="modal-cancel-btn" id="modal-cancel-action" onclick="closeModal()">取消</div>
-                <div class="modal-confirm-btn" id="modal-confirm-action" onclick="closeModal()">確認</div>
+                <div class="modal-cancel-btn" id="modal-cancel-action" onclick="closeModal()">Cancel</div>
+                <div class="modal-confirm-btn" id="modal-confirm-action" onclick="closeModal()">Confirm</div>
             </div>
         </div>
     </div>
@@ -426,17 +426,17 @@
         return {
             techPoints: 100, 
             towers: {
-                'machineGun': { id: 'machineGun', title: '機槍塔', level: 1, maxStar: 1, baseDmg: 6, dmgGrowth: 2.0 },
-                'laser':      { id: 'laser', title: '雷射塔', level: 1, maxStar: 1, baseDmg: 0.4, dmgGrowth: 0.2 },
-                'ice':        { id: 'ice', title: '冰凍塔', level: 1, maxStar: 1, baseDmg: 3, dmgGrowth: 1.5 },
-                'sniper':     { id: 'sniper', title: '狙擊塔', level: 1, maxStar: 1, baseDmg: 30, dmgGrowth: 10.0 }
+                'machineGun': { id: 'machineGun', title: 'Gun Tower', level: 1, maxStar: 1, baseDmg: 6, dmgGrowth: 2.0 },
+                'laser':      { id: 'laser', title: 'Lazer Tower', level: 1, maxStar: 1, baseDmg: 0.4, dmgGrowth: 0.2 },
+                'ice':        { id: 'ice', title: 'Freeze Tower', level: 1, maxStar: 1, baseDmg: 3, dmgGrowth: 1.5 },
+                'sniper':     { id: 'sniper', title: 'Sniper Tower', level: 1, maxStar: 1, baseDmg: 30, dmgGrowth: 10.0 }
             }
         };
     }
 
     function systemLogin() {
         const input = document.getElementById('username-input').value.trim();
-        if (!input) { alert("請輸入指揮官代號！"); return; }
+        if (!input) { alert("Please enter a Commander Callsign!"); return; }
         currentUser = input;
         const savedData = localStorage.getItem('defense_save_' + currentUser);
         if (savedData) metaData = JSON.parse(savedData);
@@ -483,17 +483,17 @@
             let breakCost = getBreakCost(data.maxStar);
             let canUpg = metaData.techPoints >= upgCost;
             let canBreak = metaData.techPoints >= breakCost && data.maxStar < 3;
-            let breakText = data.maxStar >= 3 ? '已滿階' : `突破 $${breakCost}`;
+            let breakText = data.maxStar >= 3 ? 'Max Tier' : `Breakthrough $${breakCost}`;
 
             container.innerHTML += `
             <div class="upgrade-card">
                 <div class="upgrade-icon-wrapper"><canvas id="upg-icon-${type}" width="40" height="40"></canvas></div>
                 <div class="upgrade-info">
                     <div class="upgrade-name">${data.title} <span class="upgrade-lvl">Lv.${data.level}</span></div>
-                    <div class="upgrade-stats">開局基礎傷害: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span></div>
+                    <div class="upgrade-stats">Basic Damage: <span class="val">${currentDmg.toFixed(1)}</span> <span style="color:#555;">(→ ${nextDmg.toFixed(1)})</span><br>星級上限: <span class="highlight">${'★'.repeat(data.maxStar)}</span></div>
                 </div>
                 <div class="upgrade-actions">
-                    <div class="btn-upg ${canUpg ? '' : 'btn-disabled'}" onclick="buyUpgrade('${type}')">升級 $${upgCost}</div>
+                    <div class="btn-upg ${canUpg ? '' : 'btn-disabled'}" onclick="buyUpgrade('${type}')">Upgrade $${upgCost}</div>
                     <div class="btn-break ${canBreak ? '' : 'btn-disabled'}" onclick="buyBreakthrough('${type}')">${breakText}</div>
                 </div>
             </div>`;
@@ -544,23 +544,23 @@
         modalOverlay.style.display = 'flex'; setTimeout(() => modalOverlay.classList.add('show'), 10);
     }
     function closeModal() { modalOverlay.classList.remove('show'); setTimeout(() => { modalOverlay.style.display = 'none'; if (gameState.running && gameState.hp > 0 && !gameState.isSelectingBuff) gameState.paused = false; }, 200); }
-    function requestExit() { showModal("離開遊戲", "指揮官，確定要撤退嗎？<br>（已獲得的科技點數會保留）", {text:"是",action:exitBattle}, {text:"取消",action:closeModal}); }
-    function requestPause() { showModal("遊戲暫停", "<span style='color:#00f3ff;'>遊戲暫停中</span><br>指揮官，部隊待命中。", {text:"繼續",action:closeModal}, {text:"離開",action:exitBattle}); }
-    function checkGameOver() { if (gameState.hp <= 0) { saveProgress(); showModal("遊戲結束", `<span style='color:#ff003c;font-weight:bold;font-size:18px;'>防線已全面崩潰！</span><br><br>你成功防守了 <span style='color:#ffd700;font-size:18px;'>${gameState.wave}</span> 波次。<br><br>本次獲得科技點數: <span style='color:#00f3ff;font-size:18px;'>+${gameState.earnedPoints}</span>`, {text:"重新開始",action:startGameState}, {text:"返回主選單",action:exitBattle}, false); } }
+    function requestExit() { showModal("Leave Game", "Commander, sure to retreat?？<br>(Earned Tech Points will be kept)", {text:"Yes",action:exitBattle}, {text:"No",action:closeModal}); }
+    function requestPause() { showModal("Game Paused", "<span style='color:#00f3ff;'>Game Paused</span><br>Commander, troops are on standby.", {text:"Resume",action:closeModal}, {text:"Leave",action:exitBattle}); }
+    function checkGameOver() { if (gameState.hp <= 0) { saveProgress(); showModal("Game Over", `<span style='color:#ff003c;font-weight:bold;font-size:18px;'>Defense Line Collapsed!</span><br><br>You successfully defend <span style='color:#ffd700;font-size:18px;'>${gameState.wave}</span> waves.<br><br>Tech Points earned:<span style='color:#00f3ff;font-size:18px;'>+${gameState.earnedPoints}</span>`, {text:"Restart",action:startGameState}, {text:"Menu",action:exitBattle}, false); } }
 
     const BUFF_POOL = [
-        { id: 'cdr', title: '核心超頻', desc: '全體防禦塔射速與充能提升 20%' },
-        { id: 'energy', title: '能量泵浦', desc: '戰鬥能量(聖水)自動回復速度加快' },
-        { id: 'heal', title: '奈米修復', desc: '立刻修復基地防線，恢復 3 點生命值' },
-        { id: 'crit', title: '精準爆擊', desc: '所有防禦塔獲得 15% 暴擊機率 (2.5倍)' },
-        { id: 'refund', title: '能量回收', desc: '每次部署或升級防禦塔時返還 1 點能量' },
-        { id: 'dmg', title: '火力增壓', desc: '全體防禦塔基礎攻擊傷害提升 25%' }
+        { id: 'cdr', title: 'Core Overclock', desc: '+20% Attack & Charge speed for all towers.' },
+        { id: 'energy', title: 'Energy Pump', desc: 'Faster passive Battle Energy regeneration.' },
+        { id: 'heal', title: 'Nano Repair', desc: 'Instantly repair defense line and restore 3 HP.' },
+        { id: 'crit', title: 'Precision Crit', desc: 'All towers gain +15% Crit Chance (2.5x damage).' },
+        { id: 'refund', title: 'Energy Recycle', desc: 'Refund 1 Energy upon deploying/upgrading towers.' },
+        { id: 'dmg', title: 'Firepower Boost', desc: '+25% Base Damage for all towers.' }
     ];
 
     const DEBUFF_POOL = [
-        { id: 'enemyHpUp', title: '裝甲變異', desc: '深空輻射導致所有敵人生命值永久提升 20%' },
-        { id: 'enemySpdUp', title: '敏捷突變', desc: '受未知磁場影響，所有敵人移動速度永久提升 15%' },
-        { id: 'towerDmgDown', title: '能量干擾', desc: '星際干擾導致所有防禦塔基礎傷害永久降低 15%' }
+        { id: 'enemyHpUp', title: 'Armor Mutation', desc: 'Deep-space radiation permanently increases all enemies\' HP by 20%.' },
+        { id: 'enemySpdUp', title: 'Agility Mutation', desc: 'Unknown magnetic field permanently increases all enemies\' Move Speed by 15%.' },
+        { id: 'towerDmgDown', title: 'Energy Interference', desc: 'Interstellar interference permanently reduces all towers\' Base Damage by 15%.' }
     ];
 
     function triggerBuffSelection(type = 'buff') {
@@ -570,8 +570,8 @@
         let shuffled = [...pool].sort(() => 0.5 - Math.random());
         let choices = shuffled.slice(0, 3);
 
-        let title = (type === 'buff') ? "🛰️ 晶片空投已抵達" : "⚠️ 警告：深空負面效應";
-        let subText = (type === 'buff') ? "請點擊選擇一個戰術晶片強化防線：" : "深空輻射激增，必須選擇承受一項負面干擾：";
+        let title = (type === 'buff') ? "🛰️ Chip Airdrop Arrived" : "⚠️ Warning: Deep Space Anomaly";
+        let subText = (type === 'buff') ? "Select a Tactical Chip to strengthen the defense line:" : "Radiation spike. You must choose one anomaly to endure:";
         let cardClass = (type === 'buff') ? "buff-card" : "debuff-card";
         let titleClass = (type === 'buff') ? "buff-title" : "debuff-title";
         
@@ -774,7 +774,7 @@
             
             let cost = getInGameTowerUpgradeCost(type);
             let btn = document.getElementById(`ig-btn-${type}`);
-            btn.innerText = `升級 $${cost}`;
+            btn.innerText = `Upgrade $${cost}`;
             
             // 根據玩家身上擁有的科技點決定是否亮起可購買
             if (metaData.techPoints >= cost) {
@@ -1131,7 +1131,7 @@
     function showSellButton(tower) {
         const btn = document.getElementById('sell-btn-overlay');
         const refund = Math.floor(tower.card.cost / 2); 
-        btn.innerText = `賣出 $${refund}`;
+        btn.innerText = `Sell $${refund}`;
         const dpr = window.devicePixelRatio || 1;
         let cssX = tower.x / dpr; let cssY = tower.y / dpr;
         btn.style.left = cssX + 'px';
@@ -1236,10 +1236,10 @@
         cardEl.setAttribute('data-type', randomType);
         cardEl.querySelector('.card-cost').innerText = tower.cost;
 
-        let name = '機槍塔';
-        if (randomType === 'laser') name = '雷射塔';
-        if (randomType === 'ice') name = '冰凍塔';
-        if (randomType === 'sniper') name = '狙擊塔';
+        let name = 'Gun';
+        if (randomType === 'laser') name = 'Lazer';
+        if (randomType === 'ice') name = 'Freeze';
+        if (randomType === 'sniper') name = 'Sniper';
         cardEl.querySelector('.card-name').innerText = name;
 
         const ctx = cardEl.querySelector('.card-icon-canvas').getContext('2d');
@@ -1291,11 +1291,11 @@
     function toggleMissionPause() {
         if (!missionRunning) return;
         missionPaused = !missionPaused;
-        document.getElementById('mission-pause-btn').innerText = missionPaused ? "▶ 繼續" : "⏸ 暫停";
+        document.getElementById('mission-pause-btn').innerText = missionPaused ? "▶ Resume" : "⏸ Paused";
         if (missionPaused) {
-            showModal("任務暫停", "<span style='color:#ff00cc;'>任務已暫停</span><br>戰機待命中。", 
-                {text:"繼續", action: () => { missionPaused = false; document.getElementById('mission-pause-btn').innerText = "⏸ 暫停"; requestAnimationFrame(updateMission); }}, 
-                {text:"離開", action: () => { metaData.techPoints += missionScore; saveProgress(); exitMission(); }}
+            showModal("Mission Paused", "<span style='color:#ff00cc;'>Mission Paused</span><br>Troops are on standby.", 
+                {text:"Resume", action: () => { missionPaused = false; document.getElementById('mission-pause-btn').innerText = "⏸ Paused"; requestAnimationFrame(updateMission); }}, 
+                {text:"Leave", action: () => { metaData.techPoints += missionScore; saveProgress(); exitMission(); }}
             );
         } else { requestAnimationFrame(updateMission); }
     }
@@ -1319,7 +1319,7 @@
         
         missionScore = 0; mFrame = 0; missionRunning = true; missionPaused = false;
         document.getElementById('mission-score').innerText = missionScore;
-        document.getElementById('mission-pause-btn').innerText = "⏸ 暫停";
+        document.getElementById('mission-pause-btn').innerText = "⏸ Paused";
         requestAnimationFrame(updateMission);
     }
 
@@ -1465,7 +1465,7 @@
                 const type = types[Math.floor(Math.random() * types.length)];
                 c.setAttribute('data-type', type);
                 c.querySelector('.card-cost').innerText = TOWER_DATA[type].cost;
-                c.querySelector('.card-name').innerText = type === 'machineGun' ? '機槍塔' : type === 'laser' ? '雷射塔' : type === 'ice' ? '冰凍塔' : '狙擊塔';
+                c.querySelector('.card-name').innerText = type === 'machineGun' ? 'Gun' : type === 'laser' ? 'Lazer' : type === 'ice' ? 'Freeze' : 'Sniper';
                 c.classList.remove('refreshing'); 
             });
 
